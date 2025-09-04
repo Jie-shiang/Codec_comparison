@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音訊 Codec 比較展示</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .dataset-section {
+            margin-bottom: 40px;
+        }
+        
+        .dataset-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .file-id {
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: bold;
+            color: #495057;
+            text-align: left;
+            padding-left: 15px;
+            min-width: 150px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        audio {
+            width: 200px;
+            height: 30px;
+        }
+        
+        .codec-info {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .transcript {
+            max-width: 200px;
+            text-align: left;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #555;
+        }
+        
+        .transcript.hidden {
+            display: none;
+        }
+        
+        .play-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .play-button:hover {
+            background: #0056b3;
+        }
+        
+        .play-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            color: #666;
+            font-style: italic;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>音訊 Codec 比較展示</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="lscodec-freq">LSCodec 頻率:</label>
+                <select id="lscodec-freq">
+                    <option value="25Hz">25Hz</option>
+                    <option value="50Hz">50Hz</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="focalcodec-freq">FocalCodec 頻率:</label>
+                <select id="focalcodec-freq">
+                    <option value="12.5Hz">12.5Hz</option>
+                    <option value="25Hz">25Hz</option>
+                    <option value="50Hz">50Hz</option>
+                </select>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="show-transcript" checked>
+                <label for="show-transcript">顯示逐字稿</label>
+            </div>
+        </div>
+        
+        <div class="dataset-section">
+            <div class="dataset-title">Librispeech test clean</div>
+            <table id="librispeech-table">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">檔案 ID</th>
+                        <th style="width: 220px;">原始音檔</th>
+                        <th style="width: 220px;">LSCodec</th>
+                        <th style="width: 220px;">FocalCodec</th>
+                        <th class="transcript-header">音檔逐字稿</th>
+                    </tr>
+                </thead>
+                <tbody id="librispeech-body">
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="dataset-section">
+            <div class="dataset-title">AISHELL</div>
+            <table id="aishell-table">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">檔案 ID</th>
+                        <th style="width: 220px;">原始音檔</th>
+                        <th style="width: 220px;">LSCodec</th>
+                        <th style="width: 220px;">FocalCodec</th>
+                        <th class="transcript-header">音檔逐字稿</th>
+                    </tr>
+                </thead>
+                <tbody id="aishell-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 資料定義
+        const datasets = {
+            librispeech: {
+                files: [
+                    '61-70970-0000',
+                    '121-127105-0000', 
+                    '237-134500-0000',
+                    '260-123440-0000',
+                    '672-122797-0000'
+                ],
+                transcripts: {
+                    '61-70970-0000': 'He began a confused complaint against the wizard who had vanished behind the curtain on the left.',
+                    '121-127105-0000': 'Honolulu is the capital and most populous city of the U.S. state of Hawaii.',
+                    '237-134500-0000': 'Ask her to bring these things with her from the store.',
+                    '260-123440-0000': 'The table was set for three persons.',
+                    '672-122797-0000': 'Out of the angle of the house an old woman came and stood facing the garden gate.'
+                }
+            },
+            aishell: {
+                files: [
+                    'BAC009S0764W0121',
+                    'BAC009S0765W0121',
+                    'BAC009S0766W0121', 
+                    'BAC009S0767W0121',
+                    'BAC009S0768W0121'
+                ],
+                transcripts: {
+                    'BAC009S0764W0121': '绿是阳春烟景大块文章的底色四月的林峦更是绿得鲜活秀媚诗意盎然',
+                    'BAC009S0765W0121': '话说天下大势分久必合合久必分周末七国分争并入于秦',
+                    'BAC009S0766W0121': '王候将相有种乎此句乃陈胜所言也在其起义之时对天下人所说',
+                    'BAC009S0767W0121': '月上柳梢头人约黄昏后去年元夜时花市灯如昼',
+                    'BAC009S0768W0121': '山重水复疑无路柳暗花明又一村这句话表达了人生的哲理'
+                }
+            }
+        };
+        
+        // 生成音檔路徑
+        function getAudioPath(dataset, fileId, codecType, frequency = null) {
+            const basePath = `audio/${dataset}`;
+            
+            switch(codecType) {
+                case 'original':
+                    return `${basePath}/original/${fileId}.wav`;
+                case 'lscodec':
+                    return `${basePath}/lscodec/${frequency}/${fileId}.wav`;
+                case 'focalcodec':
+                    return `${basePath}/focalcodec/${frequency}/${fileId}.wav`;
+                default:
+                    return '';
+            }
+        }
+        
+        // 創建播放控制項
+        function createAudioControl(dataset, fileId, codecType, frequency = null) {
+            const audioPath = getAudioPath(dataset, fileId, codecType, frequency);
+            
+            return `
+                <div class="audio-controls">
+                    <button class="play-button" onclick="toggleAudio('${audioPath}', this)">播放</button>
+                    <audio preload="none">
+                        <source src="${audioPath}" type="audio/wav">
+                        您的瀏覽器不支援音訊播放。
+                    </audio>
+                    ${frequency ? `<div class="codec-info">${frequency}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        // 播放/暫停音檔
+        function toggleAudio(audioPath, button) {
+            // 先暫停所有其他音檔
+            document.querySelectorAll('audio').forEach(audio => {
+                if (audio.src !== audioPath) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            });
+            
+            // 重置所有按鈕
+            document.querySelectorAll('.play-button').forEach(btn => {
+                if (btn !== button) {
+                    btn.textContent = '播放';
+                    btn.disabled = false;
+                }
+            });
+            
+            const audioControl = button.parentElement;
+            const audio = audioControl.querySelector('audio');
+            
+            if (!audio.src || audio.src !== location.origin + '/' + audioPath) {
+                audio.src = audioPath;
+            }
+            
+            if (audio.paused) {
+                button.textContent = '載入中...';
+                button.disabled = true;
+                
+                audio.addEventListener('canplay', function() {
+                    button.textContent = '暫停';
+                    button.disabled = false;
+                    audio.play();
+                }, { once: true });
+                
+                audio.addEventListener('error', function() {
+                    button.textContent = '載入失敗';
+                    button.disabled = false;
+                }, { once: true });
+                
+                audio.addEventListener('ended', function() {
+                    button.textContent = '播放';
+                });
+                
+                audio.load();
+            } else {
+                audio.pause();
+                button.textContent = '播放';
+            }
+        }
+        
+        // 生成表格行
+        function createTableRow(dataset, fileId) {
+            const transcript = datasets[dataset].transcripts[fileId] || '暫無逐字稿';
+            
+            return `
+                <tr>
+                    <td class="file-id">${fileId}</td>
+                    <td>${createAudioControl(dataset, fileId, 'original')}</td>
+                    <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', '25Hz')}</td>
+                    <td class="focalcodec-cell">${createAudioControl(dataset, fileId, 'focalcodec', '12.5Hz')}</td>
+                    <td class="transcript">${transcript}</td>
+                </tr>
+            `;
+        }
+        
+        // 更新表格
+        function updateTables() {
+            const lsFreq = document.getElementById('lscodec-freq').value;
+            const focalFreq = document.getElementById('focalcodec-freq').value;
+            
+            // 更新 Librispeech
+            const librispeechBody = document.getElementById('librispeech-body');
+            librispeechBody.innerHTML = datasets.librispeech.files
+                .map(fileId => createTableRow('librispeech', fileId))
+                .join('');
+            
+            // 更新 AISHELL
+            const aishellBody = document.getElementById('aishell-body');
+            aishellBody.innerHTML = datasets.aishell.files
+                .map(fileId => createTableRow('aishell', fileId))
+                .join('');
+            
+            // 更新頻率顯示
+            updateFrequencyDisplay(lsFreq, focalFreq);
+            
+            // 更新逐字稿顯示狀態
+            toggleTranscripts();
+        }
+        
+        // 更新頻率顯示
+        function updateFrequencyDisplay(lsFreq, focalFreq) {
+            document.querySelectorAll('.lscodec-cell .codec-info').forEach(el => {
+                el.textContent = lsFreq;
+            });
+            document.querySelectorAll('.focalcodec-cell .codec-info').forEach(el => {
+                el.textContent = focalFreq;
+            });
+        }
+        
+        // 切換逐字稿顯示
+        function toggleTranscripts() {
+            const showTranscript = document.getElementById('show-transcript').checked;
+            const transcriptCells = document.querySelectorAll('.transcript');
+            const transcriptHeaders = document.querySelectorAll('.transcript-header');
+            
+            transcriptCells.forEach(cell => {
+                cell.style.display = showTranscript ? 'table-cell' : 'none';
+            });
+            
+            transcriptHeaders.forEach(header => {
+                header.style.display = showTranscript ? 'table-cell' : 'none';
+            });
+        }
+        
+        // 事件監聽器
+        document.getElementById('lscodec-freq').addEventListener('change', updateTables);
+        document.getElementById('focalcodec-freq').addEventListener('change', updateTables);
+        document.getElementById('show-transcript').addEventListener('change', toggleTranscripts);
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTables();
+            toggleTranscripts();
+        });
+    </script>
+</body>
+</html>
