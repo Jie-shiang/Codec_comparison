@@ -407,12 +407,16 @@
         function createTableRow(dataset, fileId) {
             const transcript = datasets[dataset].transcripts[fileId] || '逐字稿載入中...';
             
+            // 動態獲取當前選擇的頻率
+            const lsFreq = document.getElementById('lscodec-freq').value;
+            const focalFreq = document.getElementById('focalcodec-freq').value;
+            
             return `
                 <tr>
                     <td class="file-id">${fileId}</td>
                     <td>${createAudioControl(dataset, fileId, 'original')}</td>
-                    <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', '25Hz')}</td>
-                    <td class="focalcodec-cell">${createAudioControl(dataset, fileId, 'focalcodec', '12.5Hz')}</td>
+                    <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', lsFreq)}</td>
+                    <td class="focalcodec-cell">${createAudioControl(dataset, fileId, 'focalcodec', focalFreq)}</td>
                     <td class="transcript">${transcript}</td>
                 </tr>
             `;
