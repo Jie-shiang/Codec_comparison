@@ -17,7 +17,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -39,6 +39,7 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            flex-wrap: wrap;
         }
         
         .control-group {
@@ -47,7 +48,7 @@
             gap: 10px;
         }
         
-        label {
+        .control-group label {
             font-weight: bold;
             color: #555;
         }
@@ -56,6 +57,7 @@
             padding: 5px 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            min-width: 80px;
         }
         
         .checkbox-group {
@@ -82,11 +84,12 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            font-size: 12px;
         }
         
         th, td {
             border: 1px solid #ddd;
-            padding: 12px 8px;
+            padding: 8px 6px;
             text-align: center;
             vertical-align: middle;
         }
@@ -95,57 +98,62 @@
             background-color: #f8f9fa;
             font-weight: bold;
             color: #495057;
+            font-size: 11px;
         }
         
         .file-id {
             font-family: monospace;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
             color: #495057;
             text-align: left;
-            padding-left: 15px;
-            min-width: 150px;
+            padding-left: 10px;
+            min-width: 120px;
         }
         
         .audio-controls {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 3px;
         }
         
         audio {
-            width: 200px;
-            height: 30px;
+            width: 180px;
+            height: 28px;
         }
         
         .codec-info {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
             margin-top: 2px;
         }
         
         .transcript {
-            max-width: 200px;
+            max-width: 180px;
             text-align: left;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 11px;
+            line-height: 1.3;
             color: #555;
         }
         
-        .transcript.hidden {
-            display: none;
+        .metric-value {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: bold;
+            color: #333;
+            min-width: 60px;
         }
         
         .play-button {
             background: #007bff;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-size: 11px;
+            margin-bottom: 3px;
         }
         
         .play-button:hover {
@@ -160,7 +168,7 @@
         .loading {
             color: #666;
             font-style: italic;
-            font-size: 11px;
+            font-size: 10px;
         }
         
         .status-info {
@@ -172,6 +180,27 @@
             margin-bottom: 20px;
             font-size: 14px;
         }
+        
+        /* 隱藏欄位的樣式 */
+        .hidden-column {
+            display: none !important;
+        }
+        
+        /* 全部開啟按鈕樣式 */
+        .toggle-all {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .toggle-all:hover {
+            background: #218838;
+        }
     </style>
 </head>
 <body>
@@ -179,12 +208,20 @@
         <h1>音訊 Codec 比較展示</h1>
         
         <div class="status-info" id="status-info">
-            正在載入逐字稿...
+            正在載入逐字稿和評估指標...
         </div>
         
         <div class="controls">
+            <button class="toggle-all" onclick="toggleAll()">開啟全部</button>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="show-original" checked>
+                <label for="show-original">原始音檔</label>
+            </div>
+            
             <div class="control-group">
-                <label for="lscodec-freq">LSCodec 頻率:</label>
+                <input type="checkbox" id="show-lscodec" checked>
+                <label for="show-lscodec">☐ LSCodec Hz:</label>
                 <select id="lscodec-freq">
                     <option value="25Hz">25Hz</option>
                     <option value="50Hz">50Hz</option>
@@ -192,7 +229,8 @@
             </div>
             
             <div class="control-group">
-                <label for="focalcodec-freq">FocalCodec 頻率:</label>
+                <input type="checkbox" id="show-focalcodec" checked>
+                <label for="show-focalcodec">FocalCodec Hz:</label>
                 <select id="focalcodec-freq">
                     <option value="12.5Hz">12.5Hz</option>
                     <option value="25Hz">25Hz</option>
@@ -202,7 +240,17 @@
             
             <div class="checkbox-group">
                 <input type="checkbox" id="show-transcript" checked>
-                <label for="show-transcript">顯示逐字稿</label>
+                <label for="show-transcript">Transcription</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="show-utmos" checked>
+                <label for="show-utmos">UTMOS</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="show-dwer" checked>
+                <label for="show-dwer">dWER</label>
             </div>
         </div>
         
@@ -211,11 +259,13 @@
             <table id="librispeech-table">
                 <thead>
                     <tr>
-                        <th style="width: 150px;">檔案 ID</th>
-                        <th style="width: 220px;">原始音檔</th>
-                        <th style="width: 220px;">LSCodec</th>
-                        <th style="width: 220px;">FocalCodec</th>
-                        <th class="transcript-header">音檔逐字稿</th>
+                        <th style="width: 120px;">檔案 ID</th>
+                        <th class="original-header" style="width: 190px;">原始音檔</th>
+                        <th class="lscodec-header" style="width: 190px;">LSCodec</th>
+                        <th class="focalcodec-header" style="width: 190px;">FocalCodec</th>
+                        <th class="transcript-header" style="width: 190px;">Transcription</th>
+                        <th class="utmos-header" style="width: 80px;">UTMOS</th>
+                        <th class="dwer-header" style="width: 80px;">dWER</th>
                     </tr>
                 </thead>
                 <tbody id="librispeech-body">
@@ -228,11 +278,13 @@
             <table id="aishell-table">
                 <thead>
                     <tr>
-                        <th style="width: 150px;">檔案 ID</th>
-                        <th style="width: 220px;">原始音檔</th>
-                        <th style="width: 220px;">LSCodec</th>
-                        <th style="width: 220px;">FocalCodec</th>
-                        <th class="transcript-header">音檔逐字稿</th>
+                        <th style="width: 120px;">檔案 ID</th>
+                        <th class="original-header" style="width: 190px;">原始音檔</th>
+                        <th class="lscodec-header" style="width: 190px;">LSCodec</th>
+                        <th class="focalcodec-header" style="width: 190px;">FocalCodec</th>
+                        <th class="transcript-header" style="width: 190px;">Transcription</th>
+                        <th class="utmos-header" style="width: 80px;">UTMOS</th>
+                        <th class="dwer-header" style="width: 80px;">dWER</th>
                     </tr>
                 </thead>
                 <tbody id="aishell-body">
@@ -252,7 +304,9 @@
                     '260-123440-0000',
                     '672-122797-0000'
                 ],
-                transcripts: {}
+                transcripts: {},
+                utmos: {},
+                dwer: {}
             },
             aishell: {
                 files: [
@@ -262,53 +316,61 @@
                     'BAC009S0767W0121',
                     'BAC009S0768W0121'
                 ],
-                transcripts: {}
+                transcripts: {},
+                utmos: {},
+                dwer: {}
             }
         };
 
-        // 載入逐字稿
+        // 載入逐字稿和評估指標
         async function loadTranscripts() {
             const statusInfo = document.getElementById('status-info');
             try {
-                statusInfo.textContent = '正在載入 LibriSpeech 逐字稿...';
+                statusInfo.textContent = '正在載入 LibriSpeech 資料...';
                 
                 // 載入 LibriSpeech 逐字稿
                 try {
                     const librispeechResponse = await fetch('transcripts/librispeech.json');
                     if (librispeechResponse.ok) {
-                        datasets.librispeech.transcripts = await librispeechResponse.json();
-                        console.log('LibriSpeech 逐字稿載入成功:', datasets.librispeech.transcripts);
+                        const data = await librispeechResponse.json();
+                        datasets.librispeech.transcripts = data.transcripts || data;
+                        datasets.librispeech.utmos = data.utmos || {};
+                        datasets.librispeech.dwer = data.dwer || {};
+                        console.log('LibriSpeech 資料載入成功:', data);
                     } else {
-                        console.warn('LibriSpeech 逐字稿載入失敗:', librispeechResponse.status);
+                        console.warn('LibriSpeech 資料載入失敗:', librispeechResponse.status);
                     }
                 } catch (error) {
-                    console.error('LibriSpeech 逐字稿載入錯誤:', error);
+                    console.error('LibriSpeech 資料載入錯誤:', error);
                 }
                 
-                statusInfo.textContent = '正在載入 AISHELL 逐字稿...';
+                statusInfo.textContent = '正在載入 AISHELL 資料...';
                 
                 // 載入 AISHELL 逐字稿
                 try {
                     const aishellResponse = await fetch('transcripts/aishell.json');
                     if (aishellResponse.ok) {
-                        datasets.aishell.transcripts = await aishellResponse.json();
-                        console.log('AISHELL 逐字稿載入成功:', datasets.aishell.transcripts);
+                        const data = await aishellResponse.json();
+                        datasets.aishell.transcripts = data.transcripts || data;
+                        datasets.aishell.utmos = data.utmos || {};
+                        datasets.aishell.dwer = data.dwer || {};
+                        console.log('AISHELL 資料載入成功:', data);
                     } else {
-                        console.warn('AISHELL 逐字稿載入失敗:', aishellResponse.status);
+                        console.warn('AISHELL 資料載入失敗:', aishellResponse.status);
                     }
                 } catch (error) {
-                    console.error('AISHELL 逐字稿載入錯誤:', error);
+                    console.error('AISHELL 資料載入錯誤:', error);
                 }
                 
-                statusInfo.textContent = '逐字稿載入完成！';
+                statusInfo.textContent = '資料載入完成！';
                 setTimeout(() => {
                     statusInfo.style.display = 'none';
                 }, 2000);
                 
                 updateTables();
             } catch (error) {
-                console.error('載入逐字稿時發生錯誤:', error);
-                statusInfo.textContent = '逐字稿載入失敗，將使用預設文字';
+                console.error('載入資料時發生錯誤:', error);
+                statusInfo.textContent = '資料載入失敗，將使用預設值';
                 statusInfo.style.backgroundColor = '#f8d7da';
                 statusInfo.style.borderColor = '#f5c6cb';
                 statusInfo.style.color = '#721c24';
@@ -406,18 +468,22 @@
         // 生成表格行
         function createTableRow(dataset, fileId) {
             const transcript = datasets[dataset].transcripts[fileId] || '逐字稿載入中...';
+            const utmos = datasets[dataset].utmos[fileId] || '0.00';
+            const dwer = datasets[dataset].dwer[fileId] || '0.00';
             
-            // 動態獲取當前選擇的頻率
+            // 動態取得當前選擇的頻率
             const lsFreq = document.getElementById('lscodec-freq').value;
             const focalFreq = document.getElementById('focalcodec-freq').value;
             
             return `
                 <tr>
                     <td class="file-id">${fileId}</td>
-                    <td>${createAudioControl(dataset, fileId, 'original')}</td>
+                    <td class="original-cell">${createAudioControl(dataset, fileId, 'original')}</td>
                     <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', lsFreq)}</td>
                     <td class="focalcodec-cell">${createAudioControl(dataset, fileId, 'focalcodec', focalFreq)}</td>
                     <td class="transcript">${transcript}</td>
+                    <td class="utmos metric-value">${utmos}</td>
+                    <td class="dwer metric-value">${dwer}</td>
                 </tr>
             `;
         }
@@ -442,8 +508,8 @@
             // 更新頻率顯示
             updateFrequencyDisplay(lsFreq, focalFreq);
             
-            // 更新逐字稿顯示狀態
-            toggleTranscripts();
+            // 更新所有欄位顯示狀態
+            updateColumnVisibility();
         }
         
         // 更新頻率顯示
@@ -456,29 +522,114 @@
             });
         }
         
-        // 切換逐字稿顯示
-        function toggleTranscripts() {
+        // 更新欄位顯示狀態
+        function updateColumnVisibility() {
+            const showOriginal = document.getElementById('show-original').checked;
+            const showLSCodec = document.getElementById('show-lscodec').checked;
+            const showFocalCodec = document.getElementById('show-focalcodec').checked;
             const showTranscript = document.getElementById('show-transcript').checked;
-            const transcriptCells = document.querySelectorAll('.transcript');
-            const transcriptHeaders = document.querySelectorAll('.transcript-header');
+            const showUTMOS = document.getElementById('show-utmos').checked;
+            const showDWER = document.getElementById('show-dwer').checked;
             
+            // 原始音檔欄位
+            const originalHeaders = document.querySelectorAll('.original-header');
+            const originalCells = document.querySelectorAll('.original-cell');
+            originalHeaders.forEach(header => {
+                header.style.display = showOriginal ? 'table-cell' : 'none';
+            });
+            originalCells.forEach(cell => {
+                cell.style.display = showOriginal ? 'table-cell' : 'none';
+            });
+            
+            // LSCodec 欄位
+            const lscodecHeaders = document.querySelectorAll('.lscodec-header');
+            const lscodecCells = document.querySelectorAll('.lscodec-cell');
+            lscodecHeaders.forEach(header => {
+                header.style.display = showLSCodec ? 'table-cell' : 'none';
+            });
+            lscodecCells.forEach(cell => {
+                cell.style.display = showLSCodec ? 'table-cell' : 'none';
+            });
+            
+            // FocalCodec 欄位
+            const focalcodecHeaders = document.querySelectorAll('.focalcodec-header');
+            const focalcodecCells = document.querySelectorAll('.focalcodec-cell');
+            focalcodecHeaders.forEach(header => {
+                header.style.display = showFocalCodec ? 'table-cell' : 'none';
+            });
+            focalcodecCells.forEach(cell => {
+                cell.style.display = showFocalCodec ? 'table-cell' : 'none';
+            });
+            
+            // 逐字稿欄位
+            const transcriptHeaders = document.querySelectorAll('.transcript-header');
+            const transcriptCells = document.querySelectorAll('.transcript');
+            transcriptHeaders.forEach(header => {
+                header.style.display = showTranscript ? 'table-cell' : 'none';
+            });
             transcriptCells.forEach(cell => {
                 cell.style.display = showTranscript ? 'table-cell' : 'none';
             });
             
-            transcriptHeaders.forEach(header => {
-                header.style.display = showTranscript ? 'table-cell' : 'none';
+            // UTMOS 欄位
+            const utmosHeaders = document.querySelectorAll('.utmos-header');
+            const utmosCells = document.querySelectorAll('.utmos');
+            utmosHeaders.forEach(header => {
+                header.style.display = showUTMOS ? 'table-cell' : 'none';
             });
+            utmosCells.forEach(cell => {
+                cell.style.display = showUTMOS ? 'table-cell' : 'none';
+            });
+            
+            // dWER 欄位
+            const dwerHeaders = document.querySelectorAll('.dwer-header');
+            const dwerCells = document.querySelectorAll('.dwer');
+            dwerHeaders.forEach(header => {
+                header.style.display = showDWER ? 'table-cell' : 'none';
+            });
+            dwerCells.forEach(cell => {
+                cell.style.display = showDWER ? 'table-cell' : 'none';
+            });
+        }
+        
+        // 開啟/關閉全部功能
+        function toggleAll() {
+            const toggleButton = document.querySelector('.toggle-all');
+            const checkboxes = [
+                'show-original',
+                'show-lscodec', 
+                'show-focalcodec',
+                'show-transcript',
+                'show-utmos',
+                'show-dwer'
+            ];
+            
+            // 檢查當前狀態（如果全部都開啟，則關閉全部；否則開啟全部）
+            const allChecked = checkboxes.every(id => document.getElementById(id).checked);
+            
+            checkboxes.forEach(id => {
+                document.getElementById(id).checked = !allChecked;
+            });
+            
+            // 更新按鈕文字（修正邏輯）
+            toggleButton.textContent = allChecked ? '☐ 開啟全部' : '☑ 開啟全部';
+            
+            updateColumnVisibility();
         }
         
         // 事件監聽器
         document.getElementById('lscodec-freq').addEventListener('change', updateTables);
         document.getElementById('focalcodec-freq').addEventListener('change', updateTables);
-        document.getElementById('show-transcript').addEventListener('change', toggleTranscripts);
+        document.getElementById('show-original').addEventListener('change', updateColumnVisibility);
+        document.getElementById('show-lscodec').addEventListener('change', updateColumnVisibility);
+        document.getElementById('show-focalcodec').addEventListener('change', updateColumnVisibility);
+        document.getElementById('show-transcript').addEventListener('change', updateColumnVisibility);
+        document.getElementById('show-utmos').addEventListener('change', updateColumnVisibility);
+        document.getElementById('show-dwer').addEventListener('change', updateColumnVisibility);
         
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('頁面載入完成，開始載入逐字稿...');
+            console.log('頁面載入完成，開始載入資料...');
             loadTranscripts();
         });
     </script>
