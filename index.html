@@ -441,16 +441,16 @@
             
             let metricsHtml = '<div class="metric-display">';
             
-            if (utmos !== null) {
+            if (utmos !== null && utmos !== undefined) {
                 metricsHtml += `<div class="metric-item utmos-score">UTMOS: ${utmos}</div>`;
             } else {
-                metricsHtml += '<div class="error-message">UTMOS: 無資料</div>';
+                metricsHtml += '<div class="error-message">UTMOS: 載入中...</div>';
             }
             
-            if (dwer !== null) {
+            if (dwer !== null && dwer !== undefined) {
                 metricsHtml += `<div class="metric-item dwer-score">dWER: ${dwer}</div>`;
             } else {
-                metricsHtml += '<div class="error-message">dWER: 無資料</div>';
+                metricsHtml += '<div class="error-message">dWER: 載入中...</div>';
             }
             
             metricsHtml += '</div>';
