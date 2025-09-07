@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音訊 Codec 比較展示</title>
+    <title>音訊 Codec 比較展示 - 新架構</title>
     <style>
         * {
             box-sizing: border-box;
@@ -137,12 +137,29 @@
             color: #555;
         }
         
-        .metric-value {
-            font-family: monospace;
-            font-size: 11px;
-            font-weight: bold;
-            color: #333;
-            min-width: 60px;
+        .metric-display {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 3px;
+            font-size: 10px;
+        }
+        
+        .metric-item {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .utmos-score {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .dwer-score {
+            background: #fff3e0;
+            color: #ef6c00;
         }
         
         .play-button {
@@ -165,12 +182,6 @@
             cursor: not-allowed;
         }
         
-        .loading {
-            color: #666;
-            font-style: italic;
-            font-size: 10px;
-        }
-        
         .status-info {
             background: #d4edda;
             border: 1px solid #c3e6cb;
@@ -181,12 +192,6 @@
             font-size: 14px;
         }
         
-        /* 隱藏欄位的樣式 */
-        .hidden-column {
-            display: none !important;
-        }
-        
-        /* 全部開啟按鈕樣式 */
         .toggle-all {
             background: #28a745;
             color: white;
@@ -201,14 +206,24 @@
         .toggle-all:hover {
             background: #218838;
         }
+
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 5px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>音訊 Codec 比較展示</h1>
+        <h1>音訊 Codec 比較展示 - 新架構</h1>
         
         <div class="status-info" id="status-info">
-            正在載入逐字稿和評估指標...
+            正在載入 Codec 資料...
         </div>
         
         <div class="controls">
@@ -244,13 +259,8 @@
             </div>
             
             <div class="checkbox-group">
-                <input type="checkbox" id="show-utmos" checked>
-                <label for="show-utmos">UTMOS</label>
-            </div>
-            
-            <div class="checkbox-group">
-                <input type="checkbox" id="show-dwer" checked>
-                <label for="show-dwer">dWER</label>
+                <input type="checkbox" id="show-metrics" checked>
+                <label for="show-metrics">顯示評估分數</label>
             </div>
         </div>
         
@@ -264,8 +274,6 @@
                         <th class="lscodec-header" style="width: 190px;">LSCodec</th>
                         <th class="focalcodec-header" style="width: 190px;">FocalCodec</th>
                         <th class="transcript-header" style="width: 190px;">Transcription</th>
-                        <th class="utmos-header" style="width: 80px;">UTMOS</th>
-                        <th class="dwer-header" style="width: 80px;">dWER</th>
                     </tr>
                 </thead>
                 <tbody id="librispeech-body">
@@ -283,8 +291,6 @@
                         <th class="lscodec-header" style="width: 190px;">LSCodec</th>
                         <th class="focalcodec-header" style="width: 190px;">FocalCodec</th>
                         <th class="transcript-header" style="width: 190px;">Transcription</th>
-                        <th class="utmos-header" style="width: 80px;">UTMOS</th>
-                        <th class="dwer-header" style="width: 80px;">dWER</th>
                     </tr>
                 </thead>
                 <tbody id="aishell-body">
@@ -304,9 +310,7 @@
                     '260-123440-0000',
                     '672-122797-0000'
                 ],
-                transcripts: {},
-                utmos: {},
-                dwer: {}
+                codecData: {} // 儲存各個 codec 的資料
             },
             aishell: {
                 files: [
@@ -316,75 +320,98 @@
                     'BAC009S0767W0121',
                     'BAC009S0768W0121'
                 ],
-                transcripts: {},
-                utmos: {},
-                dwer: {}
+                codecData: {} // 儲存各個 codec 的資料
             }
         };
 
-        // 載入逐字稿和評估指標
-        async function loadTranscripts() {
-            const statusInfo = document.getElementById('status-info');
+        // 載入特定 Codec 的資料
+        async function loadCodecData(dataset, codecType, frequency) {
+            const basePath = `audio/${dataset}/${codecType}/${frequency}`;
+            const jsonPath = `${basePath}/${codecType}_transcripts.json`;
+            
             try {
-                statusInfo.textContent = '正在載入 LibriSpeech 資料...';
-                
-                // 載入 LibriSpeech 逐字稿
-                try {
-                    const librispeechResponse = await fetch('transcripts/librispeech.json');
-                    if (librispeechResponse.ok) {
-                        const data = await librispeechResponse.json();
-                        datasets.librispeech.transcripts = data.transcripts || data;
-                        datasets.librispeech.utmos = data.utmos || {};
-                        datasets.librispeech.dwer = data.dwer || {};
-                        console.log('LibriSpeech 資料載入成功:', data);
-                    } else {
-                        console.warn('LibriSpeech 資料載入失敗:', librispeechResponse.status);
+                const response = await fetch(jsonPath);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // 儲存到 codecData 中
+                    if (!datasets[dataset].codecData[codecType]) {
+                        datasets[dataset].codecData[codecType] = {};
                     }
-                } catch (error) {
-                    console.error('LibriSpeech 資料載入錯誤:', error);
+                    datasets[dataset].codecData[codecType][frequency] = data;
+                    
+                    console.log(`${dataset} ${codecType} ${frequency} 資料載入成功:`, data);
+                    return data;
+                } else {
+                    console.warn(`${dataset} ${codecType} ${frequency} 資料載入失敗:`, response.status);
+                    return null;
                 }
-                
-                statusInfo.textContent = '正在載入 AISHELL 資料...';
-                
-                // 載入 AISHELL 逐字稿
-                try {
-                    const aishellResponse = await fetch('transcripts/aishell.json');
-                    if (aishellResponse.ok) {
-                        const data = await aishellResponse.json();
-                        datasets.aishell.transcripts = data.transcripts || data;
-                        datasets.aishell.utmos = data.utmos || {};
-                        datasets.aishell.dwer = data.dwer || {};
-                        console.log('AISHELL 資料載入成功:', data);
-                    } else {
-                        console.warn('AISHELL 資料載入失敗:', aishellResponse.status);
-                    }
-                } catch (error) {
-                    console.error('AISHELL 資料載入錯誤:', error);
-                }
-                
-                statusInfo.textContent = '資料載入完成！';
-                setTimeout(() => {
-                    statusInfo.style.display = 'none';
-                }, 2000);
-                
-                updateTables();
             } catch (error) {
-                console.error('載入資料時發生錯誤:', error);
-                statusInfo.textContent = '資料載入失敗，將使用預設值';
-                statusInfo.style.backgroundColor = '#f8d7da';
-                statusInfo.style.borderColor = '#f5c6cb';
-                statusInfo.style.color = '#721c24';
-                updateTables(); // 即使載入失敗也要更新表格
+                console.error(`${dataset} ${codecType} ${frequency} 資料載入錯誤:`, error);
+                return null;
             }
         }
-        
+
+        // 載入所有 Codec 資料
+        async function loadAllCodecData() {
+            const statusInfo = document.getElementById('status-info');
+            const loadPromises = [];
+            
+            // 為每個資料集和 codec 組合載入資料
+            for (const datasetName of Object.keys(datasets)) {
+                statusInfo.textContent = `正在載入 ${datasetName} LSCodec 資料...`;
+                
+                // LSCodec
+                loadPromises.push(loadCodecData(datasetName, 'lscodec', '25Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'lscodec', '50Hz'));
+                
+                statusInfo.textContent = `正在載入 ${datasetName} FocalCodec 資料...`;
+                
+                // FocalCodec
+                loadPromises.push(loadCodecData(datasetName, 'focalcodec', '12.5Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'focalcodec', '25Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'focalcodec', '50Hz'));
+            }
+            
+            // 等待所有載入完成
+            await Promise.all(loadPromises);
+            
+            statusInfo.textContent = '所有 Codec 資料載入完成！';
+            setTimeout(() => {
+                statusInfo.style.display = 'none';
+            }, 2000);
+            
+            updateTables();
+        }
+
+        // 獲取 Codec 資料
+        function getCodecData(dataset, codecType, frequency, fileId, dataType) {
+            try {
+                const codecData = datasets[dataset].codecData[codecType]?.[frequency];
+                if (!codecData) return null;
+                
+                switch (dataType) {
+                    case 'transcript':
+                        return codecData.transcripts?.[fileId] || codecData[fileId]?.transcript || null;
+                    case 'utmos':
+                        return codecData.utmos?.[fileId] || codecData[fileId]?.utmos || null;
+                    case 'dwer':
+                        return codecData.dwer?.[fileId] || codecData[fileId]?.dwer || null;
+                    default:
+                        return null;
+                }
+            } catch (error) {
+                console.error('獲取 Codec 資料時發生錯誤:', error);
+                return null;
+            }
+        }
+
         // 生成音檔路徑
         function getAudioPath(dataset, fileId, codecType, frequency = null) {
             const basePath = `audio/${dataset}`;
             
             switch(codecType) {
                 case 'original':
-                    // LibriSpeech 原始檔案是 FLAC，AISHELL 是 WAV
                     const ext = dataset === 'librispeech' ? 'flac' : 'wav';
                     return `${basePath}/original/${fileId}.${ext}`;
                 case 'lscodec':
@@ -396,9 +423,36 @@
             }
         }
         
+        // 創建評估分數顯示
+        function createMetricDisplay(dataset, fileId, codecType, frequency) {
+            const showMetrics = document.getElementById('show-metrics').checked;
+            if (!showMetrics || codecType === 'original') return '';
+            
+            const utmos = getCodecData(dataset, codecType, frequency, fileId, 'utmos');
+            const dwer = getCodecData(dataset, codecType, frequency, fileId, 'dwer');
+            
+            let metricsHtml = '<div class="metric-display">';
+            
+            if (utmos !== null) {
+                metricsHtml += `<div class="metric-item utmos-score">UTMOS: ${utmos}</div>`;
+            } else {
+                metricsHtml += '<div class="error-message">UTMOS: 無資料</div>';
+            }
+            
+            if (dwer !== null) {
+                metricsHtml += `<div class="metric-item dwer-score">dWER: ${dwer}</div>`;
+            } else {
+                metricsHtml += '<div class="error-message">dWER: 無資料</div>';
+            }
+            
+            metricsHtml += '</div>';
+            return metricsHtml;
+        }
+        
         // 創建播放控制項
         function createAudioControl(dataset, fileId, codecType, frequency = null) {
             const audioPath = getAudioPath(dataset, fileId, codecType, frequency);
+            const metricsDisplay = createMetricDisplay(dataset, fileId, codecType, frequency);
             
             return `
                 <div class="audio-controls">
@@ -409,6 +463,7 @@
                         您的瀏覽器不支援音訊播放。
                     </audio>
                     ${frequency ? `<div class="codec-info">${frequency}</div>` : ''}
+                    ${metricsDisplay}
                 </div>
             `;
         }
@@ -467,13 +522,23 @@
         
         // 生成表格行
         function createTableRow(dataset, fileId) {
-            const transcript = datasets[dataset].transcripts[fileId] || '逐字稿載入中...';
-            const utmos = datasets[dataset].utmos[fileId] || '0.00';
-            const dwer = datasets[dataset].dwer[fileId] || '0.00';
-            
-            // 動態取得當前選擇的頻率
             const lsFreq = document.getElementById('lscodec-freq').value;
             const focalFreq = document.getElementById('focalcodec-freq').value;
+            
+            // 獲取逐字稿（從 original 或第一個可用的 codec）
+            let transcript = '載入中...';
+            
+            // 嘗試從 LSCodec 取得逐字稿
+            const lsTranscript = getCodecData(dataset, 'lscodec', lsFreq, fileId, 'transcript');
+            if (lsTranscript) {
+                transcript = lsTranscript;
+            } else {
+                // 嘗試從 FocalCodec 取得逐字稿
+                const focalTranscript = getCodecData(dataset, 'focalcodec', focalFreq, fileId, 'transcript');
+                if (focalTranscript) {
+                    transcript = focalTranscript;
+                }
+            }
             
             return `
                 <tr>
@@ -482,44 +547,23 @@
                     <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', lsFreq)}</td>
                     <td class="focalcodec-cell">${createAudioControl(dataset, fileId, 'focalcodec', focalFreq)}</td>
                     <td class="transcript">${transcript}</td>
-                    <td class="utmos metric-value">${utmos}</td>
-                    <td class="dwer metric-value">${dwer}</td>
                 </tr>
             `;
         }
         
         // 更新表格
         function updateTables() {
-            const lsFreq = document.getElementById('lscodec-freq').value;
-            const focalFreq = document.getElementById('focalcodec-freq').value;
-            
-            // 更新 Librispeech
             const librispeechBody = document.getElementById('librispeech-body');
             librispeechBody.innerHTML = datasets.librispeech.files
                 .map(fileId => createTableRow('librispeech', fileId))
                 .join('');
             
-            // 更新 AISHELL
             const aishellBody = document.getElementById('aishell-body');
             aishellBody.innerHTML = datasets.aishell.files
                 .map(fileId => createTableRow('aishell', fileId))
                 .join('');
             
-            // 更新頻率顯示
-            updateFrequencyDisplay(lsFreq, focalFreq);
-            
-            // 更新所有欄位顯示狀態
             updateColumnVisibility();
-        }
-        
-        // 更新頻率顯示
-        function updateFrequencyDisplay(lsFreq, focalFreq) {
-            document.querySelectorAll('.lscodec-cell .codec-info').forEach(el => {
-                el.textContent = lsFreq;
-            });
-            document.querySelectorAll('.focalcodec-cell .codec-info').forEach(el => {
-                el.textContent = focalFreq;
-            });
         }
         
         // 更新欄位顯示狀態
@@ -528,67 +572,18 @@
             const showLSCodec = document.getElementById('show-lscodec').checked;
             const showFocalCodec = document.getElementById('show-focalcodec').checked;
             const showTranscript = document.getElementById('show-transcript').checked;
-            const showUTMOS = document.getElementById('show-utmos').checked;
-            const showDWER = document.getElementById('show-dwer').checked;
             
-            // 原始音檔欄位
-            const originalHeaders = document.querySelectorAll('.original-header');
-            const originalCells = document.querySelectorAll('.original-cell');
-            originalHeaders.forEach(header => {
-                header.style.display = showOriginal ? 'table-cell' : 'none';
-            });
-            originalCells.forEach(cell => {
-                cell.style.display = showOriginal ? 'table-cell' : 'none';
-            });
+            const columnConfig = [
+                { show: showOriginal, headers: '.original-header', cells: '.original-cell' },
+                { show: showLSCodec, headers: '.lscodec-header', cells: '.lscodec-cell' },
+                { show: showFocalCodec, headers: '.focalcodec-header', cells: '.focalcodec-cell' },
+                { show: showTranscript, headers: '.transcript-header', cells: '.transcript' }
+            ];
             
-            // LSCodec 欄位
-            const lscodecHeaders = document.querySelectorAll('.lscodec-header');
-            const lscodecCells = document.querySelectorAll('.lscodec-cell');
-            lscodecHeaders.forEach(header => {
-                header.style.display = showLSCodec ? 'table-cell' : 'none';
-            });
-            lscodecCells.forEach(cell => {
-                cell.style.display = showLSCodec ? 'table-cell' : 'none';
-            });
-            
-            // FocalCodec 欄位
-            const focalcodecHeaders = document.querySelectorAll('.focalcodec-header');
-            const focalcodecCells = document.querySelectorAll('.focalcodec-cell');
-            focalcodecHeaders.forEach(header => {
-                header.style.display = showFocalCodec ? 'table-cell' : 'none';
-            });
-            focalcodecCells.forEach(cell => {
-                cell.style.display = showFocalCodec ? 'table-cell' : 'none';
-            });
-            
-            // 逐字稿欄位
-            const transcriptHeaders = document.querySelectorAll('.transcript-header');
-            const transcriptCells = document.querySelectorAll('.transcript');
-            transcriptHeaders.forEach(header => {
-                header.style.display = showTranscript ? 'table-cell' : 'none';
-            });
-            transcriptCells.forEach(cell => {
-                cell.style.display = showTranscript ? 'table-cell' : 'none';
-            });
-            
-            // UTMOS 欄位
-            const utmosHeaders = document.querySelectorAll('.utmos-header');
-            const utmosCells = document.querySelectorAll('.utmos');
-            utmosHeaders.forEach(header => {
-                header.style.display = showUTMOS ? 'table-cell' : 'none';
-            });
-            utmosCells.forEach(cell => {
-                cell.style.display = showUTMOS ? 'table-cell' : 'none';
-            });
-            
-            // dWER 欄位
-            const dwerHeaders = document.querySelectorAll('.dwer-header');
-            const dwerCells = document.querySelectorAll('.dwer');
-            dwerHeaders.forEach(header => {
-                header.style.display = showDWER ? 'table-cell' : 'none';
-            });
-            dwerCells.forEach(cell => {
-                cell.style.display = showDWER ? 'table-cell' : 'none';
+            columnConfig.forEach(config => {
+                const display = config.show ? 'table-cell' : 'none';
+                document.querySelectorAll(config.headers).forEach(el => el.style.display = display);
+                document.querySelectorAll(config.cells).forEach(el => el.style.display = display);
             });
         }
         
@@ -596,41 +591,32 @@
         function toggleAll() {
             const toggleButton = document.querySelector('.toggle-all');
             const checkboxes = [
-                'show-original',
-                'show-lscodec', 
-                'show-focalcodec',
-                'show-transcript',
-                'show-utmos',
-                'show-dwer'
+                'show-original', 'show-lscodec', 'show-focalcodec',
+                'show-transcript', 'show-metrics'
             ];
             
-            // 檢查當前狀態（如果全部都開啟，則關閉全部；否則開啟全部）
             const allChecked = checkboxes.every(id => document.getElementById(id).checked);
             
             checkboxes.forEach(id => {
                 document.getElementById(id).checked = !allChecked;
             });
             
-            // 更新按鈕文字（修正邏輯）
             toggleButton.textContent = allChecked ? '☐ 開啟全部' : '☑ 開啟全部';
-            
             updateColumnVisibility();
+            updateTables(); // 重新更新表格以顯示/隱藏評估分數
         }
         
         // 事件監聽器
         document.getElementById('lscodec-freq').addEventListener('change', updateTables);
         document.getElementById('focalcodec-freq').addEventListener('change', updateTables);
-        document.getElementById('show-original').addEventListener('change', updateColumnVisibility);
-        document.getElementById('show-lscodec').addEventListener('change', updateColumnVisibility);
-        document.getElementById('show-focalcodec').addEventListener('change', updateColumnVisibility);
-        document.getElementById('show-transcript').addEventListener('change', updateColumnVisibility);
-        document.getElementById('show-utmos').addEventListener('change', updateColumnVisibility);
-        document.getElementById('show-dwer').addEventListener('change', updateColumnVisibility);
+        document.getElementById('show-metrics').addEventListener('change', updateTables);
+        ['show-original', 'show-lscodec', 'show-focalcodec', 'show-transcript']
+            .forEach(id => document.getElementById(id).addEventListener('change', updateColumnVisibility));
         
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('頁面載入完成，開始載入資料...');
-            loadTranscripts();
+            console.log('頁面載入完成，開始載入 Codec 資料...');
+            loadAllCodecData();
         });
     </script>
 </body>
