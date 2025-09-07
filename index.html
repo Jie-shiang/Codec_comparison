@@ -207,6 +207,15 @@
             background: #218838;
         }
 
+        .error-example {
+            background-color: rgba(255, 193, 193, 0.3) !important;
+        }
+        
+        .error-example .file-id {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
         .error-message {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
@@ -234,13 +243,9 @@
                 <label for="show-original">原始音檔</label>
             </div>
             
-            <div class="control-group">
+            <div class="checkbox-group">
                 <input type="checkbox" id="show-lscodec" checked>
-                <label for="show-lscodec">LSCodec Hz:</label>
-                <select id="lscodec-freq">
-                    <option value="25Hz">25Hz</option>
-                    <option value="50Hz">50Hz</option>
-                </select>
+                <label for="show-lscodec">LSCodec 50Hz</label>
             </div>
             
             <div class="control-group">
@@ -306,10 +311,13 @@
                 files: [
                     '61-70970-0000',
                     '121-127105-0000', 
+                    '121-127105-0007',
                     '237-134500-0000',
                     '260-123440-0000',
-                    '672-122797-0000'
+                    '672-122797-0000',
+                    '672-122797-0009'
                 ],
+                errorExamples: ['121-127105-0007', '672-122797-0009'], // 重建錯誤範例
                 codecData: {} // 儲存各個 codec 的資料
             },
             aishell: {
@@ -320,6 +328,7 @@
                     'BAC009S0767W0121',
                     'BAC009S0768W0121'
                 ],
+                errorExamples: [], // AISHELL 沒有錯誤範例
                 codecData: {} // 儲存各個 codec 的資料
             }
         };
@@ -361,8 +370,7 @@
             for (const datasetName of Object.keys(datasets)) {
                 statusInfo.textContent = `正在載入 ${datasetName} LSCodec 資料...`;
                 
-                // LSCodec
-                loadPromises.push(loadCodecData(datasetName, 'lscodec', '25Hz'));
+                // LSCodec 只載入 50Hz
                 loadPromises.push(loadCodecData(datasetName, 'lscodec', '50Hz'));
                 
                 statusInfo.textContent = `正在載入 ${datasetName} FocalCodec 資料...`;
@@ -522,8 +530,12 @@
         
         // 生成表格行
         function createTableRow(dataset, fileId) {
-            const lsFreq = document.getElementById('lscodec-freq').value;
+            const lsFreq = '50Hz'; // LSCodec 固定使用 50Hz
             const focalFreq = document.getElementById('focalcodec-freq').value;
+            
+            // 檢查是否為錯誤範例
+            const isErrorExample = datasets[dataset].errorExamples?.includes(fileId);
+            const rowClass = isErrorExample ? 'error-example' : '';
             
             // 獲取逐字稿（從 original 或第一個可用的 codec）
             let transcript = '載入中...';
@@ -541,7 +553,7 @@
             }
             
             return `
-                <tr>
+                <tr class="${rowClass}">
                     <td class="file-id">${fileId}</td>
                     <td class="original-cell">${createAudioControl(dataset, fileId, 'original')}</td>
                     <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', lsFreq)}</td>
@@ -607,7 +619,6 @@
         }
         
         // 事件監聽器
-        document.getElementById('lscodec-freq').addEventListener('change', updateTables);
         document.getElementById('focalcodec-freq').addEventListener('change', updateTables);
         document.getElementById('show-metrics').addEventListener('change', updateTables);
         ['show-original', 'show-lscodec', 'show-focalcodec', 'show-transcript']
