@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音訊 Codec 比較展示</title>
+    <title>Neural Audio Codec Inference Result Comparison</title>
     <style>
         * {
             box-sizing: border-box;
@@ -32,32 +32,53 @@
         }
         
         .controls {
-            margin-bottom: 20px;
-            padding: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
             background: #f8f9fa;
             border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .control-row {
             display: flex;
             align-items: center;
             gap: 20px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
+        }
+        
+        .control-row:last-child {
+            margin-bottom: 0;
         }
         
         .control-group {
             display: flex;
             align-items: center;
             gap: 10px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            flex: 1;
+            min-width: 0;
         }
         
         .control-group label {
             font-weight: bold;
             color: #555;
+            margin-right: 10px;
         }
         
-        select {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            min-width: 80px;
+        .control-group.first-aligned label {
+            min-width: 60px;
+            text-align: left;
+        }
+        
+        .control-subgroup {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
         }
         
         .checkbox-group {
@@ -66,16 +87,126 @@
             gap: 5px;
         }
         
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        
+        .checkbox-group label {
+            font-weight: normal;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .checkbox-group .compact {
+            margin-left: 2px;
+        }
+        
+        select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 70px;
+            font-size: 12px;
+        }
+        
+        select.compact {
+            padding: 2px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 40px;
+            font-size: 12px;
+            margin-left: 2px;
+        }
+        
+        .status-info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .model-section {
+            margin-bottom: 50px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .model-header {
+            background: #495057;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .model-info {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .params-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .training-testing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .training-testing-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+        
+        .training-testing-table .label-cell {
+            background: #e9ecef;
+            font-weight: bold;
+            width: 150px;
+            text-align: center;
+        }
+        
+        .training-testing-table .value-cell {
+            background: white;
+        }
+        
         .dataset-section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         
         .dataset-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #333;
-            margin-bottom: 15px;
-            padding: 10px;
+            margin-bottom: 10px;
+            padding: 8px 15px;
             background: #e9ecef;
             border-radius: 5px;
         }
@@ -118,11 +249,6 @@
             gap: 3px;
         }
         
-        audio {
-            width: 180px;
-            height: 28px;
-        }
-        
         .codec-info {
             font-size: 10px;
             color: #666;
@@ -135,31 +261,6 @@
             font-size: 11px;
             line-height: 1.3;
             color: #555;
-        }
-        
-        .metric-display {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            margin-top: 3px;
-            font-size: 10px;
-        }
-        
-        .metric-item {
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 3px;
-            border: 1px solid #dee2e6;
-        }
-        
-        .utmos-score {
-            background: #e3f2fd;
-            color: #1565c0;
-        }
-        
-        .dwer-score {
-            background: #fff3e0;
-            color: #ef6c00;
         }
         
         .play-button {
@@ -181,30 +282,10 @@
             background: #6c757d;
             cursor: not-allowed;
         }
-        
-        .status-info {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        
-        .toggle-all {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+
+        .total-row {
+            background-color: #e3f2fd !important;
             font-weight: bold;
-        }
-        
-        .toggle-all:hover {
-            background: #218838;
         }
 
         .error-example {
@@ -216,417 +297,641 @@
             font-weight: bold;
         }
 
-        .error-message {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 5px 8px;
-            border-radius: 3px;
-            font-size: 10px;
-            margin-top: 2px;
+        .no-audio {
+            color: #666;
+            font-style: italic;
+        }
+
+        .metric-cell {
+            font-size: 12px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>音訊 Codec 比較展示</h1>
+        <h1>Neural Audio Codec Inference Result Comparison</h1>
         
         <div class="status-info" id="status-info">
-            正在載入 Codec 資料...
+            Loading codec data...
         </div>
         
         <div class="controls">
-            <button class="toggle-all" onclick="toggleAll()">☑ 開啟全部</button>
-            
-            <div class="checkbox-group">
-                <input type="checkbox" id="show-original" checked>
-                <label for="show-original">原始音檔</label>
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>NACs</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-lscodec" checked>
+                            <label for="show-lscodec">LSCodec</label>
+                            <select id="lscodec-freq">
+                                <option value="50Hz">50Hz</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-focalcodec" checked>
+                            <label for="show-focalcodec">FocalCodec</label>
+                            <select id="focalcodec-freq">
+                                <option value="12.5Hz">12.5Hz</option>
+                                <option value="25Hz">25Hz</option>
+                                <option value="50Hz">50Hz</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="checkbox-group">
-                <input type="checkbox" id="show-lscodec" checked>
-                <label for="show-lscodec">LSCodec 50Hz</label>
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Result</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-original" checked>
+                            <label for="show-original">Original</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-total" checked>
+                            <label for="show-total">Total</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-sample" checked>
+                            <label for="show-sample">Sample</label>
+                            <select id="sample-count" class="compact">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-error" checked>
+                            <label for="show-error">Error Sample</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="control-group">
-                <input type="checkbox" id="show-focalcodec" checked>
-                <label for="show-focalcodec">FocalCodec Hz:</label>
-                <select id="focalcodec-freq">
-                    <option value="12.5Hz">12.5Hz</option>
-                    <option value="25Hz">25Hz</option>
-                    <option value="50Hz">50Hz</option>
-                </select>
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Dataset</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-dataset" checked>
+                            <label for="show-dataset">Dataset</label>
+                            <select id="dataset-type">
+                                <option value="librispeech">LibriSpeech</option>
+                                <option value="commonvoice">Common Voice</option>
+                            </select>
+                            <select id="dataset-variant">
+                                <option value="clean">Clean</option>
+                                <option value="clean-noise">Clean+Noise</option>
+                                <option value="clean-blank">Clean+Blank</option>
+                                <option value="all" selected>Clean+Noise+Blank</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="checkbox-group">
-                <input type="checkbox" id="show-transcript" checked>
-                <label for="show-transcript">Transcription</label>
-            </div>
-            
-            <div class="checkbox-group">
-                <input type="checkbox" id="show-metrics" checked>
-                <label for="show-metrics">顯示評估分數</label>
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Metrics</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-dwer" checked>
+                            <label for="show-dwer">dWER</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-utmos" checked>
+                            <label for="show-utmos">UTMOS</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-pesq" checked>
+                            <label for="show-pesq">PESQ</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-stoi" checked>
+                            <label for="show-stoi">STOI</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-transcript" checked>
+                            <label for="show-transcript">Transcription</label>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="dataset-section">
-            <div class="dataset-title">Librispeech test clean</div>
-            <table id="librispeech-table">
-                <thead>
-                    <tr>
-                        <th style="width: 120px;">檔案 ID</th>
-                        <th class="original-header" style="width: 190px;">原始音檔</th>
-                        <th class="lscodec-header" style="width: 190px;">LSCodec</th>
-                        <th class="focalcodec-header" style="width: 190px;">FocalCodec</th>
-                        <th class="transcript-header" style="width: 190px;">Transcription</th>
-                    </tr>
-                </thead>
-                <tbody id="librispeech-body">
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="dataset-section">
-            <div class="dataset-title">AISHELL</div>
-            <table id="aishell-table">
-                <thead>
-                    <tr>
-                        <th style="width: 120px;">檔案 ID</th>
-                        <th class="original-header" style="width: 190px;">原始音檔</th>
-                        <th class="lscodec-header" style="width: 190px;">LSCodec</th>
-                        <th class="focalcodec-header" style="width: 190px;">FocalCodec</th>
-                        <th class="transcript-header" style="width: 190px;">Transcription</th>
-                    </tr>
-                </thead>
-                <tbody id="aishell-body">
-                </tbody>
-            </table>
-        </div>
+        <div id="model-sections"></div>
     </div>
 
     <script>
-        // 資料定義
         const datasets = {
             librispeech: {
-                files: [
-                    '61-70970-0000',
-                    '121-127105-0000', 
-                    '121-127105-0007',
-                    '237-134500-0000',
-                    '260-123440-0000',
-                    '672-122797-0000',
-                    '672-122797-0009'
-                ],
-                errorExamples: ['121-127105-0007', '672-122797-0009'], // 重建錯誤範例
-                codecData: {} // 儲存各個 codec 的資料
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
             },
-            aishell: {
-                files: [
-                    'BAC009S0764W0121',
-                    'BAC009S0765W0121',
-                    'BAC009S0766W0121', 
-                    'BAC009S0767W0121',
-                    'BAC009S0768W0121'
-                ],
-                errorExamples: [], // AISHELL 沒有錯誤範例
-                codecData: {} // 儲存各個 codec 的資料
+            'librispeech-noise': {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
+            },
+            'librispeech-blank': {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
+            },
+            commonvoice: {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
+            },
+            'commonvoice-noise': {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
+            },
+            'commonvoice-blank': {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
             }
         };
 
-        // 載入特定 Codec 的資料
+        let currentModel = 'LSCodec';
+        let currentFrequency = '50Hz';
+
         async function loadCodecData(dataset, codecType, frequency) {
-            const basePath = `audio/${dataset}/${codecType}/${frequency}`;
-            const jsonPath = `${basePath}/${codecType}_transcripts.json`;
+            const basePath = `configs`;
+            const jsonPath = `${basePath}/${codecType}_${frequency}_config.json`;
             
             try {
                 const response = await fetch(jsonPath);
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // 儲存到 codecData 中
                     if (!datasets[dataset].codecData[codecType]) {
                         datasets[dataset].codecData[codecType] = {};
                     }
                     datasets[dataset].codecData[codecType][frequency] = data;
                     
-                    console.log(`${dataset} ${codecType} ${frequency} 資料載入成功:`, data);
                     return data;
                 } else {
-                    console.warn(`${dataset} ${codecType} ${frequency} 資料載入失敗:`, response.status);
+                    console.warn(`Failed to load ${jsonPath}: ${response.status}`);
                     return null;
                 }
             } catch (error) {
-                console.error(`${dataset} ${codecType} ${frequency} 資料載入錯誤:`, error);
+                console.error(`Error loading ${jsonPath}:`, error);
                 return null;
             }
         }
 
-        // 載入所有 Codec 資料
         async function loadAllCodecData() {
             const statusInfo = document.getElementById('status-info');
             const loadPromises = [];
             
-            // 為每個資料集和 codec 組合載入資料
-            for (const datasetName of Object.keys(datasets)) {
-                statusInfo.textContent = `正在載入 ${datasetName} LSCodec 資料...`;
-                
-                // LSCodec 只載入 50Hz
-                loadPromises.push(loadCodecData(datasetName, 'lscodec', '50Hz'));
-                
-                statusInfo.textContent = `正在載入 ${datasetName} FocalCodec 資料...`;
-                
-                // FocalCodec
-                loadPromises.push(loadCodecData(datasetName, 'focalcodec', '12.5Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'focalcodec', '25Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'focalcodec', '50Hz'));
+            const datasetNames = Object.keys(datasets);
+            
+            for (const datasetName of datasetNames) {
+                statusInfo.textContent = `Loading ${datasetName} data...`;
+                loadPromises.push(loadCodecData(datasetName, 'LSCodec', '50Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '12.5Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '25Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '50Hz'));
             }
             
-            // 等待所有載入完成
             await Promise.all(loadPromises);
             
-            statusInfo.textContent = '所有 Codec 資料載入完成！';
+            statusInfo.textContent = 'All codec data loaded successfully!';
             setTimeout(() => {
                 statusInfo.style.display = 'none';
             }, 2000);
             
-            updateTables();
+            renderModelSections();
         }
 
-        // 獲取 Codec 資料
         function getCodecData(dataset, codecType, frequency, fileId, dataType) {
             try {
                 const codecData = datasets[dataset].codecData[codecType]?.[frequency];
                 if (!codecData) return null;
                 
+                const datasetKey = getDatasetKey(dataset);
+                const fileData = codecData[datasetKey]?.[fileId];
+                
+                if (!fileData) return null;
+                
                 switch (dataType) {
                     case 'transcript':
-                        return codecData.transcripts?.[fileId] || codecData[fileId]?.transcript || null;
+                        return fileData.Transcription || null;
                     case 'utmos':
-                        return codecData.utmos?.[fileId] || codecData[fileId]?.utmos || null;
+                        return fileData.UTMOS || null;
                     case 'dwer':
-                        return codecData.dwer?.[fileId] || codecData[fileId]?.dwer || null;
+                        return fileData.dWER || null;
+                    case 'pesq':
+                        return fileData.PESQ || null;
+                    case 'stoi':
+                        return fileData.STOI || null;
                     default:
                         return null;
                 }
             } catch (error) {
-                console.error('獲取 Codec 資料時發生錯誤:', error);
+                console.error('Error getting codec data:', error);
                 return null;
             }
         }
 
-        // 生成音檔路徑
+        function getDatasetKey(dataset) {
+            switch(dataset) {
+                case 'librispeech':
+                    return 'LibriSpeech';
+                case 'librispeech-noise':
+                    return 'LibriSpeech_Noise';
+                case 'librispeech-blank':
+                    return 'LibriSpeech_Blank';
+                case 'commonvoice':
+                    return 'CommonVoice';
+                case 'commonvoice-noise':
+                    return 'CommonVoice_Noise';
+                case 'commonvoice-blank':
+                    return 'CommonVoice_Blank';
+                default:
+                    return 'LibriSpeech';
+            }
+        }
+
         function getAudioPath(dataset, fileId, codecType, frequency = null) {
-            const basePath = `audio/${dataset}`;
+            const basePath = `audio`;
+            const datasetPath = getDatasetKey(dataset).replace('_', '/');
             
             switch(codecType) {
                 case 'original':
-                    const ext = dataset === 'librispeech' ? 'flac' : 'wav';
-                    return `${basePath}/original/${fileId}.${ext}`;
+                    return `${basePath}/${datasetPath}/original/${fileId}.flac`;
                 case 'lscodec':
-                    return `${basePath}/lscodec/${frequency}/${fileId}.wav`;
+                    return `${basePath}/${datasetPath}/LSCodec/${frequency}/${fileId}.wav`;
                 case 'focalcodec':
-                    return `${basePath}/focalcodec/${frequency}/${fileId}.wav`;
+                    return `${basePath}/${datasetPath}/FocalCodec/${frequency}/${fileId}.wav`;
                 default:
                     return '';
             }
         }
-        
-        // 創建評估分數顯示
-        function createMetricDisplay(dataset, fileId, codecType, frequency) {
-            const showMetrics = document.getElementById('show-metrics').checked;
-            if (!showMetrics || codecType === 'original') return '';
-            
-            const utmos = getCodecData(dataset, codecType, frequency, fileId, 'utmos');
-            const dwer = getCodecData(dataset, codecType, frequency, fileId, 'dwer');
-            
-            let metricsHtml = '<div class="metric-display">';
-            
-            if (utmos !== null && utmos !== undefined) {
-                metricsHtml += `<div class="metric-item utmos-score">UTMOS: ${utmos}</div>`;
-            } else {
-                metricsHtml += '<div class="error-message">UTMOS: 載入中...</div>';
-            }
-            
-            if (dwer !== null && dwer !== undefined) {
-                metricsHtml += `<div class="metric-item dwer-score">dWER: ${dwer}</div>`;
-            } else {
-                metricsHtml += '<div class="error-message">dWER: 載入中...</div>';
-            }
-            
-            metricsHtml += '</div>';
-            return metricsHtml;
-        }
-        
-        // 創建播放控制項
+
         function createAudioControl(dataset, fileId, codecType, frequency = null) {
+            if (fileId === 'Total') {
+                return '<span class="no-audio">-</span>';
+            }
+            
             const audioPath = getAudioPath(dataset, fileId, codecType, frequency);
-            const metricsDisplay = createMetricDisplay(dataset, fileId, codecType, frequency);
             
             return `
                 <div class="audio-controls">
-                    <button class="play-button" onclick="toggleAudio('${audioPath}', this)">播放</button>
+                    <button class="play-button" onclick="toggleAudio('${audioPath}', this)">Play</button>
                     <audio preload="none">
                         <source src="${audioPath}" type="audio/wav">
                         <source src="${audioPath}" type="audio/flac">
-                        您的瀏覽器不支援音訊播放。
+                        Your browser does not support audio playback.
                     </audio>
                     ${frequency ? `<div class="codec-info">${frequency}</div>` : ''}
-                    ${metricsDisplay}
                 </div>
             `;
         }
         
-        // 播放/暫停音檔
         function toggleAudio(audioPath, button) {
-            // 先暫停所有其他音檔
             document.querySelectorAll('audio').forEach(audio => {
-                if (audio.src !== audioPath) {
+                if (audio.src !== location.origin + '/' + audioPath) {
                     audio.pause();
                     audio.currentTime = 0;
                 }
             });
-            
-            // 重置所有按鈕
+
             document.querySelectorAll('.play-button').forEach(btn => {
                 if (btn !== button) {
-                    btn.textContent = '播放';
+                    btn.textContent = 'Play';
                     btn.disabled = false;
                 }
             });
-            
+
             const audioControl = button.parentElement;
             const audio = audioControl.querySelector('audio');
-            
+
             if (!audio.src || audio.src !== location.origin + '/' + audioPath) {
                 audio.src = audioPath;
             }
-            
+
             if (audio.paused) {
-                button.textContent = '載入中...';
+                button.textContent = 'Loading...';
                 button.disabled = true;
-                
+
                 audio.addEventListener('canplay', function() {
-                    button.textContent = '暫停';
+                    button.textContent = 'Pause';
                     button.disabled = false;
                     audio.play();
                 }, { once: true });
-                
+
                 audio.addEventListener('error', function(e) {
-                    console.error('音檔載入失敗:', audioPath, e);
-                    button.textContent = '載入失敗';
+                    console.error('Audio load failed:', audioPath, e);
+                    button.textContent = 'Load Failed';
                     button.disabled = false;
                 }, { once: true });
-                
+
                 audio.addEventListener('ended', function() {
-                    button.textContent = '播放';
+                    button.textContent = 'Play';
                 });
-                
+
                 audio.load();
             } else {
                 audio.pause();
-                button.textContent = '播放';
+                button.textContent = 'Play';
             }
         }
-        
-        // 生成表格行
-        function createTableRow(dataset, fileId) {
-            const lsFreq = '50Hz'; // LSCodec 固定使用 50Hz
-            const focalFreq = document.getElementById('focalcodec-freq').value;
+
+        function getModelInfo(codecType, frequency) {
+            const datasetName = Object.keys(datasets)[0];
+            const data = datasets[datasetName].codecData[codecType]?.[frequency];
             
-            // 檢查是否為錯誤範例
-            const isErrorExample = datasets[dataset].errorExamples?.includes(fileId);
-            const rowClass = isErrorExample ? 'error-example' : '';
-            
-            // 獲取逐字稿（從 original 或第一個可用的 codec）
-            let transcript = '載入中...';
-            
-            // 嘗試從 LSCodec 取得逐字稿
-            const lsTranscript = getCodecData(dataset, 'lscodec', lsFreq, fileId, 'transcript');
-            if (lsTranscript) {
-                transcript = lsTranscript;
-            } else {
-                // 嘗試從 FocalCodec 取得逐字稿
-                const focalTranscript = getCodecData(dataset, 'focalcodec', focalFreq, fileId, 'transcript');
-                if (focalTranscript) {
-                    transcript = focalTranscript;
-                }
+            if (data && data.model_info) {
+                return data.model_info;
             }
+            
+            return {
+                modelName: codecType,
+                causality: 'N/A',
+                trainingSet: 'N/A',
+                testingSet: 'N/A',
+                bitRate: 'N/A',
+                parameters: {
+                    frameRate: 'N/A',
+                    quantizers: 'N/A',
+                    codebookSize: 'N/A',
+                    nParams: 'N/A'
+                }
+            };
+        }
+
+        function createTableRow(dataset, fileId) {
+            const codecType = currentModel;
+            const frequency = currentFrequency;
+            
+            const isErrorExample = datasets[dataset].errorExamples?.includes(fileId);
+            const isTotalRow = fileId === 'Total';
+            
+            const showTotal = document.getElementById('show-total').checked;
+            const showSample = document.getElementById('show-sample').checked;
+            const showError = document.getElementById('show-error').checked;
+            const sampleCount = parseInt(document.getElementById('sample-count').value);
+            
+            if (isTotalRow && !showTotal) return '';
+            if (isErrorExample && !showError) return '';
+            
+            const sampleMatch = fileId.match(/^Sample_(\d+)$/);
+            if (sampleMatch) {
+                const sampleNumber = parseInt(sampleMatch[1]);
+                if (!showSample || sampleNumber > sampleCount) return '';
+            } else if (!isTotalRow && !isErrorExample && !showSample) {
+                return '';
+            }
+            
+            let rowClass = '';
+            if (isTotalRow) {
+                rowClass = 'total-row';
+            } else if (isErrorExample) {
+                rowClass = 'error-example';
+            }
+            
+            const dwer = getCodecData(dataset, codecType, frequency, fileId, 'dwer') || 'X';
+            const utmos = getCodecData(dataset, codecType, frequency, fileId, 'utmos') || 'X';
+            const pesq = getCodecData(dataset, codecType, frequency, fileId, 'pesq') || 'X';
+            const stoi = getCodecData(dataset, codecType, frequency, fileId, 'stoi') || 'X';
+            
+            let transcript = 'X';
+            if (!isTotalRow) {
+                transcript = getCodecData(dataset, codecType, frequency, fileId, 'transcript') || 'X';
+            } else {
+                transcript = '-';
+            }
+            
+            let originalCell = '';
+            let inferenceCell = '';
+            
+            if (document.getElementById('show-original').checked) {
+                originalCell = `<td class="original-cell">${createAudioControl(dataset, fileId, 'original')}</td>`;
+            }
+            
+            if (codecType === 'LSCodec' && document.getElementById('show-lscodec').checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'lscodec', frequency)}</td>`;
+            } else if (codecType === 'FocalCodec' && document.getElementById('show-focalcodec').checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'focalcodec', frequency)}</td>`;
+            }
+            
+            const dwerCell = document.getElementById('show-dwer').checked ? `<td class="metric-cell">${dwer}</td>` : '';
+            const utmosCell = document.getElementById('show-utmos').checked ? `<td class="metric-cell">${utmos}</td>` : '';
+            const pesqCell = document.getElementById('show-pesq').checked ? `<td class="metric-cell">${pesq}</td>` : '';
+            const stoiCell = document.getElementById('show-stoi').checked ? `<td class="metric-cell">${stoi}</td>` : '';
+            const transcriptCell = document.getElementById('show-transcript').checked ? `<td class="transcript">${transcript}</td>` : '';
             
             return `
                 <tr class="${rowClass}">
                     <td class="file-id">${fileId}</td>
-                    <td class="original-cell">${createAudioControl(dataset, fileId, 'original')}</td>
-                    <td class="lscodec-cell">${createAudioControl(dataset, fileId, 'lscodec', lsFreq)}</td>
-                    <td class="focalcodec-cell">${createAudioControl(dataset, fileId, 'focalcodec', focalFreq)}</td>
-                    <td class="transcript">${transcript}</td>
+                    ${originalCell}
+                    ${inferenceCell}
+                    ${dwerCell}
+                    ${utmosCell}
+                    ${pesqCell}
+                    ${stoiCell}
+                    ${transcriptCell}
                 </tr>
             `;
         }
-        
-        // 更新表格
-        function updateTables() {
-            const librispeechBody = document.getElementById('librispeech-body');
-            librispeechBody.innerHTML = datasets.librispeech.files
-                .map(fileId => createTableRow('librispeech', fileId))
-                .join('');
+
+        function createTableHeaders() {
+            let headers = '<th style="width: 120px;">File ID</th>';
             
-            const aishellBody = document.getElementById('aishell-body');
-            aishellBody.innerHTML = datasets.aishell.files
-                .map(fileId => createTableRow('aishell', fileId))
-                .join('');
+            if (document.getElementById('show-original').checked) {
+                headers += '<th class="original-header" style="width: 190px;">Original</th>';
+            }
             
-            updateColumnVisibility();
+            if ((currentModel === 'LSCodec' && document.getElementById('show-lscodec').checked) ||
+                (currentModel === 'FocalCodec' && document.getElementById('show-focalcodec').checked)) {
+                headers += '<th class="inference-header" style="width: 190px;">Inference</th>';
+            }
+            
+            if (document.getElementById('show-dwer').checked) {
+                headers += '<th style="width: 90px;">dWER</th>';
+            }
+            if (document.getElementById('show-utmos').checked) {
+                headers += '<th style="width: 90px;">UTMOS</th>';
+            }
+            if (document.getElementById('show-pesq').checked) {
+                headers += '<th style="width: 90px;">PESQ</th>';
+            }
+            if (document.getElementById('show-stoi').checked) {
+                headers += '<th style="width: 90px;">STOI</th>';
+            }
+            if (document.getElementById('show-transcript').checked) {
+                headers += '<th style="width: 190px;">Transcription</th>';
+            }
+            
+            return headers;
         }
-        
-        // 更新欄位顯示狀態
-        function updateColumnVisibility() {
-            const showOriginal = document.getElementById('show-original').checked;
+
+        function renderModelSections() {
+            const container = document.getElementById('model-sections');
+            container.innerHTML = '';
+            
             const showLSCodec = document.getElementById('show-lscodec').checked;
             const showFocalCodec = document.getElementById('show-focalcodec').checked;
-            const showTranscript = document.getElementById('show-transcript').checked;
             
-            const columnConfig = [
-                { show: showOriginal, headers: '.original-header', cells: '.original-cell' },
-                { show: showLSCodec, headers: '.lscodec-header', cells: '.lscodec-cell' },
-                { show: showFocalCodec, headers: '.focalcodec-header', cells: '.focalcodec-cell' },
-                { show: showTranscript, headers: '.transcript-header', cells: '.transcript' }
-            ];
+            if (showLSCodec) {
+                currentModel = 'LSCodec';
+                currentFrequency = document.getElementById('lscodec-freq').value;
+                container.appendChild(createModelSection('LSCodec', currentFrequency));
+            }
             
-            columnConfig.forEach(config => {
-                const display = config.show ? 'table-cell' : 'none';
-                document.querySelectorAll(config.headers).forEach(el => el.style.display = display);
-                document.querySelectorAll(config.cells).forEach(el => el.style.display = display);
-            });
+            if (showFocalCodec) {
+                currentModel = 'FocalCodec';
+                currentFrequency = document.getElementById('focalcodec-freq').value;
+                container.appendChild(createModelSection('FocalCodec', currentFrequency));
+            }
+        }
+
+        function createModelSection(codecType, frequency) {
+            const section = document.createElement('div');
+            section.className = 'model-section';
+
+            const modelInfo = getModelInfo(codecType, frequency);
+
+            section.innerHTML = `
+                <div class="model-header">${codecType}</div>
+                <div class="model-info">
+                    <div class="params-row">
+                        <div class="info-item">
+                            <div class="info-label">Causality</div>
+                            <div class="info-value">${modelInfo.causality}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Bit-rate (kbps)</div>
+                            <div class="info-value">${modelInfo.bitRate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Frame Rate (Hz)</div>
+                            <div class="info-value">${modelInfo.parameters.frameRate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label"># of Quantizer</div>
+                            <div class="info-value">${modelInfo.parameters.quantizers}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Codebook Size</div>
+                            <div class="info-value">${modelInfo.parameters.codebookSize}</div>
+                        </div>
+                    </div>
+                    
+                    <table class="training-testing-table">
+                        <tr>
+                            <td class="label-cell">Training Set</td>
+                            <td class="value-cell">${modelInfo.trainingSet}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-cell">Testing Set</td>
+                            <td class="value-cell">${modelInfo.testingSet}</td>
+                        </tr>
+                    </table>
+                </div>
+                ${createDatasetTables(codecType, frequency)}
+            `;
+
+            return section;
+        }
+
+        function createDatasetTables(codecType, frequency) {
+            currentModel = codecType;
+            currentFrequency = frequency;
+            
+            let tablesHtml = '';
+            const showDataset = document.getElementById('show-dataset').checked;
+            const datasetType = document.getElementById('dataset-type').value;
+            const datasetVariant = document.getElementById('dataset-variant').value;
+            
+            if (!showDataset) {
+                return '';
+            }
+            
+            const datasetTitles = {
+                'librispeech': 'LibriSpeech',
+                'librispeech-noise': 'LibriSpeech (Noise)', 
+                'librispeech-blank': 'LibriSpeech (Blank)',
+                'commonvoice': 'Common Voice',
+                'commonvoice-noise': 'Common Voice (Noise)', 
+                'commonvoice-blank': 'Common Voice (Blank)'
+            };
+            
+            let datasetsToShow = [];
+            
+            if (datasetVariant === 'clean') {
+                datasetsToShow = [[datasetType, datasetTitles[datasetType]]];
+            } else if (datasetVariant === 'clean-noise') {
+                datasetsToShow = [
+                    [datasetType, datasetTitles[datasetType]],
+                    [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]]
+                ];
+            } else if (datasetVariant === 'clean-blank') {
+                datasetsToShow = [
+                    [datasetType, datasetTitles[datasetType]],
+                    [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
+                ];
+            } else if (datasetVariant === 'all') {
+                datasetsToShow = [
+                    [datasetType, datasetTitles[datasetType]],
+                    [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]],
+                    [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
+                ];
+            }
+            
+            for (const [dataset, title] of datasetsToShow) {
+                if (datasets[dataset]) {
+                    const rows = datasets[dataset].files
+                        .map(fileId => createTableRow(dataset, fileId))
+                        .filter(row => row !== '')
+                        .join('');
+                    
+                    if (rows) {
+                        tablesHtml += `
+                            <div class="dataset-section">
+                                <div class="dataset-title">${title}</div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            ${createTableHeaders()}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${rows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            return tablesHtml;
         }
         
-        // 開啟/關閉全部功能
-        function toggleAll() {
-            const toggleButton = document.querySelector('.toggle-all');
-            const checkboxes = [
-                'show-original', 'show-lscodec', 'show-focalcodec',
-                'show-transcript', 'show-metrics'
-            ];
-            
-            const allChecked = checkboxes.every(id => document.getElementById(id).checked);
-            
-            checkboxes.forEach(id => {
-                document.getElementById(id).checked = !allChecked;
-            });
-            
-            toggleButton.textContent = allChecked ? '☐ 開啟全部' : '☑ 開啟全部';
-            updateColumnVisibility();
-            updateTables(); // 重新更新表格以顯示/隱藏評估分數
-        }
+        document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('dataset-type').addEventListener('change', renderModelSections);
+        document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
+        document.getElementById('sample-count').addEventListener('change', renderModelSections);
         
-        // 事件監聽器
-        document.getElementById('focalcodec-freq').addEventListener('change', updateTables);
-        document.getElementById('show-metrics').addEventListener('change', updateTables);
-        ['show-original', 'show-lscodec', 'show-focalcodec', 'show-transcript']
-            .forEach(id => document.getElementById(id).addEventListener('change', updateColumnVisibility));
+        [
+            'show-lscodec', 'show-focalcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-dataset',
+            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-transcript'
+        ].forEach(id => {
+            document.getElementById(id).addEventListener('change', renderModelSections);
+        });
         
-        // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('頁面載入完成，開始載入 Codec 資料...');
             loadAllCodecData();
         });
     </script>

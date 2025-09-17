@@ -1,0 +1,321 @@
+{
+  "model_info": {
+    "modelName": "LSCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "LibriTTS All train splits",
+    "testingSet": "LibriTTS test-clean split testset-B", 
+    "bitRate": "0.45",
+    "parameters": {
+      "frameRate": "50",
+      "quantizers": "1",
+      "codebookSize": "300",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "LibriSpeech_Blank": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice_Blank": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  }
+}
