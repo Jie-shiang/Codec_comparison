@@ -1,43 +1,21 @@
 # Neural Audio Codec Comparison - Project Structure
 
-## Recommended Directory Structure
+## Overview
+
+This project provides a web-based comparison tool for Neural Audio Codecs (NACs), specifically LSCodec and FocalCodec, across different datasets and configurations.
+
+## Project Directory Structure
 
 ```
 neural-codec-comparison/
-├── index.html                          # Main HTML file
+├── index.html                          # Main HTML interface
 ├── configs/                           # JSON configuration files
-│   ├── LSCodec_50Hz_config.json      # LSCodec 50Hz configuration
-│   ├── FocalCodec_12.5Hz_config.json # FocalCodec 12.5Hz configuration
-│   ├── FocalCodec_25Hz_config.json   # FocalCodec 25Hz configuration
-│   └── FocalCodec_50Hz_config.json   # FocalCodec 50Hz configuration
-├── audio/                            # Audio files directory
-│   ├── LibriSpeech/                  # LibriSpeech dataset
-│   │   ├── original/                 # Original audio files
-│   │   │   ├── Sample_1.flac
-│   │   │   ├── Sample_2.flac
-│   │   │   ├── Sample_3.flac
-│   │   │   ├── Sample_4.flac
-│   │   │   ├── Sample_5.flac
-│   │   │   └── Error_Sample_1.flac
-│   │   ├── LSCodec/                  # LSCodec processed files
-│   │   │   └── 50Hz/
-│   │   │       ├── Sample_1.wav
-│   │   │       ├── Sample_2.wav
-│   │   │       ├── Sample_3.wav
-│   │   │       ├── Sample_4.wav
-│   │   │       ├── Sample_5.wav
-│   │   │       └── Error_Sample_1.wav
-│   │   └── FocalCodec/              # FocalCodec processed files
-│   │       ├── 12.5Hz/
-│   │       │   ├── Sample_1.wav
-│   │       │   └── ... (all 6 files)
-│   │       ├── 25Hz/
-│   │       │   ├── Sample_1.wav
-│   │       │   └── ... (all 6 files)
-│   │       └── 50Hz/
-│   │           ├── Sample_1.wav
-│   │           └── ... (all 6 files)
-│   ├── LibriSpeech/Noise/           # Noisy LibriSpeech dataset
+│   ├── LSCodec_50Hz_config.json       # LSCodec 50Hz configuration
+│   ├── FocalCodec_12.5Hz_config.json  # FocalCodec 12.5Hz configuration
+│   ├── FocalCodec_25Hz_config.json    # FocalCodec 25Hz configuration
+│   └── FocalCodec_50Hz_config.json    # FocalCodec 50Hz configuration
+├── audio/                             # Audio files organized by dataset
+│   ├── LibriSpeech/                   # Clean LibriSpeech dataset
 │   │   ├── original/
 │   │   │   ├── Sample_1.flac
 │   │   │   ├── Sample_2.flac
@@ -46,51 +24,168 @@ neural-codec-comparison/
 │   │   │   ├── Sample_5.flac
 │   │   │   └── Error_Sample_1.flac
 │   │   ├── LSCodec/
-│   │   │   └── 50Hz/ (6 files)
+│   │   │   └── 50Hz/
+│   │   │       ├── Sample_1.wav
+│   │   │       ├── Sample_2.wav
+│   │   │       ├── Sample_3.wav
+│   │   │       ├── Sample_4.wav
+│   │   │       ├── Sample_5.wav
+│   │   │       └── Error_Sample_1.wav
 │   │   └── FocalCodec/
-│   │       ├── 12.5Hz/ (6 files)
-│   │       ├── 25Hz/ (6 files)
-│   │       └── 50Hz/ (6 files)
-│   └── LibriSpeech/Blank/           # Blank/silence samples
-│       ├── original/ (6 files)
+│   │       ├── 12.5Hz/
+│   │       │   ├── Sample_1.wav
+│   │       │   └── ... (all 6 samples)
+│   │       ├── 25Hz/
+│   │       │   ├── Sample_1.wav
+│   │       │   └── ... (all 6 samples)
+│   │       └── 50Hz/
+│   │           ├── Sample_1.wav
+│   │           └── ... (all 6 samples)
+│   ├── LibriSpeech/Noise/             # Noisy LibriSpeech dataset
+│   │   ├── original/                  # Original noisy samples (.flac)
+│   │   ├── LSCodec/
+│   │   │   └── 50Hz/                  # Processed samples (.wav)
+│   │   └── FocalCodec/
+│   │       ├── 12.5Hz/
+│   │       ├── 25Hz/
+│   │       └── 50Hz/
+│   ├── LibriSpeech/Blank/             # Blank/silence LibriSpeech samples
+│   │   ├── original/                  # Original blank samples (.flac)
+│   │   ├── LSCodec/
+│   │   │   └── 50Hz/                  # Processed samples (.wav)
+│   │   └── FocalCodec/
+│   │       ├── 12.5Hz/
+│   │       ├── 25Hz/
+│   │       └── 50Hz/
+│   ├── CommonVoice/                   # Clean Common Voice dataset
+│   │   ├── original/                  # Original samples (.flac)
+│   │   ├── LSCodec/
+│   │   │   └── 50Hz/                  # Processed samples (.wav)
+│   │   └── FocalCodec/
+│   │       ├── 12.5Hz/
+│   │       ├── 25Hz/
+│   │       └── 50Hz/
+│   ├── CommonVoice/Noise/             # Noisy Common Voice dataset
+│   │   ├── original/
+│   │   ├── LSCodec/
+│   │   │   └── 50Hz/
+│   │   └── FocalCodec/
+│   │       ├── 12.5Hz/
+│   │       ├── 25Hz/
+│   │       └── 50Hz/
+│   └── CommonVoice/Blank/             # Blank/silence Common Voice samples
+│       ├── original/
 │       ├── LSCodec/
-│       │   └── 50Hz/ (6 files)
+│       │   └── 50Hz/
 │       └── FocalCodec/
-│           ├── 12.5Hz/ (6 files)
-│           ├── 25Hz/ (6 files)
-│           └── 50Hz/ (6 files)
-└── README.md                        # Project documentation
+│           ├── 12.5Hz/
+│           ├── 25Hz/
+│           └── 50Hz/
+└── README.md                          # This documentation file
 ```
 
-## Sample Files Per Dataset
+## Audio File Organization
 
-Each dataset contains exactly 6 audio samples:
+### File Naming Convention
+Each dataset contains exactly 6 audio files:
 - **Sample_1** to **Sample_5**: Normal reconstruction examples
-- **Error_Sample_1**: Example with reconstruction errors (highlighted in red)
+- **Error_Sample_1**: Example with reconstruction artifacts (highlighted in red in UI)
+
+
+### Dataset Path Mapping
+The web interface maps dataset selections to file paths as follows:
+- `librispeech` → `LibriSpeech/`
+- `librispeech-noise` → `LibriSpeech/Noise/`
+- `librispeech-blank` → `LibriSpeech/Blank/`
+- `commonvoice` → `CommonVoice/`
+- `commonvoice-noise` → `CommonVoice/Noise/`
+- `commonvoice-blank` → `CommonVoice/Blank/`
 
 ## JSON Configuration File Format
 
-Each model configuration file should follow this structure:
+Configuration files must follow the naming pattern: `{CodecName}_{Frequency}_config.json`
 
-### Key Components:
+### Required Structure
 
-1. **model_info**: Basic model metadata
-   - `modelName`: Display name (LSCodec/FocalCodec)
-   - `causality`: Causal or Non-Causal
-   - `trainingSet`: Training dataset description
-   - `testingSet`: Testing dataset description  
-   - `bitRate`: Compression rate in kbps
-   - `parameters`: Technical parameters object
+```json
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "LibriTTS + LibriTTS train-clean-100",
+    "testingSet": "LibriSpeech + test-clean + Multilingual Lspeech + VoiceBank + LibrilMix + VCTK",
+    "bitRate": "0.33",
+    "parameters": {
+      "frameRate": "25",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "Transcription": "-",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "HE HOPED THERE WOULD BE STEW FOR DINNER",
+      "dWER": "0.0",
+      "UTMOS": "4.4",
+      "PESQ": "3.2",
+      "STOI": "0.97"
+    }
+    // ... Additional samples (Sample_2 through Sample_5, Error_Sample_1)
+  },
+  "LibriSpeech_Noise": {
+    // Same structure as LibriSpeech
+  },
+  "LibriSpeech_Blank": {
+    // Same structure as LibriSpeech
+  },
+  "CommonVoice": {
+    // Same structure as LibriSpeech
+  },
+  "CommonVoice_Noise": {
+    // Same structure as LibriSpeech
+  },
+  "CommonVoice_Blank": {
+    // Same structure as LibriSpeech
+  }
+}
+```
 
-2. **Dataset Sections**: One section per dataset
-   - `LibriSpeech`: Clean speech samples
-   - `LibriSpeech_Noise`: Noisy conditions
-   - `LibriSpeech_Blank`: Silent/blank samples
+### Configuration Details
 
-3. **Sample Data**: For each audio file ID
-   - `Transcription`: Text transcription ("X" for placeholder)
-   - `dWER`: Word Error Rate ("N/A" for placeholder)
-   - `UTMOS`: Speech quality score ("X" for placeholder)
-   - `PESQ`: Perceptual quality metric ("X" for placeholder)
-   - `STOI`: Speech intelligibility metric ("X" for placeholder)
+#### Model Info Section
+- **modelName**: Display name for the codec (e.g., "LSCodec", "FocalCodec")
+- **causality**: "Causal" or "Non-Causal"
+- **trainingSet**: Description of training data
+- **testingSet**: Description of test data
+- **bitRate**: Compression rate in kbps as string
+- **parameters**: Object containing:
+  - **frameRate**: Frame rate in Hz as string
+  - **quantizers**: Number of quantizers as string
+  - **codebookSize**: Size of codebook as string
+  - **nParams**: Number of parameters (or "N/A")
 
+#### Dataset Sections
+Each dataset section (LibriSpeech, LibriSpeech_Noise, etc.) contains:
+
+- **Total**: Aggregate statistics row with Transcription set to "-"
+- **Sample_1** through **Sample_5**: Individual sample data
+- **Error_Sample_1**: Error case example
+
+#### Sample Data Fields
+- **Transcription**: Text transcription of the audio
+- **dWER**: Word Error Rate (string format)
+- **UTMOS**: Speech quality score (string format)  
+- **PESQ**: Perceptual Evaluation of Speech Quality (string format)
+- **STOI**: Short-Time Objective Intelligibility (string format)
+
+### Placeholder Values
+Use these values when actual data is not available:
+- **Transcription**: "N/A" (or "-" for Total rows)
+- **Metrics**: "N/A"
