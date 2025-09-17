@@ -1,191 +1,195 @@
-# Neural Audio Codec Comparison - Project Structure
+# Neural Audio Codec Evaluation Pipeline
 
-## Overview
+A comprehensive evaluation pipeline for neural audio codecs with automated metrics assessment, web interface generation, and multi-language support.
 
-This project provides a web-based comparison tool for Neural Audio Codecs (NACs), specifically LSCodec and FocalCodec, across different datasets and configurations.
+## Features
 
-## Project Directory Structure
+- **Multi-language ASR Evaluation**: Automatic dWER (English) and dCER (Chinese) calculation using Whisper-large-v3
+- **Comprehensive Quality Metrics**: UTMOS, PESQ, and STOI assessment
+- **Dataset Type Support**: Clean, noise, and blank conditions for thorough evaluation
+- **Modular Architecture**: Separate metrics evaluator and pipeline modules
+- **Automated Web Interface**: Generates complete files for interactive comparison
+- **Performance Monitoring**: Detailed timing and success rate tracking
+- **Real Filename Usage**: Uses actual audio filenames instead of generic placeholders
 
-```
-neural-codec-comparison/
-├── index.html                          # Main HTML interface
-├── configs/                           # JSON configuration files
-│   ├── LSCodec_50Hz_config.json       # LSCodec 50Hz configuration
-│   ├── FocalCodec_12.5Hz_config.json  # FocalCodec 12.5Hz configuration
-│   ├── FocalCodec_25Hz_config.json    # FocalCodec 25Hz configuration
-│   └── FocalCodec_50Hz_config.json    # FocalCodec 50Hz configuration
-├── audio/                             # Audio files organized by dataset
-│   ├── LibriSpeech/                   # Clean LibriSpeech dataset
-│   │   ├── original/
-│   │   │   ├── Sample_1.flac
-│   │   │   ├── Sample_2.flac
-│   │   │   ├── Sample_3.flac
-│   │   │   ├── Sample_4.flac
-│   │   │   ├── Sample_5.flac
-│   │   │   └── Error_Sample_1.flac
-│   │   ├── LSCodec/
-│   │   │   └── 50Hz/
-│   │   │       ├── Sample_1.wav
-│   │   │       ├── Sample_2.wav
-│   │   │       ├── Sample_3.wav
-│   │   │       ├── Sample_4.wav
-│   │   │       ├── Sample_5.wav
-│   │   │       └── Error_Sample_1.wav
-│   │   └── FocalCodec/
-│   │       ├── 12.5Hz/
-│   │       │   ├── Sample_1.wav
-│   │       │   └── ... (all 6 samples)
-│   │       ├── 25Hz/
-│   │       │   ├── Sample_1.wav
-│   │       │   └── ... (all 6 samples)
-│   │       └── 50Hz/
-│   │           ├── Sample_1.wav
-│   │           └── ... (all 6 samples)
-│   ├── LibriSpeech/Noise/             # Noisy LibriSpeech dataset
-│   │   ├── original/                  # Original noisy samples (.flac)
-│   │   ├── LSCodec/
-│   │   │   └── 50Hz/                  # Processed samples (.wav)
-│   │   └── FocalCodec/
-│   │       ├── 12.5Hz/
-│   │       ├── 25Hz/
-│   │       └── 50Hz/
-│   ├── LibriSpeech/Blank/             # Blank/silence LibriSpeech samples
-│   │   ├── original/                  # Original blank samples (.flac)
-│   │   ├── LSCodec/
-│   │   │   └── 50Hz/                  # Processed samples (.wav)
-│   │   └── FocalCodec/
-│   │       ├── 12.5Hz/
-│   │       ├── 25Hz/
-│   │       └── 50Hz/
-│   ├── CommonVoice/                   # Clean Common Voice dataset
-│   │   ├── original/                  # Original samples (.flac)
-│   │   ├── LSCodec/
-│   │   │   └── 50Hz/                  # Processed samples (.wav)
-│   │   └── FocalCodec/
-│   │       ├── 12.5Hz/
-│   │       ├── 25Hz/
-│   │       └── 50Hz/
-│   ├── CommonVoice/Noise/             # Noisy Common Voice dataset
-│   │   ├── original/
-│   │   ├── LSCodec/
-│   │   │   └── 50Hz/
-│   │   └── FocalCodec/
-│   │       ├── 12.5Hz/
-│   │       ├── 25Hz/
-│   │       └── 50Hz/
-│   └── CommonVoice/Blank/             # Blank/silence Common Voice samples
-│       ├── original/
-│       ├── LSCodec/
-│       │   └── 50Hz/
-│       └── FocalCodec/
-│           ├── 12.5Hz/
-│           ├── 25Hz/
-│           └── 50Hz/
-└── README.md                          # This documentation file
+## Quick Start
+
+### Installation
+
+1. Navigate to project directory:
+```bash
+cd ./Codec_comparison
 ```
 
-## Audio File Organization
-
-### File Naming Convention
-Each dataset contains exactly 6 audio files:
-- **Sample_1** to **Sample_5**: Normal reconstruction examples
-- **Error_Sample_1**: Example with reconstruction artifacts (highlighted in red in UI)
-
-
-### Dataset Path Mapping
-The web interface maps dataset selections to file paths as follows:
-- `librispeech` → `LibriSpeech/`
-- `librispeech-noise` → `LibriSpeech/Noise/`
-- `librispeech-blank` → `LibriSpeech/Blank/`
-- `commonvoice` → `CommonVoice/`
-- `commonvoice-noise` → `CommonVoice/Noise/`
-- `commonvoice-blank` → `CommonVoice/Blank/`
-
-## JSON Configuration File Format
-
-Configuration files must follow the naming pattern: `{CodecName}_{Frequency}_config.json`
-
-### Required Structure
-
-```json
-{
-  "model_info": {
-    "modelName": "FocalCodec",
-    "causality": "Non-Causal",
-    "trainingSet": "LibriTTS + LibriTTS train-clean-100",
-    "testingSet": "LibriSpeech + test-clean + Multilingual Lspeech + VoiceBank + LibrilMix + VCTK",
-    "bitRate": "0.33",
-    "parameters": {
-      "frameRate": "25",
-      "quantizers": "1",
-      "codebookSize": "8192",
-      "nParams": "N/A"
-    }
-  },
-  "LibriSpeech": {
-    "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "Transcription": "HE HOPED THERE WOULD BE STEW FOR DINNER",
-      "dWER": "0.0",
-      "UTMOS": "4.4",
-      "PESQ": "3.2",
-      "STOI": "0.97"
-    }
-    // ... Additional samples (Sample_2 through Sample_5, Error_Sample_1)
-  },
-  "LibriSpeech_Noise": {
-    // Same structure as LibriSpeech
-  },
-  "LibriSpeech_Blank": {
-    // Same structure as LibriSpeech
-  },
-  "CommonVoice": {
-    // Same structure as LibriSpeech
-  },
-  "CommonVoice_Noise": {
-    // Same structure as LibriSpeech
-  },
-  "CommonVoice_Blank": {
-    // Same structure as LibriSpeech
-  }
-}
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
 ```
 
-### Configuration Details
+## Project Structure
 
-#### Model Info Section
-- **modelName**: Display name for the codec (e.g., "LSCodec", "FocalCodec")
-- **causality**: "Causal" or "Non-Causal"
-- **trainingSet**: Description of training data
-- **testingSet**: Description of test data
-- **bitRate**: Compression rate in kbps as string
-- **parameters**: Object containing:
-  - **frameRate**: Frame rate in Hz as string
-  - **quantizers**: Number of quantizers as string
-  - **codebookSize**: Size of codebook as string
-  - **nParams**: Number of parameters (or "N/A")
+```
+/home/jieshiang/Desktop/GitHub/Codec_comparison/
+├── evaluation_pipeline.py           # Main evaluation pipeline
+├── metrics_evaluator.py            # Audio metrics evaluation module
+├── requirements.txt                 # Python dependencies
+├── index.html                      # Web interface
+├── csv/                           # Dataset files
+│   ├── librispeech_test_clean_filtered.csv
+│   └── common_voice_zh_TW_train_filtered.csv
+├── result/                        # Evaluation reports (auto-generated)
+├── audio/                         # Audio files (auto-generated)
+├── configs/                       # JSON configurations (auto-generated)
+└── README.md                      # This documentation
+```
 
-#### Dataset Sections
-Each dataset section (LibriSpeech, LibriSpeech_Noise, etc.) contains:
+## Usage
 
-- **Total**: Aggregate statistics row with Transcription set to "-"
-- **Sample_1** through **Sample_5**: Individual sample data
-- **Error_Sample_1**: Error case example
+### Basic Command Structure
 
-#### Sample Data Fields
-- **Transcription**: Text transcription of the audio
-- **dWER**: Word Error Rate (string format)
-- **UTMOS**: Speech quality score (string format)  
-- **PESQ**: Perceptual Evaluation of Speech Quality (string format)
-- **STOI**: Short-Time Objective Intelligibility (string format)
+```bash
+python evaluation_pipeline.py \
+    --inference_dir /path/to/inference/results \
+    --csv_file DATASET_FILE \
+    --model_name "ModelName" \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.5" \
+    --dataset_type "clean"
+```
 
-### Placeholder Values
-Use these values when actual data is not available:
-- **Transcription**: "N/A" (or "-" for Total rows)
-- **Metrics**: "N/A"
+### English Dataset (LibriSpeech) Examples
+
+```bash
+# Clean samples
+python evaluation_pipeline.py \
+    --inference_dir /path/to/inference/results \
+    --csv_file librispeech_test_clean_filtered.csv \
+    --model_name "MyCodec" \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.5" \
+    --dataset_type "clean"
+
+# Noisy samples
+python evaluation_pipeline.py \
+    --inference_dir /path/to/inference/results \
+    --csv_file librispeech_test_clean_filtered.csv \
+    --model_name "MyCodec" \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.5" \
+    --dataset_type "noise"
+
+# Blank/silence samples
+python evaluation_pipeline.py \
+    --inference_dir /path/to/inference/results \
+    --csv_file librispeech_test_clean_filtered.csv \
+    --model_name "MyCodec" \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.5" \
+    --dataset_type "blank"
+```
+
+### Chinese Dataset (Common Voice) Example
+
+```bash
+python evaluation_pipeline.py \
+    --inference_dir /path/to/inference/results \
+    --csv_file common_voice_zh_TW_train_filtered.csv \
+    --model_name "MyCodec" \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.5" \
+    --dataset_type "clean"
+```
+
+## Inference Audio Requirements
+
+### Supported File Naming Conventions
+
+The pipeline automatically detects inference files using these patterns:
+- `{original_filename}_inference.wav`
+- `{original_filename}_inference.flac`
+- `{original_filename}.wav`
+- `{original_filename}.flac`
+
+## Pipeline Output
+
+### Generated Directory Structure
+
+```
+result/
+├── detailed_results_MyCodec_20241217_143022.csv    # Complete per-file results
+└── summary_results_MyCodec_20241217_143022.csv     # Statistical summary
+
+configs/
+└── MyCodec_50Hz_clean_config.json                  # Web interface config
+
+audio/
+├── LibriSpeech/                                     # Clean samples
+│   ├── original/
+│   │   ├── 61-70968-0013.flac                      # Actual filenames
+│   │   ├── 121-127105-0001.flac
+│   │   └── 237-134493-0000.flac
+│   └── MyCodec/
+│       └── 50Hz/
+│           ├── 61-70968-0013.wav
+│           ├── 121-127105-0001.wav
+│           └── 237-134493-0000.wav
+├── LibriSpeech/Noise/                              # Noisy samples
+└── LibriSpeech/Blank/                              # Blank samples
+```
+
+### Output Files Description
+
+1. **Detailed Results CSV**: Complete evaluation data for all processed files
+2. **Summary Results CSV**: Statistical overview and model performance metrics  
+3. **JSON Configuration**: Web interface configuration with actual sample data
+4. **Audio Files**: Selected representative samples organized for web interface
+5. **Performance Log**: Execution timing and success rate information
+
+## Evaluation Metrics
+
+### ASR Accuracy Metrics
+- **dWER (English)**: Word Error Rate difference between reconstruction and original
+- **dCER (Chinese)**: Character Error Rate difference between reconstruction and original
+- **ASR Model**: OpenAI Whisper-large-v3 for both languages
+
+### Audio Quality Metrics
+- **UTMOS**: Predicted Mean Opinion Score for overall speech quality (1-5 scale)
+- **PESQ**: Perceptual Evaluation of Speech Quality (0.5-4.5 scale)
+- **STOI**: Short-Time Objective Intelligibility (0-1 scale)
+
+## Supported Datasets
+
+### LibriSpeech (English)
+- **File**: `csv/librispeech_test_clean_filtered.csv`
+- **Language**: English
+- **Primary Metric**: dWER
+- **Sample Count**: ~2200 files
+- **Duration**: 3.0+ seconds per file
+- **Format**: speaker-chapter-utterance ID structure
+
+### Common Voice zh-TW (Chinese Traditional)
+- **File**: `csv/common_voice_zh_TW_train_filtered.csv`
+- **Language**: Chinese (Traditional)
+- **Primary Metric**: dCER  
+- **Sample Count**: ~4100 files
+- **Duration**: 3.0+ seconds per file
+- **Format**: Mozilla Common Voice structure
+
+## Sample Selection Logic
+
+The pipeline intelligently selects representative samples for web interface:
+
+### For Total Statistics
+- Overall mean scores across all evaluated files
+
+### For Sample_1 to Sample_5
+- **LibriSpeech**: First utterance from top 5 different speakers (sorted by speaker ID)
+- **Common Voice**: First 5 samples from the dataset
+
+### For Error_Sample_1
+- Sample with highest dWER/dCER score (automatically highlighted in red)
