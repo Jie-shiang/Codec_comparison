@@ -130,12 +130,16 @@ class AudioMetricsEvaluator:
             return ""
             
         if self.language == 'zh':
+            # Remove all non-Chinese characters and punctuation
             text = re.sub(r'[^\u4e00-\u9fff\s]', '', text)
             text = re.sub(r'\s+', '', text)
             return text.strip()
         else:
+            # Convert to uppercase first
             text = text.upper()
+            # Remove all punctuation including commas, periods, etc.
             text = re.sub(r'[^\w\s]', '', text)
+            # Normalize whitespace
             text = re.sub(r'\s+', ' ', text)
             return text.strip()
     

@@ -662,61 +662,6 @@ class CodecTestValidator:
                 return (0, 0, utt_id)
         except:
             return (0, 0, utt_id)
-    
-    def generate_test_config(self, results_df: pd.DataFrame) -> dict:
-        """Generate test configuration JSON"""
-        metric_name = 'dCER' if self.language == 'zh' else 'dWER'
-        metric_col = 'dcer' if self.language == 'zh' else 'dwer'
-        
-        total_stats = {
-            metric_name: f"{results_df[metric_col].mean():.2f}",
-            'UTMOS': f"{results_df['utmos'].mean():.1f}",
-            'PESQ': f"{results_df['pesq'].mean():.1f}",
-            'STOI': f"{results_df['stoi'].mean():.2f}"
-        }
-        
-        samples = {}
-        for i in range(min(5, len(results_df))):
-            row = results_df.iloc[i]
-            samples[f'Sample_{i+1}'] = {
-                'Transcription': row['ground_truth'][:50] + '...' if len(row['ground_truth']) > 50 else row['ground_truth'],
-                metric_name: f"{row[metric_col]:.2f}",
-                'UTMOS': f"{row['utmos']:.1f}",
-                'PESQ': f"{row['pesq']:.1f}",
-                'STOI': f"{row['stoi']:.2f}"
-            }
-        
-        max_error_idx = results_df[metric_col].idxmax()
-        error_sample = results_df.loc[max_error_idx]
-        
-        config = {
-            "model_info": {
-                "modelName": self.model_name,
-                "causality": "Non-Causal",
-                "trainingSet": "Test Dataset",
-                "testingSet": "Test Samples",
-                "bitRate": "1.5",
-                "parameters": {
-                    "frameRate": self.frequency.replace('Hz', ''),
-                    "quantizers": "4",
-                    "codebookSize": "1024",
-                    "nParams": "Test"
-                }
-            },
-            f"{self.base_dataset_name}": {
-                "Total": total_stats,
-                **samples,
-                "Error_Sample_1": {
-                    'Transcription': error_sample['ground_truth'][:50] + '...' if len(error_sample['ground_truth']) > 50 else error_sample['ground_truth'],
-                    metric_name: f"{error_sample[metric_col]:.2f}",
-                    'UTMOS': f"{error_sample['utmos']:.1f}",
-                    'PESQ': f"{error_sample['pesq']:.1f}",
-                    'STOI': f"{error_sample['stoi']:.2f}"
-                }
-            }
-        }
-        
-        return config
 
     def copy_test_audio_files(self, results_df: pd.DataFrame) -> None:
         """Copy test audio files for web interface"""

@@ -491,6 +491,12 @@ class EnhancedCodecEvaluationPipeline:
         self.save_results(results_df)
         print(f"Result saving completed in: {time.time() - step_start:.2f} seconds")
         
+        # Generate config file and copy sample audio files
+        if processed_count > 0:
+            step_start = time.time()
+            self.generate_config_and_copy_files(results_df)
+            print(f"Config generation and file copying completed in: {time.time() - step_start:.2f} seconds")
+        
         self.end_time = time.time()
         total_time = self.end_time - self.start_time
         
@@ -504,6 +510,172 @@ class EnhancedCodecEvaluationPipeline:
         print(f"Result file: {self.result_csv_path}")
         
         return results_df
+    
+    def generate_config_and_copy_files(self, results_df: pd.DataFrame) -> None:
+        """Generate JSON config and copy sample audio files"""
+        if len(results_df) == 0:
+            print("No results to generate config from")
+            return
+            
+        # Generate JSON config file
+        config = self.generate_json_config(results_df)
+        config_path = self.config_dir / f"{self.model_name}_{self.frequency}_config.json"
+        
+        with open(config_path, 'w', encoding='utf-8') as f:
+            json.dump(config, f, ensure_ascii=False, indent=2)
+        print(f"JSON config saved: {config_path}")
+        
+        # Copy sample audio files for web interface
+        self.copy_sample_audio_files(results_df)
+    
+    def generate_json_config(self, results_df: pd.DataFrame) -> dict:
+        """Generate JSON configuration file for web interface"""
+        # Calculate overall statistics
+        metric_col = 'dcer' if self.language == 'zh' else 'dwer'
+        metric_name = 'dCER' if self.language == 'zh' else 'dWER'
+        
+        valid_results = results_df.dropna(subset=[metric_col, 'utmos', 'pesq', 'stoi'])
+        
+        if len(valid_results) == 0:
+            print("Warning: No valid results found for config generation")
+            return {}
+        
+        total_stats = {
+            metric_name: f"{valid_results[metric_col].mean():.2f}",
+            'UTMOS': f"{valid_results['utmos'].mean():.1f}",
+            'PESQ': f"{valid_results['pesq'].mean():.1f}",
+            'STOI': f"{valid_results['stoi'].mean():.2f}"
+        }
+        
+        # Select samples for JSON (first 5 valid results + 1 error sample)
+        samples = {}
+        sample_files = {}
+        
+        for i in range(min(5, len(valid_results))):
+            row = valid_results.iloc[i]
+            sample_key = f'Sample_{i+1}'
+            samples[sample_key] = {
+                'Transcription': self.truncate_text(row['ground_truth'], 100),
+                metric_name: f"{row[metric_col]:.2f}",
+                'UTMOS': f"{row['utmos']:.1f}",
+                'PESQ': f"{row['pesq']:.1f}",
+                'STOI': f"{row['stoi']:.2f}"
+            }
+            sample_files[sample_key] = row['file_name']
+        
+        # Find error sample (highest error rate)
+        error_idx = valid_results[metric_col].idxmax()
+        error_sample = valid_results.loc[error_idx]
+        
+        error_sample_data = {
+            'Transcription': self.truncate_text(error_sample['ground_truth'], 100),
+            metric_name: f"{error_sample[metric_col]:.2f}",
+            'UTMOS': f"{error_sample['utmos']:.1f}",
+            'PESQ': f"{error_sample['pesq']:.1f}",
+            'STOI': f"{error_sample['stoi']:.2f}"
+        }
+        sample_files['Error_Sample_1'] = error_sample['file_name']
+        
+        config = {
+            "model_info": {
+                "modelName": self.model_name,
+                "causality": self.causality,
+                "trainingSet": self.training_set,
+                "testingSet": self.testing_set,
+                "bitRate": self.bit_rate,
+                "parameters": {
+                    "frameRate": self.frequency.replace('Hz', ''),
+                    "quantizers": self.quantizers,
+                    "codebookSize": self.codebook_size,
+                    "nParams": self.n_params
+                }
+            },
+            self.dataset_name: {
+                "Total": total_stats,
+                **samples,
+                "Error_Sample_1": error_sample_data
+            },
+            "_selected_files": sample_files  # Internal use for file copying
+        }
+        
+        return config
+    
+    def truncate_text(self, text: str, max_length: int) -> str:
+        """Truncate text to specified length"""
+        if not text:
+            return ""
+        if len(text) <= max_length:
+            return text
+        return text[:max_length-3] + "..."
+    
+    def copy_sample_audio_files(self, results_df: pd.DataFrame) -> None:
+        """Copy sample audio files for web interface"""
+        # Create directory structure
+        dataset_path_parts = self.dataset_name.split('_')
+        if len(dataset_path_parts) > 1:
+            dataset_dir = self.audio_dir / dataset_path_parts[0] / dataset_path_parts[1]
+        else:
+            dataset_dir = self.audio_dir / dataset_path_parts[0]
+            
+        original_dir = dataset_dir / "original"
+        inference_dir = dataset_dir / self.model_name / self.frequency
+        
+        original_dir.mkdir(parents=True, exist_ok=True)
+        inference_dir.mkdir(parents=True, exist_ok=True)
+        
+        print(f"Copying sample audio files to {dataset_dir}...")
+        
+        # Get valid results for file selection
+        metric_col = 'dcer' if self.language == 'zh' else 'dwer'
+        valid_results = results_df.dropna(subset=[metric_col, 'utmos', 'pesq', 'stoi'])
+        
+        if len(valid_results) == 0:
+            print("Warning: No valid results found for file copying")
+            return
+        
+        # Select files to copy (first 5 + 1 error sample)
+        files_to_copy = []
+        
+        # Add first 5 valid samples
+        for i in range(min(5, len(valid_results))):
+            row = valid_results.iloc[i]
+            files_to_copy.append((f'Sample_{i+1}', row))
+        
+        # Add error sample (highest error rate)
+        error_idx = valid_results[metric_col].idxmax()
+        error_sample = valid_results.loc[error_idx]
+        files_to_copy.append(('Error_Sample_1', error_sample))
+        
+        # Copy files
+        copied_count = 0
+        for sample_name, row in files_to_copy:
+            file_name = row['file_name']
+            base_name = Path(file_name).stem
+            
+            original_path = Path(row['original_path'])
+            inference_path = Path(row['inference_path'])
+            
+            if original_path.exists() and inference_path.exists():
+                try:
+                    # Copy original file
+                    original_dest = original_dir / f"{base_name}.flac"
+                    shutil.copy2(original_path, original_dest)
+                    
+                    # Copy inference file
+                    inference_dest = inference_dir / f"{base_name}.wav"
+                    shutil.copy2(inference_path, inference_dest)
+                    
+                    print(f"  Copied {sample_name}: {base_name}")
+                    copied_count += 1
+                    
+                except Exception as e:
+                    print(f"  Warning: Failed to copy {base_name}: {e}")
+            else:
+                print(f"  Warning: Could not find files for {base_name}")
+                print(f"    Original: {original_path} (exists: {original_path.exists()})")
+                print(f"    Inference: {inference_path} (exists: {inference_path.exists() if inference_path else False})")
+        
+        print(f"Successfully copied {copied_count} sample pairs to audio directory")
 
 
 def main():
