@@ -52,6 +52,11 @@ pip install -r requirements.txt
 ### Step 2: File Preparation and Validation
 
 Before running evaluation, validate your inference files:
+Notice: The CSV files provide relative paths instead of absolute paths.
+For Example:
+csv path: /librispeech/LibriSpeech/test-clean
+original file at /mnt/Internal/ASR/librispeech/LibriSpeech/test-clean
+--original_dir should be /mnt/Internal/ASR
 
 ```bash
 # Validate file naming and check for issues
