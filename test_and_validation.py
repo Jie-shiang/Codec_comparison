@@ -597,7 +597,96 @@ class CodecTestValidator:
             'issues': issues
         }
     
-    def generate_test_config(self, results_df: pd.DataFrame) -> dict:
+    def select_samples_for_json(self, results_df: pd.DataFrame) -> dict:
+        """Select representative samples for JSON configuration - first utterance from top 5 speakers"""
+        if self.language == 'zh':
+            metric_col = 'dcer'
+            metric_name = 'dWER'
+        else:
+            metric_col = 'dwer'
+            metric_name = 'dWER'
+        
+        total_stats = {
+            metric_name: f"{results_df[metric_col].mean():.2f}",
+            'UTMOS': f"{results_df['utmos'].mean():.1f}",
+            'PESQ': f"{results_df['pesq'].mean():.1f}",
+            'STOI': f"{results_df['stoi'].mean():.2f}"
+        }
+        
+        samples = {}
+        selected_files = {}
+        
+        if self.base_dataset_name == 'LibriSpeech':
+            # Sort by speaker-chapter-utterance for LibriSpeech
+            sorted_df = results_df.copy()
+            sorted_df['sort_key'] = sorted_df['file_name'].apply(self.sort_by_speaker_chapter)
+            sorted_df = sorted_df.sort_values('sort_key')
+            
+            speakers_seen = set()
+            sample_count = 0
+            
+            for idx, row in sorted_df.iterrows():
+                speaker_id = row['file_name'].split('-')[0]
+                if speaker_id not in speakers_seen and sample_count < 5:
+                    speakers_seen.add(speaker_id)
+                    sample_count += 1
+                    
+                    sample_key = f'Sample_{sample_count}'
+                    samples[sample_key] = {
+                        'Transcription': row['ground_truth'],
+                        metric_name: f"{row[metric_col]:.2f}",
+                        'UTMOS': f"{row['utmos']:.1f}",
+                        'PESQ': f"{row['pesq']:.1f}",
+                        'STOI': f"{row['stoi']:.2f}"
+                    }
+                    selected_files[sample_key] = row['file_name']
+                    print(f"Selected Sample_{sample_count}: {row['file_name']} (Speaker {speaker_id})")
+        else:
+            # For non-LibriSpeech datasets, take first 5
+            for i in range(min(5, len(results_df))):
+                row = results_df.iloc[i]
+                sample_key = f'Sample_{i+1}'
+                samples[sample_key] = {
+                    'Transcription': row['ground_truth'],
+                    metric_name: f"{row[metric_col]:.2f}",
+                    'UTMOS': f"{row['utmos']:.1f}",
+                    'PESQ': f"{row['pesq']:.1f}",
+                    'STOI': f"{row['stoi']:.2f}"
+                }
+                selected_files[sample_key] = row['file_name']
+        
+        # Select error sample (highest error rate)
+        max_error_idx = results_df[metric_col].idxmax()
+        error_sample = results_df.loc[max_error_idx]
+        
+        error_sample_data = {
+            'Transcription': error_sample['ground_truth'],
+            metric_name: f"{error_sample[metric_col]:.2f}",
+            'UTMOS': f"{error_sample['utmos']:.1f}",
+            'PESQ': f"{error_sample['pesq']:.1f}",
+            'STOI': f"{error_sample['stoi']:.2f}"
+        }
+        selected_files['Error_Sample_1'] = error_sample['file_name']
+        
+        return {
+            'total_stats': total_stats,
+            'samples': samples,
+            'error_sample': error_sample_data,
+            'selected_files': selected_files
+        }
+    
+    def sort_by_speaker_chapter(self, utt_id: str) -> tuple:
+        """Sort audio files by speaker and chapter (LibriSpeech format)"""
+        try:
+            parts = utt_id.split('-')
+            if len(parts) >= 2:
+                speaker = int(parts[0])
+                chapter = int(parts[1])
+                return (speaker, chapter, utt_id)
+            else:
+                return (0, 0, utt_id)
+        except:
+            return (0, 0, utt_id)
         """Generate test configuration JSON"""
         metric_name = 'dCER' if self.language == 'zh' else 'dWER'
         metric_col = 'dcer' if self.language == 'zh' else 'dwer'
@@ -652,8 +741,21 @@ class CodecTestValidator:
         
         return config
     
-    def copy_test_audio_files(self, sample_df: pd.DataFrame) -> None:
-        """Copy test audio files for web interface"""
+    def sort_by_speaker_chapter(self, utt_id: str) -> tuple:
+        """Sort audio files by speaker and chapter (LibriSpeech format)"""
+        try:
+            parts = utt_id.split('-')
+            if len(parts) >= 2:
+                speaker = int(parts[0])
+                chapter = int(parts[1])
+                return (speaker, chapter, utt_id)
+            else:
+                return (0, 0, utt_id)
+        except:
+            return (0, 0, utt_id)
+    
+    def copy_test_audio_files(self, results_df: pd.DataFrame) -> None:
+        """Copy test audio files for web interface - select first utterance from top 5 different speakers"""
         dataset_dir = self.audio_dir / self.base_dataset_name
         original_dir = dataset_dir / "original"
         inference_dir = dataset_dir / self.model_name / self.frequency
@@ -663,7 +765,29 @@ class CodecTestValidator:
         
         print(f"\nCopying test audio files...")
         
-        for idx, row in sample_df.iterrows():
+        # Select samples based on dataset type
+        selected_samples = []
+        
+        if self.base_dataset_name == 'LibriSpeech':
+            # Sort by speaker-chapter-utterance for LibriSpeech
+            sorted_df = results_df.copy()
+            sorted_df['sort_key'] = sorted_df['file_name'].apply(self.sort_by_speaker_chapter)
+            sorted_df = sorted_df.sort_values('sort_key')
+            
+            speakers_seen = set()
+            
+            for idx, row in sorted_df.iterrows():
+                speaker_id = row['file_name'].split('-')[0]
+                if speaker_id not in speakers_seen and len(selected_samples) < 5:
+                    speakers_seen.add(speaker_id)
+                    selected_samples.append(row)
+                    print(f"Selected: {row['file_name']} (Speaker {speaker_id})")
+        else:
+            # For non-LibriSpeech datasets, take first 5
+            selected_samples = results_df.head(5).to_dict('records')
+        
+        # Copy selected samples
+        for row in selected_samples:
             file_name = row['file_name']
             base_name = Path(file_name).stem
             
@@ -678,6 +802,8 @@ class CodecTestValidator:
                 shutil.copy2(inference_path, inference_dest)
                 
                 print(f"  Copied: {base_name}")
+            else:
+                print(f"  Warning: Could not copy {base_name} - files not found")
 
 
 def main():
