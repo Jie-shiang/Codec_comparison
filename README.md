@@ -101,7 +101,9 @@ python enhanced_evaluation_pipeline.py \
     --training_set "Custom Training Set" \
     --testing_set "Custom Test Set" \
     --metrics dwer utmos pesq stoi \
-    --dataset_type "clean"
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 0
 
 
 # Option B: Compute metrics incrementally (recommended for large datasets)
@@ -114,6 +116,8 @@ python enhanced_evaluation_pipeline.py \
     --causality "Non-Causal" \
     --bit_rate "1.5" \
     --metrics dwer
+    --use_gpu \
+    --gpu_id 0
 
 # Step 2: Add UTMOS
 python enhanced_evaluation_pipeline.py \
@@ -124,6 +128,8 @@ python enhanced_evaluation_pipeline.py \
     --causality "Non-Causal" \
     --bit_rate "1.5" \
     --metrics utmos
+    --use_gpu \
+    --gpu_id 0
 
 # Step 3: Add PESQ and STOI
 python enhanced_evaluation_pipeline.py \
@@ -133,7 +139,8 @@ python enhanced_evaluation_pipeline.py \
     --frequency "50Hz" \
     --causality "Non-Causal" \
     --bit_rate "1.5" \
-    --metrics pesq stoi
+    --metrics pesq stoi \
+    --cpu_only
 ```
 
 ## File Naming Requirements
@@ -207,5 +214,7 @@ python enhanced_evaluation_pipeline.py \
     --training_set "Custom Training Set" \
     --testing_set "Custom Test Set" \
     --metrics dwer utmos pesq stoi \
-    --dataset_type "clean"
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 0
 ```

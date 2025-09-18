@@ -30,13 +30,17 @@ class CodecTestValidator:
                  csv_file: str,
                  model_name: str = "TestCodec",
                  frequency: str = "50Hz",
-                 project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison"):
+                 project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison",
+                 use_gpu: bool = True,
+                 gpu_id: int = 0): project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison"):
         
         self.inference_dir = Path(inference_dir)
         self.csv_file = Path(project_dir) / "csv" / csv_file
         self.model_name = model_name
         self.frequency = frequency
         self.project_dir = Path(project_dir)
+        self.use_gpu = use_gpu
+        self.gpu_id = gpu_id
         
         self.result_dir = self.project_dir / "result" / "test_results"
         self.audio_dir = self.project_dir / "audio" / "test_audio"
@@ -51,6 +55,9 @@ class CodecTestValidator:
         print(f"Initializing test validator:")
         print(f"  Model: {self.model_name}")
         print(f"  Frequency: {self.frequency}")
+        print(f"  GPU acceleration: {'Enabled' if self.use_gpu else 'Disabled'}")
+        if self.use_gpu:
+            print(f"  GPU ID: {self.gpu_id}")
         print(f"  Inference directory: {self.inference_dir}")
         print(f"  Test results directory: {self.result_dir}")
     
@@ -337,7 +344,11 @@ class CodecTestValidator:
         
         print("\nLoading evaluation models...")
         model_start = time.time()
-        evaluator = AudioMetricsEvaluator(language=self.language)
+        evaluator = AudioMetricsEvaluator(
+            language=self.language,
+            use_gpu=self.use_gpu,
+            gpu_id=self.gpu_id
+        )
         evaluator.load_models()
         model_time = time.time() - model_start
         print(f"Models loaded in: {model_time:.2f} seconds")
@@ -672,14 +683,27 @@ def main():
     parser.add_argument("--fix_naming", action="store_true",
                        help="Actually fix file naming issues (default: dry run)")
     
+    # GPU acceleration options
+    parser.add_argument("--use_gpu", action="store_true", default=True,
+                       help="Enable GPU acceleration (default: True)")
+    parser.add_argument("--gpu_id", type=int, default=0,
+                       help="GPU device ID to use (default: 0)")
+    parser.add_argument("--cpu_only", action="store_true",
+                       help="Force CPU-only computation (overrides --use_gpu)")
+    
     args = parser.parse_args()
+    
+    # Handle GPU settings
+    use_gpu = args.use_gpu and not args.cpu_only
     
     validator = CodecTestValidator(
         inference_dir=args.inference_dir,
         csv_file=args.csv_file,
         model_name=args.model_name,
         frequency=args.frequency,
-        project_dir=args.project_dir
+        project_dir=args.project_dir,
+        use_gpu=use_gpu,
+        gpu_id=args.gpu_id
     )
     
     try:
