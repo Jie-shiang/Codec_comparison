@@ -121,6 +121,7 @@ python enhanced_evaluation_pipeline.py \
     --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/librispeech_recon \
     --csv_file librispeech_test_clean_filtered.csv \
     --original_dir /mnt/Internal/ASR \
+    --model_name "LSCodec" \
     --frequency "50Hz" \
     --causality "Non-Causal" \
     --bit_rate "0.45" \
