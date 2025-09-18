@@ -517,9 +517,9 @@ class EnhancedCodecEvaluationPipeline:
             print("No results to generate config from")
             return
             
-        # Generate JSON config file
-        config = self.generate_json_config(results_df)
+        # Generate JSON config file (update existing or create new)
         config_path = self.config_dir / f"{self.model_name}_{self.frequency}_config.json"
+        config = self.generate_or_update_json_config(results_df, config_path)
         
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config, f, ensure_ascii=False, indent=2)
@@ -528,9 +528,19 @@ class EnhancedCodecEvaluationPipeline:
         # Copy sample audio files for web interface
         self.copy_sample_audio_files(results_df)
     
-    def generate_json_config(self, results_df: pd.DataFrame) -> dict:
-        """Generate JSON configuration file for web interface"""
-        # Calculate overall statistics
+    def generate_or_update_json_config(self, results_df: pd.DataFrame, config_path: Path) -> dict:
+        """Generate or update JSON configuration file"""
+        # Load existing config if it exists
+        existing_config = {}
+        if config_path.exists():
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    existing_config = json.load(f)
+                print(f"Loading existing config from: {config_path}")
+            except Exception as e:
+                print(f"Warning: Could not load existing config: {e}")
+        
+        # Calculate statistics for current dataset
         metric_col = 'dcer' if self.language == 'zh' else 'dwer'
         metric_name = 'dCER' if self.language == 'zh' else 'dWER'
         
@@ -538,51 +548,12 @@ class EnhancedCodecEvaluationPipeline:
         
         if len(valid_results) == 0:
             print("Warning: No valid results found for config generation")
-            return {}
+            return existing_config
         
-        total_stats = {
-            metric_name: f"{valid_results[metric_col].mean():.2f}",
-            'UTMOS': f"{valid_results['utmos'].mean():.1f}",
-            'PESQ': f"{valid_results['pesq'].mean():.1f}",
-            'STOI': f"{valid_results['stoi'].mean():.2f}"
-        }
+        # Generate current dataset section
+        current_dataset_data = self.generate_dataset_section(valid_results, metric_name, metric_col)
         
-        # Use the same sample selection logic as file copying
-        selected_samples = self.select_diverse_samples(valid_results)
-        
-        # Generate samples for JSON (exclude error sample for now)
-        samples = {}
-        sample_files = {}
-        
-        for sample_name, row in selected_samples:
-            if sample_name.startswith('Sample_'):
-                samples[sample_name] = {
-                    'Transcription': self.truncate_text(row['ground_truth'], 100),
-                    metric_name: f"{row[metric_col]:.2f}",
-                    'UTMOS': f"{row['utmos']:.1f}",
-                    'PESQ': f"{row['pesq']:.1f}",
-                    'STOI': f"{row['stoi']:.2f}"
-                }
-                sample_files[sample_name] = row['file_name']
-        
-        # Add error sample
-        error_sample = None
-        for sample_name, row in selected_samples:
-            if sample_name == 'Error_Sample_1':
-                error_sample = row
-                sample_files['Error_Sample_1'] = row['file_name']
-                break
-        
-        error_sample_data = {}
-        if error_sample is not None:
-            error_sample_data = {
-                'Transcription': self.truncate_text(error_sample['ground_truth'], 100),
-                metric_name: f"{error_sample[metric_col]:.2f}",
-                'UTMOS': f"{error_sample['utmos']:.1f}",
-                'PESQ': f"{error_sample['pesq']:.1f}",
-                'STOI': f"{error_sample['stoi']:.2f}"
-            }
-        
+        # Create complete config structure
         config = {
             "model_info": {
                 "modelName": self.model_name,
@@ -596,34 +567,192 @@ class EnhancedCodecEvaluationPipeline:
                     "codebookSize": self.codebook_size,
                     "nParams": self.n_params
                 }
-            },
-            self.dataset_name: {
-                "Total": total_stats,
-                **samples,
-                "Error_Sample_1": error_sample_data
-            },
-            "_selected_files": sample_files  # Internal use for file copying
+            }
         }
+        
+        # Create all dataset sections (preserve existing data)
+        if self.base_dataset_name == 'LibriSpeech':
+            all_datasets = ["LibriSpeech", "LibriSpeech_Noise", "LibriSpeech_Blank"]
+        elif self.base_dataset_name == 'CommonVoice':
+            all_datasets = ["CommonVoice", "CommonVoice_Noise", "CommonVoice_Blank"]
+        else:
+            all_datasets = [self.dataset_name]
+        
+        for dataset in all_datasets:
+            if dataset == self.dataset_name:
+                # Update current dataset with real data
+                config[dataset] = current_dataset_data
+                print(f"Updated {dataset} section with evaluation results")
+            elif dataset in existing_config:
+                # Keep existing data
+                config[dataset] = existing_config[dataset]
+                print(f"Preserved existing {dataset} section")
+            else:
+                # Create placeholder with correct metric name
+                config[dataset] = self.create_dataset_specific_placeholder(dataset)
+                print(f"Created placeholder {dataset} section")
         
         return config
     
-    def truncate_text(self, text: str, max_length: int) -> str:
-        """Truncate text to specified length"""
-        if not text:
-            return ""
-        if len(text) <= max_length:
-            return text
-        return text[:max_length-3] + "..."
+    def generate_dataset_section(self, valid_results: pd.DataFrame, metric_name: str, metric_col: str) -> dict:
+        """Generate dataset section with real evaluation results"""
+        # Calculate total statistics
+        total_stats = {
+            metric_name: f"{valid_results[metric_col].mean():.2f}",
+            'UTMOS': f"{valid_results['utmos'].mean():.1f}",
+            'PESQ': f"{valid_results['pesq'].mean():.1f}",
+            'STOI': f"{valid_results['stoi'].mean():.2f}"
+        }
+        
+        # Select diverse samples
+        selected_samples = self.select_diverse_samples(valid_results)
+        
+        # Generate sample entries using file names as keys
+        samples = {}
+        for sample_name, row in selected_samples:
+            if sample_name.startswith('Sample_'):
+                file_key = Path(row['file_name']).stem
+                samples[file_key] = {
+                    'Transcription': row['ground_truth'],
+                    metric_name: f"{row[metric_col]:.2f}",
+                    'UTMOS': f"{row['utmos']:.1f}",
+                    'PESQ': f"{row['pesq']:.1f}",
+                    'STOI': f"{row['stoi']:.2f}"
+                }
+        
+        # Add error sample
+        error_sample_data = {}
+        for sample_name, row in selected_samples:
+            if sample_name == 'Error_Sample_1':
+                error_sample_data = {
+                    'Transcription': row['ground_truth'],
+                    metric_name: f"{row[metric_col]:.2f}",
+                    'UTMOS': f"{row['utmos']:.1f}",
+                    'PESQ': f"{row['pesq']:.1f}",
+                    'STOI': f"{row['stoi']:.2f}"
+                }
+                break
+        
+        dataset_section = {
+            "Total": total_stats,
+            **samples,
+            "Error_Sample_1": error_sample_data
+        }
+        
+        return dataset_section
+    
+    def create_placeholder_dataset_section(self) -> dict:
+        """Create placeholder dataset section"""
+        # Always use dWER for LibriSpeech and dCER for CommonVoice in placeholders
+        # Since we don't know what dataset this placeholder is for, 
+        # we'll create a generic structure that works for both
+        placeholder_section = {
+            "Total": {
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            },
+            "Sample_1": {
+                'Transcription': "",
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            },
+            "Sample_2": {
+                'Transcription': "",
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            },
+            "Sample_3": {
+                'Transcription': "",
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            },
+            "Sample_4": {
+                'Transcription': "",
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            },
+            "Sample_5": {
+                'Transcription': "",
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            },
+            "Error_Sample_1": {
+                'Transcription': "",
+                "dWER": "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            }
+        }
+        
+        return placeholder_section
+    
+    def create_dataset_specific_placeholder(self, dataset_name: str) -> dict:
+        """Create placeholder section with correct metric name for specific dataset"""
+        # Determine metric based on dataset
+        if 'CommonVoice' in dataset_name:
+            metric_name = "dCER"
+        else:
+            metric_name = "dWER"
+            
+        placeholder_section = {
+            "Total": {
+                metric_name: "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            }
+        }
+        
+        # Add sample entries
+        for i in range(1, 6):
+            placeholder_section[f"Sample_{i}"] = {
+                'Transcription': "",
+                metric_name: "0.00",
+                'UTMOS': "0.0",
+                'PESQ': "0.0",
+                'STOI': "0.00"
+            }
+        
+        placeholder_section["Error_Sample_1"] = {
+            'Transcription': "",
+            metric_name: "0.00",
+            'UTMOS': "0.0",
+            'PESQ': "0.0",
+            'STOI': "0.00"
+        }
+        
+        return placeholder_section
+    
+    def get_dataset_path_for_audio(self) -> str:
+        """Get the correct audio directory path based on dataset type"""
+        if self.dataset_type == "clean":
+            return self.base_dataset_name
+        elif self.dataset_type == "noise":
+            return f"{self.base_dataset_name}/Noise"
+        elif self.dataset_type == "blank":
+            return f"{self.base_dataset_name}/Blank"
+        else:
+            return self.base_dataset_name
     
     def copy_sample_audio_files(self, results_df: pd.DataFrame) -> None:
-        """Copy sample audio files for web interface - select first utterance from different speakers"""
-        # Create directory structure
-        dataset_path_parts = self.dataset_name.split('_')
-        if len(dataset_path_parts) > 1:
-            dataset_dir = self.audio_dir / dataset_path_parts[0] / dataset_path_parts[1]
-        else:
-            dataset_dir = self.audio_dir / dataset_path_parts[0]
-            
+        """Copy sample audio files for web interface - organized by dataset type"""
+        # Get correct audio directory path based on dataset type
+        audio_dataset_path = self.get_dataset_path_for_audio()
+        dataset_dir = self.audio_dir / audio_dataset_path
+        
         original_dir = dataset_dir / "original"
         inference_dir = dataset_dir / self.model_name / self.frequency
         
@@ -631,6 +760,8 @@ class EnhancedCodecEvaluationPipeline:
         inference_dir.mkdir(parents=True, exist_ok=True)
         
         print(f"Copying sample audio files to {dataset_dir}...")
+        print(f"  Original files: {original_dir}")
+        print(f"  Inference files: {inference_dir}")
         
         # Get valid results for file selection
         metric_col = 'dcer' if self.language == 'zh' else 'dwer'
@@ -662,7 +793,11 @@ class EnhancedCodecEvaluationPipeline:
                     inference_dest = inference_dir / f"{base_name}.wav"
                     shutil.copy2(inference_path, inference_dest)
                     
-                    print(f"  Copied {sample_name}: {base_name}")
+                    # Show which key will be used in JSON
+                    if sample_name.startswith('Sample_'):
+                        print(f"  Copied sample (JSON key: {base_name}): {base_name}")
+                    else:
+                        print(f"  Copied {sample_name}: {base_name}")
                     copied_count += 1
                     
                 except Exception as e:
@@ -671,6 +806,9 @@ class EnhancedCodecEvaluationPipeline:
                 print(f"  Warning: Could not find files for {base_name}")
         
         print(f"Successfully copied {copied_count} sample pairs to audio directory")
+        print(f"Audio files can be accessed via web interface at:")
+        print(f"  Original: audio/{audio_dataset_path}/original/")
+        print(f"  Inference: audio/{audio_dataset_path}/{self.model_name}/{self.frequency}/")
     
     def select_diverse_samples(self, valid_results: pd.DataFrame) -> list:
         """Select diverse samples - first utterance from different speakers when possible"""
@@ -752,6 +890,92 @@ class EnhancedCodecEvaluationPipeline:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Enhanced Neural Audio Codec Evaluation Pipeline")
+    
+    parser.add_argument("--inference_dir", required=True, type=str,
+                       help="Directory path containing inference audio files")
+    parser.add_argument("--csv_file", required=True, type=str,
+                       help="CSV dataset filename (must be in ./csv/ directory)")
+    parser.add_argument("--model_name", required=True, type=str,
+                       help="Name of codec model")
+    parser.add_argument("--frequency", required=True, type=str,
+                       help="Frame rate (e.g., 50Hz)")
+    parser.add_argument("--causality", required=True, type=str,
+                       choices=["Causal", "Non-Causal"],
+                       help="Model causality type")
+    parser.add_argument("--bit_rate", required=True, type=str,
+                       help="Compression bit rate")
+    
+    parser.add_argument("--dataset_type", type=str, 
+                       choices=["clean", "noise", "blank"], default="clean",
+                       help="Dataset type (clean/noise/blank)")
+    parser.add_argument("--project_dir", type=str,
+                       default="/home/jieshiang/Desktop/GitHub/Codec_comparison",
+                       help="Project root directory path")
+    parser.add_argument("--quantizers", type=str, default="4",
+                       help="Number of quantizers")
+    parser.add_argument("--codebook_size", type=str, default="1024",
+                       help="Codebook size")
+    parser.add_argument("--n_params", type=str, default="45M",
+                       help="Number of model parameters")
+    parser.add_argument("--training_set", type=str, default="Custom Dataset",
+                       help="Training dataset description")
+    parser.add_argument("--testing_set", type=str, default="Custom Test Set",
+                       help="Testing dataset description")
+    
+    parser.add_argument("--metrics", type=str, nargs='+', 
+                       choices=["dwer", "dcer", "utmos", "pesq", "stoi"],
+                       default=["dwer", "dcer", "utmos", "pesq", "stoi"],
+                       help="Metrics to compute")
+    
+    parser.add_argument("--use_gpu", action="store_true", default=True,
+                       help="Enable GPU acceleration")
+    parser.add_argument("--gpu_id", type=int, default=0,
+                       help="GPU device ID")
+    parser.add_argument("--cpu_only", action="store_true",
+                       help="Force CPU-only computation")
+    parser.add_argument("--original_dir", type=str,
+                       help="Root directory path for original audio files")
+    
+    args = parser.parse_args()
+    
+    use_gpu = args.use_gpu and not args.cpu_only
+    
+    pipeline = EnhancedCodecEvaluationPipeline(
+        inference_dir=args.inference_dir,
+        csv_file=args.csv_file,
+        model_name=args.model_name,
+        frequency=args.frequency,
+        causality=args.causality,
+        bit_rate=args.bit_rate,
+        dataset_type=args.dataset_type,
+        project_dir=args.project_dir,
+        quantizers=args.quantizers,
+        codebook_size=args.codebook_size,
+        n_params=args.n_params,
+        training_set=args.training_set,
+        testing_set=args.testing_set,
+        metrics_to_compute=args.metrics,
+        use_gpu=use_gpu,
+        gpu_id=args.gpu_id,
+        original_dir=args.original_dir
+    )
+    
+    try:
+        results_df = pipeline.run_evaluation()
+        print("\nProgram executed successfully!")
+        
+    except KeyboardInterrupt:
+        print("\nProgram interrupted by user!")
+        
+    except Exception as e:
+        print(f"\nError during execution: {e}")
+        import traceback
+        traceback.print_exc()
+
+
+if __name__ == "__main__":
+    main()
     parser = argparse.ArgumentParser(description="Enhanced Neural Audio Codec Evaluation Pipeline")
     
     parser.add_argument("--inference_dir", required=True, type=str,
