@@ -45,7 +45,6 @@ class AudioMetricsEvaluator:
             print("CUDA not available, falling back to CPU")
             return "cpu"
             
-        # Check if specified GPU ID is available
         if self.gpu_id >= torch.cuda.device_count():
             print(f"GPU {self.gpu_id} not available, using GPU 0")
             self.gpu_id = 0
@@ -75,37 +74,50 @@ class AudioMetricsEvaluator:
         """Load ASR and UTMOS models"""
         print(f"Loading models on device: {self.device}")
         
-        # Show initial GPU memory if using GPU
         if self.device.startswith('cuda'):
             mem_info = self.get_gpu_memory_info()
             print(f"Initial GPU memory: {mem_info['allocated']:.1f}GB allocated, {mem_info['free']:.1f}GB free")
         
         print("Loading Whisper-large-v3 ASR model...")
-        self.asr_pipeline = pipeline(
-            "automatic-speech-recognition", 
-            model="openai/whisper-large-v3", 
-            device=self.device,
-            torch_dtype=torch.float16 if self.device.startswith('cuda') else torch.float32
-        )
+        try:
+            self.asr_pipeline = pipeline(
+                "automatic-speech-recognition", 
+                model="openai/whisper-large-v3", 
+                device=self.device
+            )
+        except Exception as e:
+            print(f"Error loading Whisper model: {e}")
+            print("Falling back to CPU...")
+            self.asr_pipeline = pipeline(
+                "automatic-speech-recognition", 
+                model="openai/whisper-large-v3", 
+                device="cpu"
+            )
+            self.device = "cpu"
         
-        # Check GPU memory after ASR loading
         if self.device.startswith('cuda'):
             mem_info = self.get_gpu_memory_info()
             print(f"After ASR loading: {mem_info['allocated']:.1f}GB allocated, {mem_info['free']:.1f}GB free")
         
         print("Loading UTMOS model...")
-        self.utmos_model = torch.hub.load(
-            "tarepan/SpeechMOS:v1.2.0", 
-            "utmos22_strong", 
-            trust_repo=True
-        )
-        
-        # Move UTMOS model to specified device
-        if self.device.startswith('cuda'):
-            self.utmos_model = self.utmos_model.to(self.device)
-            self.utmos_model.half()  # Use half precision for memory efficiency
+        try:
+            self.utmos_model = torch.hub.load(
+                "tarepan/SpeechMOS:v1.2.0", 
+                "utmos22_strong", 
+                trust_repo=True
+            )
             
-        # Final GPU memory check
+            if self.device.startswith('cuda'):
+                try:
+                    self.utmos_model = self.utmos_model.to(self.device)
+                except Exception as e:
+                    print(f"Warning: Could not move UTMOS to GPU: {e}")
+                    print("UTMOS will run on CPU")
+            
+        except Exception as e:
+            print(f"Error loading UTMOS model: {e}")
+            self.utmos_model = None
+            
         if self.device.startswith('cuda'):
             mem_info = self.get_gpu_memory_info()
             print(f"After all models loaded: {mem_info['allocated']:.1f}GB allocated, {mem_info['free']:.1f}GB free")
@@ -137,7 +149,6 @@ class AudioMetricsEvaluator:
     def transcribe_audio(self, audio_path: str) -> str:
         """Transcribe audio using ASR model"""
         try:
-            # Clear GPU cache before processing if using GPU
             if self.device.startswith('cuda'):
                 torch.cuda.empty_cache()
                 
@@ -147,8 +158,7 @@ class AudioMetricsEvaluator:
                     return_timestamps=True,
                     generate_kwargs={
                         "task": "transcribe", 
-                        "language": "zh",
-                        "fp16": True if self.device.startswith('cuda') else False
+                        "language": "zh"
                     }
                 )
             else:
@@ -157,8 +167,7 @@ class AudioMetricsEvaluator:
                     return_timestamps=True,
                     generate_kwargs={
                         "task": "transcribe", 
-                        "language": "en",
-                        "fp16": True if self.device.startswith('cuda') else False
+                        "language": "en"
                     }
                 )
             return result.get("text", "")
@@ -210,17 +219,20 @@ class AudioMetricsEvaluator:
     def calculate_utmos(self, audio_path: str) -> float:
         """Calculate UTMOS score with GPU acceleration"""
         try:
+            if self.utmos_model is None:
+                return None
+                
             wave, sr = librosa.load(str(audio_path), sr=None, mono=True)
             
-            # Clear GPU cache before processing if using GPU
             if self.device.startswith('cuda'):
                 torch.cuda.empty_cache()
             
             with torch.no_grad():
-                # Convert to tensor and move to device
                 wave_tensor = torch.from_numpy(wave).unsqueeze(0)
-                if self.device.startswith('cuda'):
-                    wave_tensor = wave_tensor.to(self.device).half()
+                
+                # Move to device if model is on GPU
+                if hasattr(self.utmos_model, 'device') and str(self.utmos_model.device) != 'cpu':
+                    wave_tensor = wave_tensor.to(self.utmos_model.device)
                 
                 score = self.utmos_model(wave_tensor, sr)
                 return score.item()
@@ -269,14 +281,12 @@ class AudioMetricsEvaluator:
         """Evaluate a pair of audio files with all metrics"""
         results = {}
         
-        # ASR evaluation (GPU accelerated)
         asr_result = self.calculate_dwer_dcer(original_path, inference_path, ground_truth)
         if asr_result:
             results.update(asr_result)
         
-        # Quality metrics
-        results['utmos'] = self.calculate_utmos(inference_path)  # GPU accelerated
-        results['pesq'] = self.calculate_pesq(original_path, inference_path)  # CPU only
-        results['stoi'] = self.calculate_stoi(original_path, inference_path)  # CPU only
+        results['utmos'] = self.calculate_utmos(inference_path)
+        results['pesq'] = self.calculate_pesq(original_path, inference_path)
+        results['stoi'] = self.calculate_stoi(original_path, inference_path)
         
         return results

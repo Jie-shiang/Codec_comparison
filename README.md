@@ -6,10 +6,11 @@ A comprehensive evaluation pipeline for neural audio codecs with automated metri
 
 ```
 /home/jieshiang/Desktop/GitHub/Codec_comparison/
-├── enhanced_evaluation_pipeline.py    # Enhanced evaluation with selective metrics
+├── enhanced_evaluation_pipeline.py   # Enhanced evaluation with selective metrics
 ├── test_and_validation.py            # Test and validation tools
 ├── metrics_evaluator.py              # Audio metrics evaluation module
-├── requirements.txt                   # Python dependencies
+├── cleanup_test_files.py             # Clean testing files
+├── requirements.txt                  # Python dependencies
 ├── index.html                        # Web interface
 ├── csv/                              # Dataset files
 │   ├── librispeech_test_clean_filtered.csv
@@ -87,14 +88,23 @@ python test_and_validation.py \
     --csv_file librispeech_test_clean_filtered.csv \
     --model_name "TestCodec" \
     --mode test \
-    --num_samples 20
+    --num_samples 20 \
+    --gpu_id 0
 ```
 
 ### Step 4: Production Evaluation
 
-Once testing is successful, run the full evaluation:
+Once testing is successful, you can run .py file to clean your folder then can run the full evaluation:
 
 ```bash
+# Clean Test files
+python cleanup_test_files.py --dry_run
+python cleanup_test_files.py
+
+python cleanup_test_files.py \
+    --project_dir /home/jieshiang/Desktop/GitHub/Codec_comparison \
+    --yes
+
 # Option A: Compute all metrics at once
 python enhanced_evaluation_pipeline.py \
     --inference_dir /path/to/your/inference/files \
