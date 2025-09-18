@@ -203,15 +203,15 @@ The pipeline automatically detects inference files using these patterns:
 - **File**: `csv/librispeech_test_clean_filtered.csv`
 - **Language**: English
 - **Primary Metric**: dWER
-- **Sample Count**: ~2,200 files
+- **Sample Count**: 2,229 files
 - **Duration**: 3.0+ seconds per file
 
 ### Common Voice zh-TW (Chinese Traditional)
 - **File**: `csv/common_voice_zh_TW_train_filtered.csv`
 - **Language**: Chinese (Traditional)
 - **Primary Metric**: dCER
-- **Sample Count**: ~4,100 files
-- **Duration**: 3.0+ seconds per file
+- **Sample Count**: 2132 files
+- **Duration**: 3.0+ seconds per file and Each Speaker take max 20 samples
 
 ## Advanced Usage
 
