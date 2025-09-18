@@ -32,7 +32,8 @@ class CodecTestValidator:
                  frequency: str = "50Hz",
                  project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison",
                  use_gpu: bool = True,
-                 gpu_id: int = 0):
+                 gpu_id: int = 0,
+                 original_dir: str = None):
         
         self.inference_dir = Path(inference_dir)
         self.csv_file = Path(project_dir) / "csv" / csv_file
@@ -41,6 +42,7 @@ class CodecTestValidator:
         self.project_dir = Path(project_dir)
         self.use_gpu = use_gpu
         self.gpu_id = gpu_id
+        self.original_dir = Path(original_dir) if original_dir else None
         
         self.result_dir = self.project_dir / "result" / "test_results"
         self.audio_dir = self.project_dir / "audio" / "test_audio"
@@ -58,6 +60,8 @@ class CodecTestValidator:
         print(f"  GPU acceleration: {'Enabled' if self.use_gpu else 'Disabled'}")
         if self.use_gpu:
             print(f"  GPU ID: {self.gpu_id}")
+        if self.original_dir:
+            print(f"  Original files directory: {self.original_dir}")
         print(f"  Inference directory: {self.inference_dir}")
         print(f"  Test results directory: {self.result_dir}")
     
@@ -239,6 +243,16 @@ class CodecTestValidator:
                 
         return None
     
+    def resolve_original_path(self, csv_path: str) -> Path:
+        """Resolve original file path from CSV relative path"""
+        if self.original_dir:
+            # Remove leading "./" if present and join with original_dir
+            clean_path = csv_path.lstrip('./')
+            return self.original_dir / clean_path
+        else:
+            # Use CSV path as-is (relative to current directory)
+            return Path(csv_path)
+    
     def validate_audio_files(self, test_df: pd.DataFrame) -> dict:
         """Validate audio file integrity and properties"""
         print("\n" + "="*50)
@@ -254,7 +268,7 @@ class CodecTestValidator:
         
         for idx, row in test_df.iterrows():
             file_name = row['file_name']
-            original_path = Path(row['file_path'])
+            original_path = self.resolve_original_path(row['file_path'])
             inference_path = self.find_inference_audio(file_name)
             
             original_status = self.check_audio_file(original_path, "original")
@@ -298,6 +312,11 @@ class CodecTestValidator:
             print(f"\nMISSING INFERENCE FILES:")
             for item in validation_results['missing_files'][:3]:
                 print(f"  • {item['file_name']}")
+        
+        if not validation_results['valid_files'] and self.original_dir is None:
+            print(f"\nNOTE: No original directory specified with --original_dir")
+            print(f"      Original file validation skipped. Only inference files were checked.")
+            print(f"      To validate original files, use: --original_dir /path/to/original/files")
         
         return validation_results
     
@@ -360,7 +379,7 @@ class CodecTestValidator:
         for idx, row in tqdm(test_df.iterrows(), total=len(test_df), desc="Test Evaluation"):
             file_name = row['file_name']
             ground_truth = row['transcription']
-            original_path = Path(row['file_path'])
+            original_path = self.resolve_original_path(row['file_path'])
             
             inference_path = self.find_inference_audio(file_name)
             
@@ -675,6 +694,8 @@ def main():
     parser.add_argument("--project_dir", type=str,
                        default="/home/jieshiang/Desktop/GitHub/Codec_comparison",
                        help="Project root directory path")
+    parser.add_argument("--original_dir", type=str,
+                       help="Root directory path for original audio files (to resolve CSV relative paths)")
     
     parser.add_argument("--mode", type=str, choices=["test", "validate", "both"], 
                        default="both", help="Mode: test evaluation, file validation, or both")
@@ -703,7 +724,8 @@ def main():
         frequency=args.frequency,
         project_dir=args.project_dir,
         use_gpu=use_gpu,
-        gpu_id=args.gpu_id
+        gpu_id=args.gpu_id,
+        original_dir=args.original_dir
     )
     
     try:

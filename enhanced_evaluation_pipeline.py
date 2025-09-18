@@ -37,7 +37,10 @@ class EnhancedCodecEvaluationPipeline:
                  n_params: str = "45M",
                  training_set: str = "Custom Dataset",
                  testing_set: str = "Custom Test Set",
-                 metrics_to_compute: list = None):
+                 metrics_to_compute: list = None,
+                 use_gpu: bool = True,
+                 gpu_id: int = 0,
+                 original_dir: str = None):
         
         self.inference_dir = Path(inference_dir)
         self.csv_file = Path(project_dir) / "csv" / csv_file
@@ -53,6 +56,9 @@ class EnhancedCodecEvaluationPipeline:
         self.testing_set = testing_set
         
         self.metrics_to_compute = metrics_to_compute or ['dwer', 'utmos', 'pesq', 'stoi']
+        self.use_gpu = use_gpu
+        self.gpu_id = gpu_id
+        self.original_dir = Path(original_dir) if original_dir else None
         
         self.project_dir = Path(project_dir)
         self.result_dir = self.project_dir / "result"
@@ -74,6 +80,11 @@ class EnhancedCodecEvaluationPipeline:
         print(f"  Frequency: {self.frequency}")
         print(f"  Dataset type: {self.dataset_type}")
         print(f"  Metrics to compute: {', '.join(self.metrics_to_compute)}")
+        print(f"  GPU acceleration: {'Enabled' if self.use_gpu else 'Disabled'}")
+        if self.use_gpu:
+            print(f"  GPU ID: {self.gpu_id}")
+        if self.original_dir:
+            print(f"  Original files directory: {self.original_dir}")
         print(f"  Inference directory: {self.inference_dir}")
         print(f"  Result CSV: {self.result_csv_path}")
         
@@ -149,6 +160,14 @@ class EnhancedCodecEvaluationPipeline:
         result_df['original_path'] = input_df['file_path'].values
         
         return result_df
+    
+    def resolve_original_path(self, csv_path: str) -> Path:
+        """Resolve original file path from CSV relative path"""
+        if self.original_dir:
+            clean_path = csv_path.lstrip('./')
+            return self.original_dir / clean_path
+        else:
+            return Path(csv_path)
     
     def find_inference_audio(self, original_filename: str) -> Path:
         """Find corresponding inference audio file"""
@@ -375,7 +394,11 @@ class EnhancedCodecEvaluationPipeline:
         print(f"Existing results check completed in: {time.time() - step_start:.2f} seconds")
         
         step_start = time.time()
-        evaluator = AudioMetricsEvaluator(language=self.language)
+        evaluator = AudioMetricsEvaluator(
+            language=self.language,
+            use_gpu=self.use_gpu,
+            gpu_id=self.gpu_id
+        )
         
         needs_asr = 'dwer' in self.metrics_to_compute or 'dcer' in self.metrics_to_compute
         needs_utmos = 'utmos' in self.metrics_to_compute
@@ -389,6 +412,8 @@ class EnhancedCodecEvaluationPipeline:
                 "utmos22_strong", 
                 trust_repo=True
             )
+            if evaluator.use_gpu and evaluator.device.startswith('cuda'):
+                evaluator.utmos_model = evaluator.utmos_model.to(evaluator.device)
         
         print(f"Model loading completed in: {time.time() - step_start:.2f} seconds")
         
@@ -407,7 +432,7 @@ class EnhancedCodecEvaluationPipeline:
         for idx, row in tqdm(df.iterrows(), total=len(df), desc="Evaluation Progress"):
             file_name = row['file_name']
             ground_truth = row['transcription']
-            original_path = Path(row['file_path'])
+            original_path = self.resolve_original_path(row['file_path'])
             
             inference_path = self.find_inference_audio(file_name)
             
@@ -522,7 +547,20 @@ def main():
                        default=["dwer", "utmos", "pesq", "stoi"],
                        help="Metrics to compute (default: dwer utmos pesq stoi)")
     
+    # GPU acceleration options
+    parser.add_argument("--use_gpu", action="store_true", default=True,
+                       help="Enable GPU acceleration (default: True)")
+    parser.add_argument("--gpu_id", type=int, default=0,
+                       help="GPU device ID to use (default: 0)")
+    parser.add_argument("--cpu_only", action="store_true",
+                       help="Force CPU-only computation (overrides --use_gpu)")
+    parser.add_argument("--original_dir", type=str,
+                       help="Root directory path for original audio files (to resolve CSV relative paths)")
+    
     args = parser.parse_args()
+    
+    # Handle GPU settings
+    use_gpu = args.use_gpu and not args.cpu_only
     
     pipeline = EnhancedCodecEvaluationPipeline(
         inference_dir=args.inference_dir,
@@ -538,7 +576,10 @@ def main():
         n_params=args.n_params,
         training_set=args.training_set,
         testing_set=args.testing_set,
-        metrics_to_compute=args.metrics
+        metrics_to_compute=args.metrics,
+        use_gpu=use_gpu,
+        gpu_id=args.gpu_id,
+        original_dir=args.original_dir
     )
     
     try:

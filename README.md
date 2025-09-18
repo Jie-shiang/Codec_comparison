@@ -56,12 +56,14 @@ Before running evaluation, validate your inference files:
 ```bash
 # Validate file naming and check for issues
 python test_and_validation.py \
+    --original_dir /path/to/your/original/files \
     --inference_dir /path/to/your/inference/files \
     --csv_file librispeech_test_clean_filtered.csv \
     --mode validate
 
 # Fix naming issues if needed (dry run first, then actual fix)
 python test_and_validation.py \
+    --original_dir /path/to/your/original/files \
     --inference_dir /path/to/your/inference/files \
     --csv_file librispeech_test_clean_filtered.csv \
     --mode validate \
@@ -75,6 +77,7 @@ Run a quick test on 20 samples to ensure everything works:
 ```bash
 # Test evaluation with first 20 samples
 python test_and_validation.py \
+    --original_dir /path/to/your/original/files \
     --inference_dir /path/to/your/inference/files \
     --csv_file librispeech_test_clean_filtered.csv \
     --model_name "TestCodec" \
