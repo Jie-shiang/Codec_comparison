@@ -107,12 +107,9 @@ class AudioMetricsEvaluator:
                 trust_repo=True
             )
             
-            if self.device.startswith('cuda'):
-                try:
-                    self.utmos_model = self.utmos_model.to(self.device)
-                except Exception as e:
-                    print(f"Warning: Could not move UTMOS to GPU: {e}")
-                    print("UTMOS will run on CPU")
+            # For now, keep UTMOS on CPU to avoid device mismatch issues
+            self.utmos_model = self.utmos_model.cpu()
+            print("UTMOS model loaded on CPU (to avoid device conflicts)")
             
         except Exception as e:
             print(f"Error loading UTMOS model: {e}")
@@ -217,23 +214,16 @@ class AudioMetricsEvaluator:
             return None
     
     def calculate_utmos(self, audio_path: str) -> float:
-        """Calculate UTMOS score with GPU acceleration"""
+        """Calculate UTMOS score (CPU only for stability)"""
         try:
             if self.utmos_model is None:
                 return None
                 
             wave, sr = librosa.load(str(audio_path), sr=None, mono=True)
             
-            if self.device.startswith('cuda'):
-                torch.cuda.empty_cache()
-            
             with torch.no_grad():
                 wave_tensor = torch.from_numpy(wave).unsqueeze(0)
-                
-                # Move to device if model is on GPU
-                if hasattr(self.utmos_model, 'device') and str(self.utmos_model.device) != 'cpu':
-                    wave_tensor = wave_tensor.to(self.utmos_model.device)
-                
+                # Keep tensor on CPU to match model device
                 score = self.utmos_model(wave_tensor, sr)
                 return score.item()
         except Exception as e:
