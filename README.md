@@ -118,17 +118,17 @@ python cleanup_test_files.py \
 
 # Option A: Compute all metrics at once
 python enhanced_evaluation_pipeline.py \
-    --inference_dir /path/to/your/inference/files \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/librispeech_recon \
     --csv_file librispeech_test_clean_filtered.csv \
-    --model_name "CustomCodec" \
-    --frequency "25Hz" \
-    --causality "Causal" \
-    --bit_rate "0.75" \
-    --quantizers "8" \
-    --codebook_size "512" \
-    --n_params "12M" \
-    --training_set "Custom Training Set" \
-    --testing_set "Custom Test Set" \
+    --original_dir /mnt/Internal/ASR \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "0.45" \
+    --quantizers "1" \
+    --codebook_size "300" \
+    --n_params "N/A" \
+    --training_set "N/A" \
+    --testing_set "N/A" \
     --metrics dwer utmos pesq stoi \
     --dataset_type "clean" \
     --use_gpu \
