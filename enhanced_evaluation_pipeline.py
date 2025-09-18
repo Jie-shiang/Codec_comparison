@@ -547,34 +547,41 @@ class EnhancedCodecEvaluationPipeline:
             'STOI': f"{valid_results['stoi'].mean():.2f}"
         }
         
-        # Select samples for JSON (first 5 valid results + 1 error sample)
+        # Use the same sample selection logic as file copying
+        selected_samples = self.select_diverse_samples(valid_results)
+        
+        # Generate samples for JSON (exclude error sample for now)
         samples = {}
         sample_files = {}
         
-        for i in range(min(5, len(valid_results))):
-            row = valid_results.iloc[i]
-            sample_key = f'Sample_{i+1}'
-            samples[sample_key] = {
-                'Transcription': self.truncate_text(row['ground_truth'], 100),
-                metric_name: f"{row[metric_col]:.2f}",
-                'UTMOS': f"{row['utmos']:.1f}",
-                'PESQ': f"{row['pesq']:.1f}",
-                'STOI': f"{row['stoi']:.2f}"
+        for sample_name, row in selected_samples:
+            if sample_name.startswith('Sample_'):
+                samples[sample_name] = {
+                    'Transcription': self.truncate_text(row['ground_truth'], 100),
+                    metric_name: f"{row[metric_col]:.2f}",
+                    'UTMOS': f"{row['utmos']:.1f}",
+                    'PESQ': f"{row['pesq']:.1f}",
+                    'STOI': f"{row['stoi']:.2f}"
+                }
+                sample_files[sample_name] = row['file_name']
+        
+        # Add error sample
+        error_sample = None
+        for sample_name, row in selected_samples:
+            if sample_name == 'Error_Sample_1':
+                error_sample = row
+                sample_files['Error_Sample_1'] = row['file_name']
+                break
+        
+        error_sample_data = {}
+        if error_sample is not None:
+            error_sample_data = {
+                'Transcription': self.truncate_text(error_sample['ground_truth'], 100),
+                metric_name: f"{error_sample[metric_col]:.2f}",
+                'UTMOS': f"{error_sample['utmos']:.1f}",
+                'PESQ': f"{error_sample['pesq']:.1f}",
+                'STOI': f"{error_sample['stoi']:.2f}"
             }
-            sample_files[sample_key] = row['file_name']
-        
-        # Find error sample (highest error rate)
-        error_idx = valid_results[metric_col].idxmax()
-        error_sample = valid_results.loc[error_idx]
-        
-        error_sample_data = {
-            'Transcription': self.truncate_text(error_sample['ground_truth'], 100),
-            metric_name: f"{error_sample[metric_col]:.2f}",
-            'UTMOS': f"{error_sample['utmos']:.1f}",
-            'PESQ': f"{error_sample['pesq']:.1f}",
-            'STOI': f"{error_sample['stoi']:.2f}"
-        }
-        sample_files['Error_Sample_1'] = error_sample['file_name']
         
         config = {
             "model_info": {
@@ -609,7 +616,7 @@ class EnhancedCodecEvaluationPipeline:
         return text[:max_length-3] + "..."
     
     def copy_sample_audio_files(self, results_df: pd.DataFrame) -> None:
-        """Copy sample audio files for web interface"""
+        """Copy sample audio files for web interface - select first utterance from different speakers"""
         # Create directory structure
         dataset_path_parts = self.dataset_name.split('_')
         if len(dataset_path_parts) > 1:
@@ -633,22 +640,12 @@ class EnhancedCodecEvaluationPipeline:
             print("Warning: No valid results found for file copying")
             return
         
-        # Select files to copy (first 5 + 1 error sample)
-        files_to_copy = []
-        
-        # Add first 5 valid samples
-        for i in range(min(5, len(valid_results))):
-            row = valid_results.iloc[i]
-            files_to_copy.append((f'Sample_{i+1}', row))
-        
-        # Add error sample (highest error rate)
-        error_idx = valid_results[metric_col].idxmax()
-        error_sample = valid_results.loc[error_idx]
-        files_to_copy.append(('Error_Sample_1', error_sample))
+        # Select files to copy - prioritize different speakers for diversity
+        selected_samples = self.select_diverse_samples(valid_results)
         
         # Copy files
         copied_count = 0
-        for sample_name, row in files_to_copy:
+        for i, (sample_name, row) in enumerate(selected_samples):
             file_name = row['file_name']
             base_name = Path(file_name).stem
             
@@ -672,10 +669,86 @@ class EnhancedCodecEvaluationPipeline:
                     print(f"  Warning: Failed to copy {base_name}: {e}")
             else:
                 print(f"  Warning: Could not find files for {base_name}")
-                print(f"    Original: {original_path} (exists: {original_path.exists()})")
-                print(f"    Inference: {inference_path} (exists: {inference_path.exists() if inference_path else False})")
         
         print(f"Successfully copied {copied_count} sample pairs to audio directory")
+    
+    def select_diverse_samples(self, valid_results: pd.DataFrame) -> list:
+        """Select diverse samples - first utterance from different speakers when possible"""
+        selected_samples = []
+        
+        if self.base_dataset_name == 'LibriSpeech':
+            # For LibriSpeech: select first utterance from different speakers
+            # Sort by speaker-chapter-utterance to get first utterance from each speaker
+            results_with_keys = valid_results.copy()
+            results_with_keys['sort_key'] = results_with_keys['file_name'].apply(
+                lambda x: self.parse_librispeech_id(x)
+            )
+            results_sorted = results_with_keys.sort_values('sort_key')
+            
+            speakers_seen = set()
+            sample_count = 0
+            
+            # First, try to get first utterance from different speakers
+            for idx, row in results_sorted.iterrows():
+                speaker_id = row['file_name'].split('-')[0]
+                if speaker_id not in speakers_seen and sample_count < 5:
+                    speakers_seen.add(speaker_id)
+                    sample_count += 1
+                    selected_samples.append((f'Sample_{sample_count}', row))
+                    print(f"Selected Sample_{sample_count}: {row['file_name']} (Speaker {speaker_id})")
+                    
+        elif self.base_dataset_name == 'CommonVoice':
+            # For CommonVoice: select from different speakers if speaker_id available
+            if 'speaker_id' in valid_results.columns:
+                speakers_seen = set()
+                sample_count = 0
+                
+                for idx, row in valid_results.iterrows():
+                    speaker_id = row.get('speaker_id', 'unknown')
+                    if speaker_id not in speakers_seen and sample_count < 5:
+                        speakers_seen.add(speaker_id)
+                        sample_count += 1
+                        selected_samples.append((f'Sample_{sample_count}', row))
+                        print(f"Selected Sample_{sample_count}: {row['file_name']} (Speaker {speaker_id})")
+            else:
+                # Fallback: select first 5
+                for i in range(min(5, len(valid_results))):
+                    row = valid_results.iloc[i]
+                    selected_samples.append((f'Sample_{i+1}', row))
+        else:
+            # Default: select first 5
+            for i in range(min(5, len(valid_results))):
+                row = valid_results.iloc[i]
+                selected_samples.append((f'Sample_{i+1}', row))
+        
+        # If we don't have 5 samples yet, fill with remaining samples
+        while len(selected_samples) < 5 and len(selected_samples) < len(valid_results):
+            remaining_idx = len(selected_samples)
+            if remaining_idx < len(valid_results):
+                row = valid_results.iloc[remaining_idx]
+                selected_samples.append((f'Sample_{len(selected_samples)+1}', row))
+        
+        # Add error sample (highest error rate)
+        metric_col = 'dcer' if self.language == 'zh' else 'dwer'
+        error_idx = valid_results[metric_col].idxmax()
+        error_sample = valid_results.loc[error_idx]
+        selected_samples.append(('Error_Sample_1', error_sample))
+        
+        return selected_samples
+    
+    def parse_librispeech_id(self, utt_id: str) -> tuple:
+        """Parse LibriSpeech utterance ID and return sort key for speaker-chapter-utterance order"""
+        try:
+            parts = utt_id.split('-')
+            if len(parts) >= 3:
+                speaker = int(parts[0])
+                chapter = int(parts[1])
+                utterance = int(parts[2])
+                return (speaker, chapter, utterance)
+            else:
+                return (0, 0, 0)
+        except:
+            return (0, 0, 0)
 
 
 def main():

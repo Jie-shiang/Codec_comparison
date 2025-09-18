@@ -154,7 +154,8 @@ class AudioMetricsEvaluator:
         hyp_chars = list(hypothesis)
         
         distance = Levenshtein.distance(''.join(ref_chars), ''.join(hyp_chars))
-        return distance / len(ref_chars)
+        cer = distance / len(ref_chars)
+        return min(cer, 1.0)  # Cap at 1.0
     
     def fast_wer(self, reference: str, hypothesis: str) -> float:
         """Fast Word Error Rate calculation using Levenshtein distance"""
@@ -170,7 +171,8 @@ class AudioMetricsEvaluator:
             return 1.0 if hyp_words else 0.0
         
         distance = Levenshtein.distance(' '.join(ref_words), ' '.join(hyp_words))
-        return distance / len(ref_words)
+        wer = distance / len(ref_words)
+        return min(wer, 1.0)  # Cap at 1.0
     
     def transcribe_audio(self, audio_path: str) -> str:
         """Optimized audio transcription using ASR model"""

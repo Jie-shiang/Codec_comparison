@@ -2,8 +2,8 @@
   "model_info": {
     "modelName": "LSCodec",
     "causality": "Non-Causal",
-    "trainingSet": "LibriTTS All train splits",
-    "testingSet": "LibriTTS test-clean split testset-B", 
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
     "bitRate": "0.45",
     "parameters": {
       "frameRate": "50",
@@ -14,308 +14,60 @@
   },
   "LibriSpeech": {
     "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "dWER": "0.59",
+      "UTMOS": "3.9",
+      "PESQ": "1.4",
+      "STOI": "0.69"
     },
     "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "Transcription": "BEFORE THEM FLED THE STROLLER AND HIS THREE SONS CAPLESS AND TERRIFIED",
+      "dWER": "0.00",
+      "UTMOS": "3.9",
+      "PESQ": "1.4",
+      "STOI": "0.77"
     },
     "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "Transcription": "RIGHT WILLINGLY FOR BETWEEN US WE HAVE WON THE BATTLE ANSWERED ROBIN",
+      "dWER": "0.00",
+      "UTMOS": "4.1",
+      "PESQ": "1.3",
+      "STOI": "0.68"
     },
     "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "Transcription": "NAY WE REFUSED THEIR REQUEST MOST POLITELY MOST NOBLE SAID THE LITTLE STROLLER",
+      "dWER": "0.08",
+      "UTMOS": "4.0",
+      "PESQ": "1.3",
+      "STOI": "0.71"
     },
     "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "Transcription": "THE HEAD AND CHIEF OF THE RIOT THE NOTTINGHAM APPRENTICE WITH CLENCHED FISTS THREATENED MONTFICHET",
+      "dWER": "0.27",
+      "UTMOS": "4.0",
+      "PESQ": "1.5",
+      "STOI": "0.74"
     },
     "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "Transcription": "MISTRESS FITZOOTH HAD BEEN CARRIED OFF BY THE SHERIFF'S DAUGHTER AND HER MAIDS AS SOON AS THEY HA...",
+      "dWER": "0.43",
+      "UTMOS": "3.9",
+      "PESQ": "1.5",
+      "STOI": "0.71"
     },
     "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "Transcription": "BUT IN THEIR SELECTION OF A CONSTITUTION THE BRITANNULISTS HAVE UNFORTUNATELY ALLOWED THEMSELVES ...",
+      "dWER": "6.92",
+      "UTMOS": "1.4",
+      "PESQ": "1.0",
+      "STOI": "0.36"
     }
   },
-  "LibriSpeech_Noise": {
-    "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "LibriSpeech_Blank": {
-    "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice": {
-    "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice_Noise": {
-    "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice_Blank": {
-    "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
+  "_selected_files": {
+    "Sample_1": "61-70968-0013",
+    "Sample_2": "61-70968-0040",
+    "Sample_3": "61-70968-0015",
+    "Sample_4": "61-70968-0028",
+    "Sample_5": "61-70968-0054",
+    "Error_Sample_1": "8455-210777-0057"
   }
 }
