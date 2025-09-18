@@ -90,6 +90,16 @@ python test_and_validation.py \
     --mode test \
     --num_samples 20 \
     --gpu_id 0
+
+# For Example
+python test_and_validation.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/librispeech_recon \
+    --csv_file librispeech_test_clean_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "TestCodec" \
+    --mode test \
+    --num_samples 20 \
+    --gpu_id 0
 ```
 
 ### Step 4: Production Evaluation
