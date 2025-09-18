@@ -13,13 +13,14 @@ jiwer>=2.3.0
 pesq>=0.0.4
 pystoi>=0.3.3
 
+# Fast edit distance computation for optimized WER/CER
+python-Levenshtein>=0.20.0
+
 # Audio codec evaluation models
 speechmos @ git+https://github.com/tarepan/SpeechMOS.git
 
 # Utilities
 tqdm>=4.64.0
-pathlib
-argparse
 
 # Audio format support
 soundfile>=0.10.0

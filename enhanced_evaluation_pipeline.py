@@ -2,7 +2,8 @@
 """
 Enhanced Neural Audio Codec Evaluation Pipeline
 
-Enhanced evaluation pipeline with selective metric calculation and incremental CSV updates.
+Optimized evaluation pipeline with selective metric calculation, incremental CSV updates,
+and support for both English (dWER) and Chinese (dCER) evaluation.
 """
 
 import os
@@ -55,7 +56,7 @@ class EnhancedCodecEvaluationPipeline:
         self.training_set = training_set
         self.testing_set = testing_set
         
-        self.metrics_to_compute = metrics_to_compute or ['dwer', 'utmos', 'pesq', 'stoi']
+        self.metrics_to_compute = metrics_to_compute or ['dwer', 'dcer', 'utmos', 'pesq', 'stoi']
         self.use_gpu = use_gpu
         self.gpu_id = gpu_id
         self.original_dir = Path(original_dir) if original_dir else None
@@ -89,7 +90,7 @@ class EnhancedCodecEvaluationPipeline:
         print(f"  Result CSV: {self.result_csv_path}")
         
     def load_csv_data(self):
-        """Load CSV dataset file"""
+        """Load CSV dataset file and detect language"""
         try:
             df = pd.read_csv(self.csv_file, encoding='utf-8')
             print(f"Successfully loaded CSV: {self.csv_file}")
@@ -125,7 +126,7 @@ class EnhancedCodecEvaluationPipeline:
             sys.exit(1)
     
     def load_existing_results(self) -> pd.DataFrame:
-        """Load existing results CSV if it exists, otherwise create empty DataFrame"""
+        """Load existing results CSV if it exists"""
         if self.result_csv_path.exists():
             try:
                 existing_df = pd.read_csv(self.result_csv_path, encoding='utf-8')
@@ -217,7 +218,11 @@ class EnhancedCodecEvaluationPipeline:
         results['inference_path'] = str(inference_path)
         results['ground_truth'] = ground_truth
         
-        if 'dwer' in self.metrics_to_compute or 'dcer' in self.metrics_to_compute:
+        # Check if ASR metrics are needed
+        need_asr = (self.language == 'zh' and 'dcer' in self.metrics_to_compute) or \
+                   (self.language == 'en' and 'dwer' in self.metrics_to_compute)
+        
+        if need_asr:
             asr_result = evaluator.calculate_dwer_dcer(original_path, inference_path, ground_truth)
             if asr_result:
                 results.update({k: v for k, v in asr_result.items() 
@@ -248,7 +253,7 @@ class EnhancedCodecEvaluationPipeline:
         return results
     
     def save_results(self, results_df: pd.DataFrame) -> None:
-        """Save detailed and summary results to separate CSV files"""
+        """Save detailed and summary results"""
         
         detailed_csv_path = self.result_csv_path
         results_df.to_csv(detailed_csv_path, index=False, encoding='utf-8')
@@ -265,7 +270,7 @@ class EnhancedCodecEvaluationPipeline:
                     updated_summary.to_csv(summary_csv_path, index=False, encoding='utf-8')
                     print(f"Summary results updated: {summary_csv_path}")
                 except Exception as e:
-                    print(f"Warning: Could not update existing summary, creating new one: {e}")
+                    print(f"Warning: Could not update existing summary: {e}")
                     summary_df = pd.DataFrame([summary_data])
                     summary_df.to_csv(summary_csv_path, index=False, encoding='utf-8')
                     print(f"Summary results saved: {summary_csv_path}")
@@ -344,7 +349,7 @@ class EnhancedCodecEvaluationPipeline:
         return existing_df
     
     def print_summary_statistics(self, summary_data: dict) -> None:
-        """Print comprehensive summary statistics to console"""
+        """Print comprehensive summary statistics"""
         print(f"\n" + "="*70)
         print("COMPREHENSIVE EVALUATION SUMMARY")
         print("="*70)
@@ -400,20 +405,12 @@ class EnhancedCodecEvaluationPipeline:
             gpu_id=self.gpu_id
         )
         
-        needs_asr = 'dwer' in self.metrics_to_compute or 'dcer' in self.metrics_to_compute
-        needs_utmos = 'utmos' in self.metrics_to_compute
+        need_asr = (self.language == 'zh' and 'dcer' in self.metrics_to_compute) or \
+                   (self.language == 'en' and 'dwer' in self.metrics_to_compute)
+        need_utmos = 'utmos' in self.metrics_to_compute
         
-        if needs_asr or needs_utmos:
+        if need_asr or need_utmos:
             evaluator.load_models()
-        elif needs_utmos:
-            print("Loading UTMOS model...")
-            evaluator.utmos_model = torch.hub.load(
-                "tarepan/SpeechMOS:v1.2.0", 
-                "utmos22_strong", 
-                trust_repo=True
-            )
-            if evaluator.use_gpu and evaluator.device.startswith('cuda'):
-                evaluator.utmos_model = evaluator.utmos_model.to(evaluator.device)
         
         print(f"Model loading completed in: {time.time() - step_start:.2f} seconds")
         
@@ -444,6 +441,7 @@ class EnhancedCodecEvaluationPipeline:
                 print(f"Warning: Inference audio not found: {file_name}")
                 continue
             
+            # Check if we should skip this file
             if existing_results is not None:
                 existing_row = existing_results[existing_results['file_name'] == file_name]
                 if not existing_row.empty:
@@ -544,22 +542,20 @@ def main():
     
     parser.add_argument("--metrics", type=str, nargs='+', 
                        choices=["dwer", "dcer", "utmos", "pesq", "stoi"],
-                       default=["dwer", "utmos", "pesq", "stoi"],
-                       help="Metrics to compute (default: dwer utmos pesq stoi)")
+                       default=["dwer", "dcer", "utmos", "pesq", "stoi"],
+                       help="Metrics to compute")
     
-    # GPU acceleration options
     parser.add_argument("--use_gpu", action="store_true", default=True,
-                       help="Enable GPU acceleration (default: True)")
+                       help="Enable GPU acceleration")
     parser.add_argument("--gpu_id", type=int, default=0,
-                       help="GPU device ID to use (default: 0)")
+                       help="GPU device ID")
     parser.add_argument("--cpu_only", action="store_true",
-                       help="Force CPU-only computation (overrides --use_gpu)")
+                       help="Force CPU-only computation")
     parser.add_argument("--original_dir", type=str,
-                       help="Root directory path for original audio files (to resolve CSV relative paths)")
+                       help="Root directory path for original audio files")
     
     args = parser.parse_args()
     
-    # Handle GPU settings
     use_gpu = args.use_gpu and not args.cpu_only
     
     pipeline = EnhancedCodecEvaluationPipeline(

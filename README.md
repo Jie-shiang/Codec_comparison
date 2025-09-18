@@ -111,6 +111,7 @@ Once testing is successful, you can run .py file to clean your folder then can r
 python cleanup_test_files.py --dry_run
 python cleanup_test_files.py
 
+# For Example
 python cleanup_test_files.py \
     --project_dir /home/jieshiang/Desktop/GitHub/Codec_comparison \
     --yes
