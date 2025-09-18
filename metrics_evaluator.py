@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Audio Codec Metrics Evaluator
-=============================
 
 This module provides comprehensive audio quality and ASR accuracy evaluation metrics
 for neural audio codec assessment, including dWER/dCER, UTMOS, PESQ, and STOI.
@@ -26,13 +25,6 @@ class AudioMetricsEvaluator:
     """Audio quality and ASR accuracy metrics evaluator"""
     
     def __init__(self, language='en', device=None):
-        """
-        Initialize the metrics evaluator
-        
-        Args:
-            language (str): Language code ('en' for English, 'zh' for Chinese)
-            device (str): Device for model inference ('cuda:0', 'cpu', etc.)
-        """
         self.language = language
         self.device = device or ("cuda:0" if torch.cuda.is_available() else "cpu")
         self.asr_pipeline = None
@@ -59,38 +51,19 @@ class AudioMetricsEvaluator:
         print("All models loaded successfully!")
         
     def normalize_text(self, text: str) -> str:
-        """
-        Normalize text for WER/CER calculation
-        
-        Args:
-            text (str): Input text
-            
-        Returns:
-            str: Normalized text
-        """
+        """Normalize text for WER/CER calculation"""
         if self.language == 'zh':
-            # Chinese normalization: remove spaces and punctuation
             text = re.sub(r'[{}]'.format(re.escape(string.punctuation)), '', text)
             text = re.sub(r'\s+', '', text)
             return text.strip()
         else:
-            # English normalization: uppercase, remove punctuation, normalize spaces
             text = text.upper()
             text = text.translate(str.maketrans('', '', string.punctuation))
             text = ' '.join(text.split())
             return text
             
     def calculate_cer(self, reference: str, hypothesis: str) -> float:
-        """
-        Calculate Character Error Rate (CER)
-        
-        Args:
-            reference (str): Reference text
-            hypothesis (str): Hypothesis text
-            
-        Returns:
-            float: CER score
-        """
+        """Calculate Character Error Rate (CER)"""
         if not reference or not hypothesis:
             return 1.0
             
@@ -100,15 +73,7 @@ class AudioMetricsEvaluator:
         return jiwer.wer(ref_chars, hyp_chars)
     
     def transcribe_audio(self, audio_path: str) -> str:
-        """
-        Transcribe audio using ASR model
-        
-        Args:
-            audio_path (str): Path to audio file
-            
-        Returns:
-            str: Transcription text
-        """
+        """Transcribe audio using ASR model"""
         try:
             if self.language == 'zh':
                 result = self.asr_pipeline(
@@ -128,17 +93,7 @@ class AudioMetricsEvaluator:
             return ""
     
     def calculate_dwer_dcer(self, original_audio_path: str, inference_audio_path: str, ground_truth: str) -> dict:
-        """
-        Calculate dWER or dCER depending on language
-        
-        Args:
-            original_audio_path (str): Path to original audio
-            inference_audio_path (str): Path to inference audio
-            ground_truth (str): Ground truth transcription
-            
-        Returns:
-            dict: Evaluation results containing transcriptions and error rates
-        """
+        """Calculate dWER or dCER depending on language"""
         try:
             original_transcript = self.transcribe_audio(original_audio_path)
             inference_transcript = self.transcribe_audio(inference_audio_path)
@@ -179,15 +134,7 @@ class AudioMetricsEvaluator:
             return None
     
     def calculate_utmos(self, audio_path: str) -> float:
-        """
-        Calculate UTMOS score
-        
-        Args:
-            audio_path (str): Path to audio file
-            
-        Returns:
-            float: UTMOS score or None if error
-        """
+        """Calculate UTMOS score"""
         try:
             wave, sr = librosa.load(str(audio_path), sr=None, mono=True)
             with torch.no_grad():
@@ -198,16 +145,7 @@ class AudioMetricsEvaluator:
             return None
     
     def calculate_pesq(self, reference_path: str, degraded_path: str) -> float:
-        """
-        Calculate PESQ score
-        
-        Args:
-            reference_path (str): Path to reference audio
-            degraded_path (str): Path to degraded audio
-            
-        Returns:
-            float: PESQ score or None if error
-        """
+        """Calculate PESQ score"""
         try:
             ref_audio, _ = librosa.load(reference_path, sr=16000, mono=True)
             deg_audio, _ = librosa.load(degraded_path, sr=16000, mono=True)
@@ -216,7 +154,7 @@ class AudioMetricsEvaluator:
             ref_audio = ref_audio[:min_len]
             deg_audio = deg_audio[:min_len]
             
-            if min_len < 16000 * 0.1:  # At least 0.1 seconds
+            if min_len < 16000 * 0.1:
                 return None
                 
             pesq_score = pesq(16000, ref_audio, deg_audio, 'wb')
@@ -227,16 +165,7 @@ class AudioMetricsEvaluator:
             return None
     
     def calculate_stoi(self, reference_path: str, degraded_path: str) -> float:
-        """
-        Calculate STOI score
-        
-        Args:
-            reference_path (str): Path to reference audio
-            degraded_path (str): Path to degraded audio
-            
-        Returns:
-            float: STOI score or None if error
-        """
+        """Calculate STOI score"""
         try:
             ref_audio, _ = librosa.load(reference_path, sr=16000, mono=True)
             deg_audio, _ = librosa.load(degraded_path, sr=16000, mono=True)
@@ -253,25 +182,13 @@ class AudioMetricsEvaluator:
             return None
     
     def evaluate_audio_pair(self, original_path: str, inference_path: str, ground_truth: str) -> dict:
-        """
-        Evaluate a pair of audio files with all metrics
-        
-        Args:
-            original_path (str): Path to original audio
-            inference_path (str): Path to inference audio
-            ground_truth (str): Ground truth transcription
-            
-        Returns:
-            dict: Complete evaluation results
-        """
+        """Evaluate a pair of audio files with all metrics"""
         results = {}
         
-        # ASR evaluation
         asr_result = self.calculate_dwer_dcer(original_path, inference_path, ground_truth)
         if asr_result:
             results.update(asr_result)
         
-        # Quality metrics
         results['utmos'] = self.calculate_utmos(inference_path)
         results['pesq'] = self.calculate_pesq(original_path, inference_path)
         results['stoi'] = self.calculate_stoi(original_path, inference_path)
