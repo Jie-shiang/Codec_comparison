@@ -32,7 +32,7 @@ class CodecTestValidator:
                  frequency: str = "50Hz",
                  project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison",
                  use_gpu: bool = True,
-                 gpu_id: int = 0): project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison"):
+                 gpu_id: int = 0):
         
         self.inference_dir = Path(inference_dir)
         self.csv_file = Path(project_dir) / "csv" / csv_file
