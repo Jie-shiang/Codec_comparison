@@ -135,6 +135,24 @@ python enhanced_evaluation_pipeline.py \
     --use_gpu \
     --gpu_id 0
 
+python enhanced_evaluation_pipeline.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/common_voice_recon \
+    --csv_file common_voice_zh_TW_train_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "LSCodec" \
+    --frequency "50Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "0.45" \
+    --quantizers "1" \
+    --codebook_size "300" \
+    --n_params "N/A" \
+    --training_set "N/A" \
+    --testing_set "N/A" \
+    --metrics dcer utmos pesq stoi \
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 0
+
 
 # Option B: Compute metrics incrementally (recommended for large datasets)
 # Step 1: Compute dWER first (fastest)

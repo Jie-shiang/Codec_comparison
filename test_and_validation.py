@@ -435,16 +435,18 @@ class CodecTestValidator:
         
         results_df = pd.DataFrame(results)
         
-        test_csv_path = self.result_dir / f"test_detailed_results_{self.model_name}_{self.timestamp}.csv"
+        # Generate file paths with dataset suffix
+        dataset_suffix = self.base_dataset_name.lower()
+        test_csv_path = self.result_dir / f"test_detailed_results_{self.model_name}_{dataset_suffix}_{self.timestamp}.csv"
         results_df.to_csv(test_csv_path, index=False, encoding='utf-8')
         
         summary_data = self.create_test_summary_statistics(results_df)
-        summary_csv_path = self.result_dir / f"test_summary_results_{self.model_name}_{self.timestamp}.csv"
+        summary_csv_path = self.result_dir / f"test_summary_results_{self.model_name}_{dataset_suffix}_{self.timestamp}.csv"
         summary_df = pd.DataFrame([summary_data])
         summary_df.to_csv(summary_csv_path, index=False, encoding='utf-8')
         
         test_config = self.generate_test_config(results_df)
-        config_path = self.config_dir / f"test_config_{self.model_name}_{self.timestamp}.json"
+        config_path = self.config_dir / f"test_config_{self.model_name}_{dataset_suffix}_{self.timestamp}.json"
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(test_config, f, ensure_ascii=False, indent=2)
         

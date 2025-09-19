@@ -19,35 +19,35 @@
       "PESQ": "1.4",
       "STOI": "0.69"
     },
-    "Sample_1": {
+    "61-70968-0000": {
       "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
       "dWER": "0.00",
       "UTMOS": "4.1",
       "PESQ": "1.5",
       "STOI": "0.70"
     },
-    "Sample_2": {
-      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC...",
+    "121-121726-0000": {
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
       "dWER": "0.94",
       "UTMOS": "1.7",
       "PESQ": "1.1",
       "STOI": "0.41"
     },
-    "Sample_3": {
-      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE ...",
+    "237-126133-0000": {
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
       "dWER": "0.00",
       "UTMOS": "4.4",
       "PESQ": "1.6",
       "STOI": "0.75"
     },
-    "Sample_4": {
+    "260-123286-0000": {
       "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
       "dWER": "0.25",
       "UTMOS": "4.3",
       "PESQ": "1.6",
       "STOI": "0.71"
     },
-    "Sample_5": {
+    "672-122797-0000": {
       "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
       "dWER": "0.00",
       "UTMOS": "4.4",
@@ -62,12 +62,104 @@
       "STOI": "0.70"
     }
   },
-  "_selected_files": {
-    "Sample_1": "61-70968-0000",
-    "Sample_2": "121-121726-0000",
-    "Sample_3": "237-126133-0000",
-    "Sample_4": "260-123286-0000",
-    "Sample_5": "672-122797-0000",
-    "Error_Sample_1": "61-70970-0034"
+  "LibriSpeech_Noise": {
+    "Total": {
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_1": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_2": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_3": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_4": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_5": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Error_Sample_1": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    }
+  },
+  "LibriSpeech_Blank": {
+    "Total": {
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_1": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_2": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_3": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_4": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Sample_5": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    },
+    "Error_Sample_1": {
+      "Transcription": "",
+      "dWER": "0.00",
+      "UTMOS": "0.0",
+      "PESQ": "0.0",
+      "STOI": "0.00"
+    }
   }
 }

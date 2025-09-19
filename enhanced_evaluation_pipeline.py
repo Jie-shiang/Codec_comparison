@@ -74,7 +74,11 @@ class EnhancedCodecEvaluationPipeline:
         self.start_time = None
         self.end_time = None
         
-        self.result_csv_path = self.result_dir / f"detailed_results_{self.model_name}_{self.dataset_type}.csv"
+        # Language and dataset will be detected when loading CSV
+        self.language = None
+        self.base_dataset_name = None
+        self.dataset_name = None
+        self.result_csv_path = None
         
         print(f"Initializing enhanced evaluation pipeline:")
         print(f"  Model: {self.model_name}")
@@ -87,7 +91,6 @@ class EnhancedCodecEvaluationPipeline:
         if self.original_dir:
             print(f"  Original files directory: {self.original_dir}")
         print(f"  Inference directory: {self.inference_dir}")
-        print(f"  Result CSV: {self.result_csv_path}")
         
     def load_csv_data(self):
         """Load CSV dataset file and detect language"""
@@ -96,6 +99,7 @@ class EnhancedCodecEvaluationPipeline:
             print(f"Successfully loaded CSV: {self.csv_file}")
             print(f"Number of samples: {len(df)}")
             
+            # Detect language and dataset type
             if 'common_voice' in str(self.csv_file).lower():
                 self.language = 'zh'
                 self.base_dataset_name = 'CommonVoice'
@@ -105,19 +109,30 @@ class EnhancedCodecEvaluationPipeline:
                 self.base_dataset_name = 'LibriSpeech'
                 print("Detected English dataset, will use dWER evaluation")
             
+            # Set dataset name based on type
             if self.dataset_type == "clean":
                 self.dataset_name = self.base_dataset_name
-                self.dataset_suffix = ""
             elif self.dataset_type == "noise":
                 self.dataset_name = f"{self.base_dataset_name}_Noise"
-                self.dataset_suffix = "/Noise"
             elif self.dataset_type == "blank":
                 self.dataset_name = f"{self.base_dataset_name}_Blank"
-                self.dataset_suffix = "/Blank"
             else:
                 raise ValueError(f"Unsupported dataset type: {self.dataset_type}")
-                
+            
+            # Set result file paths now that we know the dataset
+            dataset_suffix = self.base_dataset_name.lower()
+            self.result_csv_path = self.result_dir / f"detailed_results_{self.model_name}_{self.dataset_type}_{dataset_suffix}.csv"
+            
             print(f"Complete dataset name: {self.dataset_name}")
+            print(f"Result CSV will be saved as: {self.result_csv_path}")
+            
+            # Auto-add correct primary metric for detected language
+            if self.language == 'zh' and 'dcer' not in self.metrics_to_compute:
+                self.metrics_to_compute.append('dcer')
+                print(f"Auto-added dCER for Chinese dataset")
+            elif self.language == 'en' and 'dwer' not in self.metrics_to_compute:
+                self.metrics_to_compute.append('dwer')
+                print(f"Auto-added dWER for English dataset")
                 
             return df
             
@@ -127,7 +142,7 @@ class EnhancedCodecEvaluationPipeline:
     
     def load_existing_results(self) -> pd.DataFrame:
         """Load existing results CSV if it exists"""
-        if self.result_csv_path.exists():
+        if self.result_csv_path and self.result_csv_path.exists():
             try:
                 existing_df = pd.read_csv(self.result_csv_path, encoding='utf-8')
                 print(f"Found existing results CSV with {len(existing_df)} records")
@@ -255,11 +270,14 @@ class EnhancedCodecEvaluationPipeline:
     def save_results(self, results_df: pd.DataFrame) -> None:
         """Save detailed and summary results"""
         
+        # Save detailed results
         detailed_csv_path = self.result_csv_path
         results_df.to_csv(detailed_csv_path, index=False, encoding='utf-8')
         print(f"Detailed results saved: {detailed_csv_path}")
         
-        summary_csv_path = self.result_dir / f"summary_results_{self.model_name}_{self.dataset_type}.csv"
+        # Save summary results with correct naming
+        dataset_suffix = self.base_dataset_name.lower()
+        summary_csv_path = self.result_dir / f"summary_results_{self.model_name}_{self.dataset_type}_{dataset_suffix}.csv"
         summary_data = self.create_summary_statistics(results_df)
         
         if summary_data:
@@ -382,135 +400,6 @@ class EnhancedCodecEvaluationPipeline:
         
         print(f"\n" + "="*70)
     
-    def run_evaluation(self):
-        """Execute selective evaluation pipeline"""
-        self.start_time = time.time()
-        
-        print("=" * 60)
-        print("Starting Enhanced Neural Audio Codec Evaluation")
-        print("=" * 60)
-        
-        step_start = time.time()
-        df = self.load_csv_data()
-        print(f"Data loading completed in: {time.time() - step_start:.2f} seconds")
-        
-        step_start = time.time()
-        existing_results = self.load_existing_results()
-        print(f"Existing results check completed in: {time.time() - step_start:.2f} seconds")
-        
-        step_start = time.time()
-        evaluator = AudioMetricsEvaluator(
-            language=self.language,
-            use_gpu=self.use_gpu,
-            gpu_id=self.gpu_id
-        )
-        
-        need_asr = (self.language == 'zh' and 'dcer' in self.metrics_to_compute) or \
-                   (self.language == 'en' and 'dwer' in self.metrics_to_compute)
-        need_utmos = 'utmos' in self.metrics_to_compute
-        
-        if need_asr or need_utmos:
-            evaluator.load_models()
-        
-        print(f"Model loading completed in: {time.time() - step_start:.2f} seconds")
-        
-        if existing_results is None:
-            results_df = self.create_empty_result_dataframe(df)
-        else:
-            results_df = existing_results.copy()
-        
-        new_results = []
-        processed_count = 0
-        
-        print(f"\nStarting evaluation of {len(df)} audio files...")
-        print(f"Computing metrics: {', '.join(self.metrics_to_compute)}")
-        evaluation_start = time.time()
-        
-        for idx, row in tqdm(df.iterrows(), total=len(df), desc="Evaluation Progress"):
-            file_name = row['file_name']
-            ground_truth = row['transcription']
-            original_path = self.resolve_original_path(row['file_path'])
-            
-            inference_path = self.find_inference_audio(file_name)
-            
-            if not original_path.exists():
-                print(f"Warning: Original audio not found: {original_path}")
-                continue
-                
-            if not inference_path or not inference_path.exists():
-                print(f"Warning: Inference audio not found: {file_name}")
-                continue
-            
-            # Check if we should skip this file
-            if existing_results is not None:
-                existing_row = existing_results[existing_results['file_name'] == file_name]
-                if not existing_row.empty:
-                    skip_file = True
-                    for metric in self.metrics_to_compute:
-                        if metric == 'dwer' and self.language == 'en':
-                            if pd.isna(existing_row['dwer'].iloc[0]):
-                                skip_file = False
-                                break
-                        elif metric == 'dcer' and self.language == 'zh':
-                            if pd.isna(existing_row['dcer'].iloc[0]):
-                                skip_file = False
-                                break
-                        elif metric in ['utmos', 'pesq', 'stoi']:
-                            if pd.isna(existing_row[metric].iloc[0]):
-                                skip_file = False
-                                break
-                    
-                    if skip_file:
-                        continue
-            
-            try:
-                metrics_result = self.evaluate_metrics_selectively(
-                    evaluator, str(original_path), str(inference_path), ground_truth
-                )
-                
-                if metrics_result:
-                    result_data = {'file_name': file_name}
-                    result_data.update(metrics_result)
-                    new_results.append(result_data)
-                    processed_count += 1
-                
-            except Exception as e:
-                print(f"Error evaluating file {file_name}: {e}")
-                continue
-        
-        evaluation_time = time.time() - evaluation_start
-        print(f"Audio evaluation completed in: {evaluation_time:.2f} seconds")
-        print(f"Processed {processed_count} files")
-        
-        if new_results:
-            step_start = time.time()
-            results_df = self.merge_results(existing_results, new_results)
-            print(f"Result merging completed in: {time.time() - step_start:.2f} seconds")
-        
-        step_start = time.time()
-        self.save_results(results_df)
-        print(f"Result saving completed in: {time.time() - step_start:.2f} seconds")
-        
-        # Generate config file and copy sample audio files
-        if processed_count > 0:
-            step_start = time.time()
-            self.generate_config_and_copy_files(results_df)
-            print(f"Config generation and file copying completed in: {time.time() - step_start:.2f} seconds")
-        
-        self.end_time = time.time()
-        total_time = self.end_time - self.start_time
-        
-        print("\n" + "=" * 60)
-        print("Enhanced Evaluation Completed Successfully!")
-        print("=" * 60)
-        print(f"Total execution time: {total_time:.2f} seconds ({total_time/60:.1f} minutes)")
-        if processed_count > 0:
-            print(f"Average per file: {evaluation_time/processed_count:.2f} seconds")
-        print(f"Processed: {processed_count} files")
-        print(f"Result file: {self.result_csv_path}")
-        
-        return results_df
-    
     def generate_config_and_copy_files(self, results_df: pd.DataFrame) -> None:
         """Generate JSON config and copy sample audio files"""
         if len(results_df) == 0:
@@ -571,12 +460,8 @@ class EnhancedCodecEvaluationPipeline:
         }
         
         # Create all dataset sections (preserve existing data)
-        if self.base_dataset_name == 'LibriSpeech':
-            all_datasets = ["LibriSpeech", "LibriSpeech_Noise", "LibriSpeech_Blank"]
-        elif self.base_dataset_name == 'CommonVoice':
-            all_datasets = ["CommonVoice", "CommonVoice_Noise", "CommonVoice_Blank"]
-        else:
-            all_datasets = [self.dataset_name]
+        all_datasets = ["LibriSpeech", "LibriSpeech_Noise", "LibriSpeech_Blank", 
+                       "CommonVoice", "CommonVoice_Noise", "CommonVoice_Blank"]
         
         for dataset in all_datasets:
             if dataset == self.dataset_name:
@@ -588,7 +473,7 @@ class EnhancedCodecEvaluationPipeline:
                 config[dataset] = existing_config[dataset]
                 print(f"Preserved existing {dataset} section")
             else:
-                # Create placeholder with correct metric name
+                # Create placeholder
                 config[dataset] = self.create_dataset_specific_placeholder(dataset)
                 print(f"Created placeholder {dataset} section")
         
@@ -641,64 +526,6 @@ class EnhancedCodecEvaluationPipeline:
         
         return dataset_section
     
-    def create_placeholder_dataset_section(self) -> dict:
-        """Create placeholder dataset section"""
-        # Always use dWER for LibriSpeech and dCER for CommonVoice in placeholders
-        # Since we don't know what dataset this placeholder is for, 
-        # we'll create a generic structure that works for both
-        placeholder_section = {
-            "Total": {
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            },
-            "Sample_1": {
-                'Transcription': "",
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            },
-            "Sample_2": {
-                'Transcription': "",
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            },
-            "Sample_3": {
-                'Transcription': "",
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            },
-            "Sample_4": {
-                'Transcription': "",
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            },
-            "Sample_5": {
-                'Transcription': "",
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            },
-            "Error_Sample_1": {
-                'Transcription': "",
-                "dWER": "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
-            }
-        }
-        
-        return placeholder_section
-    
     def create_dataset_specific_placeholder(self, dataset_name: str) -> dict:
         """Create placeholder section with correct metric name for specific dataset"""
         # Determine metric based on dataset
@@ -709,29 +536,29 @@ class EnhancedCodecEvaluationPipeline:
             
         placeholder_section = {
             "Total": {
-                metric_name: "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
+                metric_name: "N/A",
+                'UTMOS': "N/A",
+                'PESQ': "N/A",
+                'STOI': "N/A"
             }
         }
         
         # Add sample entries
         for i in range(1, 6):
             placeholder_section[f"Sample_{i}"] = {
-                'Transcription': "",
-                metric_name: "0.00",
-                'UTMOS': "0.0",
-                'PESQ': "0.0",
-                'STOI': "0.00"
+                'Transcription': "N/A",
+                metric_name: "N/A",
+                'UTMOS': "N/A",
+                'PESQ': "N/A",
+                'STOI': "N/A"
             }
         
         placeholder_section["Error_Sample_1"] = {
-            'Transcription': "",
-            metric_name: "0.00",
-            'UTMOS': "0.0",
-            'PESQ': "0.0",
-            'STOI': "0.00"
+            'Transcription': "N/A",
+            metric_name: "N/A",
+            'UTMOS': "N/A",
+            'PESQ': "N/A",
+            'STOI': "N/A"
         }
         
         return placeholder_section
@@ -760,8 +587,6 @@ class EnhancedCodecEvaluationPipeline:
         inference_dir.mkdir(parents=True, exist_ok=True)
         
         print(f"Copying sample audio files to {dataset_dir}...")
-        print(f"  Original files: {original_dir}")
-        print(f"  Inference files: {inference_dir}")
         
         # Get valid results for file selection
         metric_col = 'dcer' if self.language == 'zh' else 'dwer'
@@ -806,9 +631,6 @@ class EnhancedCodecEvaluationPipeline:
                 print(f"  Warning: Could not find files for {base_name}")
         
         print(f"Successfully copied {copied_count} sample pairs to audio directory")
-        print(f"Audio files can be accessed via web interface at:")
-        print(f"  Original: audio/{audio_dataset_path}/original/")
-        print(f"  Inference: audio/{audio_dataset_path}/{self.model_name}/{self.frequency}/")
     
     def select_diverse_samples(self, valid_results: pd.DataFrame) -> list:
         """Select diverse samples - first utterance from different speakers when possible"""
@@ -816,7 +638,6 @@ class EnhancedCodecEvaluationPipeline:
         
         if self.base_dataset_name == 'LibriSpeech':
             # For LibriSpeech: select first utterance from different speakers
-            # Sort by speaker-chapter-utterance to get first utterance from each speaker
             results_with_keys = valid_results.copy()
             results_with_keys['sort_key'] = results_with_keys['file_name'].apply(
                 lambda x: self.parse_librispeech_id(x)
@@ -887,95 +708,129 @@ class EnhancedCodecEvaluationPipeline:
                 return (0, 0, 0)
         except:
             return (0, 0, 0)
+    
+    def run_evaluation(self):
+        """Execute selective evaluation pipeline"""
+        self.start_time = time.time()
+        
+        print("=" * 60)
+        print("Starting Enhanced Neural Audio Codec Evaluation")
+        print("=" * 60)
+        
+        step_start = time.time()
+        df = self.load_csv_data()
+        print(f"Data loading completed in: {time.time() - step_start:.2f} seconds")
+        
+        step_start = time.time()
+        existing_results = self.load_existing_results()
+        print(f"Existing results check completed in: {time.time() - step_start:.2f} seconds")
+        
+        step_start = time.time()
+        evaluator = AudioMetricsEvaluator(
+            language=self.language,
+            use_gpu=self.use_gpu,
+            gpu_id=self.gpu_id
+        )
+        
+        need_asr = (self.language == 'zh' and 'dcer' in self.metrics_to_compute) or \
+                   (self.language == 'en' and 'dwer' in self.metrics_to_compute)
+        need_utmos = 'utmos' in self.metrics_to_compute
+        
+        if need_asr or need_utmos:
+            evaluator.load_models()
+        
+        print(f"Model loading completed in: {time.time() - step_start:.2f} seconds")
+        
+        if existing_results is None:
+            results_df = self.create_empty_result_dataframe(df)
+        else:
+            results_df = existing_results.copy()
+        
+        new_results = []
+        processed_count = 0
+        
+        print(f"Starting evaluation of {len(df)} audio files...")
+        print(f"Language detected: {self.language}")
+        print(f"Primary metric: {'dCER' if self.language == 'zh' else 'dWER'}")
+        print(f"Computing metrics: {', '.join(self.metrics_to_compute)}")
+        evaluation_start = time.time()
+        
+        for idx, row in tqdm(df.iterrows(), total=len(df), desc="Evaluation Progress"):
+            file_name = row['file_name']
+            ground_truth = row['transcription']
+            original_path = self.resolve_original_path(row['file_path'])
+            
+            inference_path = self.find_inference_audio(file_name)
+            
+            if not original_path.exists():
+                continue
+                
+            if not inference_path or not inference_path.exists():
+                continue
+            
+            # Simple check: process if no existing results or primary metric missing
+            should_process = True
+            if existing_results is not None:
+                existing_row = existing_results[existing_results['file_name'] == file_name]
+                if not existing_row.empty:
+                    primary_metric_col = 'dcer' if self.language == 'zh' else 'dwer'
+                    if primary_metric_col in existing_row.columns:
+                        if not pd.isna(existing_row[primary_metric_col].iloc[0]):
+                            should_process = False
+            
+            if not should_process:
+                continue
+            
+            try:
+                metrics_result = self.evaluate_metrics_selectively(
+                    evaluator, str(original_path), str(inference_path), ground_truth
+                )
+                
+                if metrics_result:
+                    result_data = {'file_name': file_name}
+                    result_data.update(metrics_result)
+                    new_results.append(result_data)
+                    processed_count += 1
+                
+            except Exception as e:
+                print(f"Error evaluating file {file_name}: {e}")
+                continue
+        
+        evaluation_time = time.time() - evaluation_start
+        print(f"Audio evaluation completed in: {evaluation_time:.2f} seconds")
+        print(f"Processed {processed_count} files")
+        
+        if new_results:
+            step_start = time.time()
+            results_df = self.merge_results(existing_results, new_results)
+            print(f"Result merging completed in: {time.time() - step_start:.2f} seconds")
+        
+        step_start = time.time()
+        self.save_results(results_df)
+        print(f"Result saving completed in: {time.time() - step_start:.2f} seconds")
+        
+        # Generate config file and copy sample audio files
+        if processed_count > 0 or len(results_df) > 0:
+            step_start = time.time()
+            self.generate_config_and_copy_files(results_df)
+            print(f"Config generation and file copying completed in: {time.time() - step_start:.2f} seconds")
+        
+        self.end_time = time.time()
+        total_time = self.end_time - self.start_time
+        
+        print("\n" + "=" * 60)
+        print("Enhanced Evaluation Completed Successfully!")
+        print("=" * 60)
+        print(f"Total execution time: {total_time:.2f} seconds ({total_time/60:.1f} minutes)")
+        if processed_count > 0:
+            print(f"Average per file: {evaluation_time/processed_count:.2f} seconds")
+        print(f"Processed: {processed_count} files")
+        print(f"Result file: {self.result_csv_path}")
+        
+        return results_df
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Enhanced Neural Audio Codec Evaluation Pipeline")
-    
-    parser.add_argument("--inference_dir", required=True, type=str,
-                       help="Directory path containing inference audio files")
-    parser.add_argument("--csv_file", required=True, type=str,
-                       help="CSV dataset filename (must be in ./csv/ directory)")
-    parser.add_argument("--model_name", required=True, type=str,
-                       help="Name of codec model")
-    parser.add_argument("--frequency", required=True, type=str,
-                       help="Frame rate (e.g., 50Hz)")
-    parser.add_argument("--causality", required=True, type=str,
-                       choices=["Causal", "Non-Causal"],
-                       help="Model causality type")
-    parser.add_argument("--bit_rate", required=True, type=str,
-                       help="Compression bit rate")
-    
-    parser.add_argument("--dataset_type", type=str, 
-                       choices=["clean", "noise", "blank"], default="clean",
-                       help="Dataset type (clean/noise/blank)")
-    parser.add_argument("--project_dir", type=str,
-                       default="/home/jieshiang/Desktop/GitHub/Codec_comparison",
-                       help="Project root directory path")
-    parser.add_argument("--quantizers", type=str, default="4",
-                       help="Number of quantizers")
-    parser.add_argument("--codebook_size", type=str, default="1024",
-                       help="Codebook size")
-    parser.add_argument("--n_params", type=str, default="45M",
-                       help="Number of model parameters")
-    parser.add_argument("--training_set", type=str, default="Custom Dataset",
-                       help="Training dataset description")
-    parser.add_argument("--testing_set", type=str, default="Custom Test Set",
-                       help="Testing dataset description")
-    
-    parser.add_argument("--metrics", type=str, nargs='+', 
-                       choices=["dwer", "dcer", "utmos", "pesq", "stoi"],
-                       default=["dwer", "dcer", "utmos", "pesq", "stoi"],
-                       help="Metrics to compute")
-    
-    parser.add_argument("--use_gpu", action="store_true", default=True,
-                       help="Enable GPU acceleration")
-    parser.add_argument("--gpu_id", type=int, default=0,
-                       help="GPU device ID")
-    parser.add_argument("--cpu_only", action="store_true",
-                       help="Force CPU-only computation")
-    parser.add_argument("--original_dir", type=str,
-                       help="Root directory path for original audio files")
-    
-    args = parser.parse_args()
-    
-    use_gpu = args.use_gpu and not args.cpu_only
-    
-    pipeline = EnhancedCodecEvaluationPipeline(
-        inference_dir=args.inference_dir,
-        csv_file=args.csv_file,
-        model_name=args.model_name,
-        frequency=args.frequency,
-        causality=args.causality,
-        bit_rate=args.bit_rate,
-        dataset_type=args.dataset_type,
-        project_dir=args.project_dir,
-        quantizers=args.quantizers,
-        codebook_size=args.codebook_size,
-        n_params=args.n_params,
-        training_set=args.training_set,
-        testing_set=args.testing_set,
-        metrics_to_compute=args.metrics,
-        use_gpu=use_gpu,
-        gpu_id=args.gpu_id,
-        original_dir=args.original_dir
-    )
-    
-    try:
-        results_df = pipeline.run_evaluation()
-        print("\nProgram executed successfully!")
-        
-    except KeyboardInterrupt:
-        print("\nProgram interrupted by user!")
-        
-    except Exception as e:
-        print(f"\nError during execution: {e}")
-        import traceback
-        traceback.print_exc()
-
-
-if __name__ == "__main__":
-    main()
     parser = argparse.ArgumentParser(description="Enhanced Neural Audio Codec Evaluation Pipeline")
     
     parser.add_argument("--inference_dir", required=True, type=str,
