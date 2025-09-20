@@ -382,7 +382,7 @@
                             <select id="dataset-type">
                                 <option value="librispeech">LibriSpeech</option>
                                 <option value="commonvoice">Common Voice</option>
-                                <option value="both">LibriSpeech + Common Voice</option>
+                                <option value="both" selected>LibriSpeech + Common Voice</option>
                             </select>
                             <select id="dataset-variant">
                                 <option value="clean" selected>Clean</option>
@@ -962,4 +962,43 @@
                     
                     if (rows) {
                         tablesHtml += `
-                            <div class="datas
+                            <div class="dataset-section">
+                                <div class="dataset-title">${title}</div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            ${createTableHeaders()}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${rows}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            return tablesHtml;
+        }
+        
+        document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('dataset-type').addEventListener('change', renderModelSections);
+        document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
+        document.getElementById('sample-count').addEventListener('change', renderModelSections);
+        
+        [
+            'show-lscodec', 'show-focalcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-dataset',
+            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-transcript'
+        ].forEach(id => {
+            document.getElementById(id).addEventListener('change', renderModelSections);
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllCodecData();
+        });
+    </script>
+</body>
+</html>
