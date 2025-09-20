@@ -64,102 +64,252 @@
   },
   "LibriSpeech_Noise": {
     "Total": {
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_1": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_2": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_3": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_4": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_5": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Error_Sample_1": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     }
   },
   "LibriSpeech_Blank": {
     "Total": {
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_1": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_2": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_3": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_4": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Sample_5": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     },
     "Error_Sample_1": {
-      "Transcription": "",
-      "dWER": "0.00",
-      "UTMOS": "0.0",
-      "PESQ": "0.0",
-      "STOI": "0.00"
+      "Transcription": "N/A",
+      "dWER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "dCER": "0.25",
+      "UTMOS": "3.0",
+      "PESQ": "1.4",
+      "STOI": "0.65"
+    },
+    "common_voice_zh-TW_30162459": {
+      "Transcription": "高雄市公車五甲幹線",
+      "dCER": "0.67",
+      "UTMOS": "3.2",
+      "PESQ": "1.2",
+      "STOI": "0.64"
+    },
+    "common_voice_zh-TW_24477793": {
+      "Transcription": "肉！很多肉！",
+      "dCER": "0.25",
+      "UTMOS": "2.9",
+      "PESQ": "1.2",
+      "STOI": "0.58"
+    },
+    "common_voice_zh-TW_24478020": {
+      "Transcription": "大家愛轉傳",
+      "dCER": "0.60",
+      "UTMOS": "3.0",
+      "PESQ": "1.4",
+      "STOI": "0.68"
+    },
+    "common_voice_zh-TW_25342071": {
+      "Transcription": "結果很平和",
+      "dCER": "0.20",
+      "UTMOS": "3.3",
+      "PESQ": "1.5",
+      "STOI": "0.37"
+    },
+    "common_voice_zh-TW_20748925": {
+      "Transcription": "英文數字請盡量轉為中文",
+      "dCER": "0.00",
+      "UTMOS": "3.4",
+      "PESQ": "1.5",
+      "STOI": "0.66"
+    },
+    "Error_Sample_1": {
+      "Transcription": "我是一隻鶴",
+      "dCER": "1.00",
+      "UTMOS": "1.9",
+      "PESQ": "1.1",
+      "STOI": "0.52"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice_Blank": {
+    "Total": {
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "Transcription": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
     }
   }
 }
