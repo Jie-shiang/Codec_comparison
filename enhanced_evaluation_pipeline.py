@@ -492,12 +492,12 @@ class EnhancedCodecEvaluationPipeline:
         # Select diverse samples
         selected_samples = self.select_diverse_samples(valid_results)
         
-        # Generate sample entries using file names as keys
+        # Generate sample entries with file names
         samples = {}
         for sample_name, row in selected_samples:
             if sample_name.startswith('Sample_'):
-                file_key = Path(row['file_name']).stem
-                samples[file_key] = {
+                samples[sample_name] = {
+                    'File_name': Path(row['file_name']).stem,  # 新增 File_name 欄位
                     'Transcription': row['ground_truth'],
                     metric_name: f"{row[metric_col]:.2f}",
                     'UTMOS': f"{row['utmos']:.1f}",
@@ -510,6 +510,7 @@ class EnhancedCodecEvaluationPipeline:
         for sample_name, row in selected_samples:
             if sample_name == 'Error_Sample_1':
                 error_sample_data = {
+                    'File_name': Path(row['file_name']).stem,  # 新增 File_name 欄位
                     'Transcription': row['ground_truth'],
                     metric_name: f"{row[metric_col]:.2f}",
                     'UTMOS': f"{row['utmos']:.1f}",
@@ -546,6 +547,7 @@ class EnhancedCodecEvaluationPipeline:
         # Add sample entries
         for i in range(1, 6):
             placeholder_section[f"Sample_{i}"] = {
+                'File_name': "N/A",
                 'Transcription': "N/A",
                 metric_name: "N/A",
                 'UTMOS': "N/A",
@@ -554,6 +556,7 @@ class EnhancedCodecEvaluationPipeline:
             }
         
         placeholder_section["Error_Sample_1"] = {
+            'File_name': "N/A",
             'Transcription': "N/A",
             metric_name: "N/A",
             'UTMOS': "N/A",
@@ -620,7 +623,7 @@ class EnhancedCodecEvaluationPipeline:
                     
                     # Show which key will be used in JSON
                     if sample_name.startswith('Sample_'):
-                        print(f"  Copied sample (JSON key: {base_name}): {base_name}")
+                        print(f"  Copied sample (JSON key: {sample_name}, File_name: {base_name}): {base_name}")
                     else:
                         print(f"  Copied {sample_name}: {base_name}")
                     copied_count += 1

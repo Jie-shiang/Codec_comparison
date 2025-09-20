@@ -613,6 +613,7 @@ class CodecTestValidator:
         for i in range(min(5, len(results_df))):
             row = results_df.iloc[i]
             samples[f'Sample_{i+1}'] = {
+                'File_name': Path(row['file_name']).stem,  # 新增 File_name 欄位
                 'Transcription': row['ground_truth'][:50] + '...' if len(row['ground_truth']) > 50 else row['ground_truth'],
                 metric_name: f"{row[metric_col]:.2f}",
                 'UTMOS': f"{row['utmos']:.1f}",
@@ -641,6 +642,7 @@ class CodecTestValidator:
                 "Total": total_stats,
                 **samples,
                 "Error_Sample_1": {
+                    'File_name': Path(error_sample['file_name']).stem,  # 新增 File_name 欄位
                     'Transcription': error_sample['ground_truth'][:50] + '...' if len(error_sample['ground_truth']) > 50 else error_sample['ground_truth'],
                     metric_name: f"{error_sample[metric_col]:.2f}",
                     'UTMOS': f"{error_sample['utmos']:.1f}",
