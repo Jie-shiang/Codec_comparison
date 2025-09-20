@@ -89,6 +89,7 @@ python test_and_validation.py \
     --model_name "TestCodec" \
     --mode test \
     --num_samples 20 \
+    --use_gpu \
     --gpu_id 0
 
 # For Example
@@ -99,6 +100,7 @@ python test_and_validation.py \
     --model_name "TestCodec" \
     --mode test \
     --num_samples 20 \
+    --use_gpu \
     --gpu_id 0
 ```
 

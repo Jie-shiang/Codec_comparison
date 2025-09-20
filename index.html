@@ -382,6 +382,7 @@
                             <select id="dataset-type">
                                 <option value="librispeech">LibriSpeech</option>
                                 <option value="commonvoice">Common Voice</option>
+                                <option value="both">LibriSpeech + Common Voice</option>
                             </select>
                             <select id="dataset-variant">
                                 <option value="clean" selected>Clean</option>
@@ -898,24 +899,58 @@
             
             let datasetsToShow = [];
             
-            if (datasetVariant === 'clean') {
-                datasetsToShow = [[datasetType, datasetTitles[datasetType]]];
-            } else if (datasetVariant === 'clean-noise') {
-                datasetsToShow = [
-                    [datasetType, datasetTitles[datasetType]],
-                    [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]]
-                ];
-            } else if (datasetVariant === 'clean-blank') {
-                datasetsToShow = [
-                    [datasetType, datasetTitles[datasetType]],
-                    [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
-                ];
-            } else if (datasetVariant === 'all') {
-                datasetsToShow = [
-                    [datasetType, datasetTitles[datasetType]],
-                    [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]],
-                    [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
-                ];
+            if (datasetType === 'both') {
+                // 當選擇 "both" 時，顯示 LibriSpeech 和 CommonVoice
+                if (datasetVariant === 'clean') {
+                    datasetsToShow = [
+                        ['librispeech', datasetTitles['librispeech']],
+                        ['commonvoice', datasetTitles['commonvoice']]
+                    ];
+                } else if (datasetVariant === 'clean-noise') {
+                    datasetsToShow = [
+                        ['librispeech', datasetTitles['librispeech']],
+                        ['librispeech-noise', datasetTitles['librispeech-noise']],
+                        ['commonvoice', datasetTitles['commonvoice']],
+                        ['commonvoice-noise', datasetTitles['commonvoice-noise']]
+                    ];
+                } else if (datasetVariant === 'clean-blank') {
+                    datasetsToShow = [
+                        ['librispeech', datasetTitles['librispeech']],
+                        ['librispeech-blank', datasetTitles['librispeech-blank']],
+                        ['commonvoice', datasetTitles['commonvoice']],
+                        ['commonvoice-blank', datasetTitles['commonvoice-blank']]
+                    ];
+                } else if (datasetVariant === 'all') {
+                    datasetsToShow = [
+                        ['librispeech', datasetTitles['librispeech']],
+                        ['librispeech-noise', datasetTitles['librispeech-noise']],
+                        ['librispeech-blank', datasetTitles['librispeech-blank']],
+                        ['commonvoice', datasetTitles['commonvoice']],
+                        ['commonvoice-noise', datasetTitles['commonvoice-noise']],
+                        ['commonvoice-blank', datasetTitles['commonvoice-blank']]
+                    ];
+                }
+            } else {
+                // 原本的邏輯，針對單一資料集
+                if (datasetVariant === 'clean') {
+                    datasetsToShow = [[datasetType, datasetTitles[datasetType]]];
+                } else if (datasetVariant === 'clean-noise') {
+                    datasetsToShow = [
+                        [datasetType, datasetTitles[datasetType]],
+                        [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]]
+                    ];
+                } else if (datasetVariant === 'clean-blank') {
+                    datasetsToShow = [
+                        [datasetType, datasetTitles[datasetType]],
+                        [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
+                    ];
+                } else if (datasetVariant === 'all') {
+                    datasetsToShow = [
+                        [datasetType, datasetTitles[datasetType]],
+                        [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]],
+                        [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
+                    ];
+                }
             }
             
             for (const [dataset, title] of datasetsToShow) {
@@ -927,43 +962,4 @@
                     
                     if (rows) {
                         tablesHtml += `
-                            <div class="dataset-section">
-                                <div class="dataset-title">${title}</div>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            ${createTableHeaders()}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${rows}
-                                    </tbody>
-                                </table>
-                            </div>
-                        `;
-                    }
-                }
-            }
-            
-            return tablesHtml;
-        }
-        
-        document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('dataset-type').addEventListener('change', renderModelSections);
-        document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
-        document.getElementById('sample-count').addEventListener('change', renderModelSections);
-        
-        [
-            'show-lscodec', 'show-focalcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-dataset',
-            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-transcript'
-        ].forEach(id => {
-            document.getElementById(id).addEventListener('change', renderModelSections);
-        });
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAllCodecData();
-        });
-    </script>
-</body>
-</html>
+                            <div class="datas
