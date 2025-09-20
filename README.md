@@ -53,7 +53,8 @@ pip install -r requirements.txt
 ### Step 2: File Preparation and Validation
 
 Before running evaluation, validate your inference files:
-Notice: The CSV files provide relative paths instead of absolute paths.
+⚠️Notice: The CSV files provide relative paths instead of absolute paths.
+Please check your 
 For Example:
 csv path: /librispeech/LibriSpeech/test-clean
 original file at /mnt/Internal/ASR/librispeech/LibriSpeech/test-clean
@@ -107,6 +108,7 @@ python test_and_validation.py \
 ### Step 4: Production Evaluation
 
 Once testing is successful, you can run .py file to clean your folder then can run the full evaluation:
+⚠️ Make sure your result folder be clean.
 
 ```bash
 # Clean Test files
