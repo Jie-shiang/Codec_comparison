@@ -3,7 +3,7 @@
     "modelName": "BigCodec",
     "causality": "Causal",
     "trainingSet": "LibriSpeech + train-clean",
-    "testingSet": "LibriSpeech + test-clean",
+    "testingSet": "LibriSpeech + test-clean + MLS",
     "bitRate": "1.04",
     "parameters": {
       "frameRate": "80",

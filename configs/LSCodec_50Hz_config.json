@@ -2,8 +2,8 @@
   "model_info": {
     "modelName": "LSCodec",
     "causality": "Non-Causal",
-    "trainingSet": "N/A",
-    "testingSet": "N/A",
+    "trainingSet": "LibriTTS All train splits",
+    "testingSet": "LibriTTS test-clean splittestset-B",
     "bitRate": "0.45",
     "parameters": {
       "frameRate": "50",
