@@ -336,6 +336,13 @@
                                 <option value="50Hz">50Hz</option>
                             </select>
                         </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-bigcodec" checked>
+                            <label for="show-bigcodec">BigCodec</label>
+                            <select id="bigcodec-freq">
+                                <option value="80Hz">80Hz</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -500,6 +507,7 @@
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '12.5Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '25Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '50Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'BigCodec', '80Hz'));
             }
             
             await Promise.all(loadPromises);
@@ -512,7 +520,6 @@
             renderModelSections();
         }
 
-        // 修改 getCodecData 函數，新增 filename 選項
         function getCodecData(dataset, codecType, frequency, fileId, dataType) {
             try {
                 const codecData = datasets[dataset].codecData[codecType]?.[frequency];
@@ -529,12 +536,12 @@
                     case 'utmos':
                         return fileData.UTMOS || null;
                     case 'dwer':
-                        return fileData.dWER || fileData.dCER || null; // 支援 dCER (Common Voice)
+                        return fileData.dWER || fileData.dCER || null;
                     case 'pesq':
                         return fileData.PESQ || null;
                     case 'stoi':
                         return fileData.STOI || null;
-                    case 'filename':  // 新增：取得實際檔案名稱
+                    case 'filename':
                         return fileData.File_name || null;
                     default:
                         return null;
@@ -564,17 +571,14 @@
             }
         }
 
-        // 修改 getAudioPath 函數，使用實際檔案名稱
         function getAudioPath(dataset, fileId, codecType, frequency = null) {
             const basePath = `audio`;
             const datasetPath = getDatasetKey(dataset).replace('_', '/');
             
-            // 對於 Total，不需要音檔
             if (fileId === 'Total') {
                 return '';
             }
             
-            // 取得實際檔案名稱
             const actualFileName = getCodecData(dataset, currentModel, currentFrequency, fileId, 'filename');
             if (!actualFileName) {
                 console.warn(`No File_name found for ${fileId} in ${dataset}`);
@@ -588,6 +592,8 @@
                     return `${basePath}/${datasetPath}/LSCodec/${frequency}/${actualFileName}.wav`;
                 case 'focalcodec':
                     return `${basePath}/${datasetPath}/FocalCodec/${frequency}/${actualFileName}.wav`;
+                case 'bigcodec':
+                    return `${basePath}/${datasetPath}/BigCodec/${frequency}/${actualFileName}.wav`;
                 default:
                     return '';
             }
@@ -689,7 +695,6 @@
             };
         }
 
-        // 修改 createTableRow 函數，在 File ID 欄位顯示 File_name 的值
         function createTableRow(dataset, fileId) {
             const codecType = currentModel;
             const frequency = currentFrequency;
@@ -732,7 +737,6 @@
                 transcript = '-';
             }
             
-            // 取得顯示用的檔案名稱
             let displayFileName = fileId;
             if (!isTotalRow) {
                 const realFileName = getCodecData(dataset, codecType, frequency, fileId, 'filename');
@@ -752,6 +756,8 @@
                 inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'lscodec', frequency)}</td>`;
             } else if (codecType === 'FocalCodec' && document.getElementById('show-focalcodec').checked) {
                 inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'focalcodec', frequency)}</td>`;
+            } else if (codecType === 'BigCodec' && document.getElementById('show-bigcodec').checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'bigcodec', frequency)}</td>`;
             }
             
             const dwerCell = document.getElementById('show-dwer').checked ? `<td class="metric-cell">${dwer}</td>` : '';
@@ -782,7 +788,8 @@
             }
             
             if ((currentModel === 'LSCodec' && document.getElementById('show-lscodec').checked) ||
-                (currentModel === 'FocalCodec' && document.getElementById('show-focalcodec').checked)) {
+                (currentModel === 'FocalCodec' && document.getElementById('show-focalcodec').checked) ||
+                (currentModel === 'BigCodec' && document.getElementById('show-bigcodec').checked)) {
                 headers += '<th class="inference-header" style="width: 190px;">Inference</th>';
             }
             
@@ -811,6 +818,7 @@
             
             const showLSCodec = document.getElementById('show-lscodec').checked;
             const showFocalCodec = document.getElementById('show-focalcodec').checked;
+            const showBigCodec = document.getElementById('show-bigcodec').checked;
             
             if (showLSCodec) {
                 currentModel = 'LSCodec';
@@ -822,6 +830,12 @@
                 currentModel = 'FocalCodec';
                 currentFrequency = document.getElementById('focalcodec-freq').value;
                 container.appendChild(createModelSection('FocalCodec', currentFrequency));
+            }
+            
+            if (showBigCodec) {
+                currentModel = 'BigCodec';
+                currentFrequency = document.getElementById('bigcodec-freq').value;
+                container.appendChild(createModelSection('BigCodec', currentFrequency));
             }
         }
 
@@ -899,7 +913,6 @@
             let datasetsToShow = [];
             
             if (datasetType === 'both') {
-                // 當選擇 "both" 時，顯示 LibriSpeech 和 CommonVoice
                 if (datasetVariant === 'clean') {
                     datasetsToShow = [
                         ['librispeech', datasetTitles['librispeech']],
@@ -930,7 +943,6 @@
                     ];
                 }
             } else {
-                // 原本的邏輯，針對單一資料集
                 if (datasetVariant === 'clean') {
                     datasetsToShow = [[datasetType, datasetTitles[datasetType]]];
                 } else if (datasetVariant === 'clean-noise') {
@@ -984,12 +996,13 @@
         
         document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('bigcodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('dataset-type').addEventListener('change', renderModelSections);
         document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
         document.getElementById('sample-count').addEventListener('change', renderModelSections);
         
         [
-            'show-lscodec', 'show-focalcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-dataset',
+            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-dataset',
             'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-transcript'
         ].forEach(id => {
             document.getElementById(id).addEventListener('change', renderModelSections);
