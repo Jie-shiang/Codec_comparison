@@ -1,76 +1,75 @@
 {
   "model_info": {
-    "modelName": "FocalCodec",
-    "causality": "Non-Causal",
-    "trainingSet": "LibriTTS + LibriTTS train-clean-100",
-    "testingSet": "LibriSpeech + test-clean + Multilingual Lspeech + VoiceBank + LibrilMix + VCTK",
-    "bitRate": "0.16",
+    "modelName": "BigCodec",
+    "causality": "Causal",
+    "trainingSet": "LibriSpeech + train-clean",
+    "testingSet": "LibriSpeech + test-clean",
+    "bitRate": "1.04",
     "parameters": {
-      "frameRate": "12.5",
+      "frameRate": "80",
       "quantizers": "1",
       "codebookSize": "8192",
-      "nParams": "N/A"
+      "nParams": "159M"
     }
   },
   "LibriSpeech": {
     "Total": {
-      "dWER": "0.10",
-      "UTMOS": "4.2",
-      "PESQ": "1.2",
-      "STOI": "0.79"
+      "dWER": "0.02",
+      "UTMOS": "4.1",
+      "PESQ": "2.7",
+      "STOI": "0.94"
     },
     "Sample_1": {
       "File_name": "61-70968-0000",
       "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
       "dWER": "0.00",
-      "UTMOS": "4.2",
-      "PESQ": "1.1",
-      "STOI": "0.78"
+      "UTMOS": "4.0",
+      "PESQ": "2.1",
+      "STOI": "0.94"
     },
     "Sample_2": {
       "File_name": "121-121726-0000",
       "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
       "dWER": "0.00",
-      "UTMOS": "4.1",
-      "PESQ": "1.2",
-      "STOI": "0.80"
+      "UTMOS": "4.2",
+      "PESQ": "2.7",
+      "STOI": "0.95"
     },
     "Sample_3": {
       "File_name": "237-126133-0000",
       "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "dWER": "0.18",
-      "UTMOS": "3.9",
-      "PESQ": "1.1",
-      "STOI": "0.79"
+      "dWER": "0.00",
+      "UTMOS": "4.4",
+      "PESQ": "3.0",
+      "STOI": "0.96"
     },
     "Sample_4": {
       "File_name": "260-123286-0000",
       "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "dWER": "0.42",
-      "UTMOS": "4.4",
-      "PESQ": "1.2",
-      "STOI": "0.76"
+      "dWER": "0.00",
+      "UTMOS": "4.3",
+      "PESQ": "2.6",
+      "STOI": "0.94"
     },
     "Sample_5": {
       "File_name": "672-122797-0000",
       "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
       "dWER": "0.00",
       "UTMOS": "4.4",
-      "PESQ": "1.3",
-      "STOI": "0.81"
+      "PESQ": "2.7",
+      "STOI": "0.94"
     },
     "Error_Sample_1": {
-      "File_name": "237-126133-0016",
-      "Transcription": "GIVE NOT SO EARNEST A MIND TO THESE MUMMERIES CHILD",
+      "File_name": "121-121726-0011",
+      "Transcription": "HUSBAND THE NEXT THING TO A WIFE",
       "dWER": "1.00",
-      "UTMOS": "4.2",
-      "PESQ": "1.1",
-      "STOI": "0.78"
+      "UTMOS": "4.4",
+      "PESQ": "3.5",
+      "STOI": "0.97"
     }
   },
   "LibriSpeech_Noise": {
     "Total": {
-      "Transcription": "-",
       "dWER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
@@ -127,7 +126,6 @@
   },
   "LibriSpeech_Blank": {
     "Total": {
-      "Transcription": "-",
       "dWER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
@@ -184,64 +182,63 @@
   },
   "CommonVoice": {
     "Total": {
-      "dCER": "0.40",
-      "UTMOS": "3.6",
-      "PESQ": "1.2",
-      "STOI": "0.69"
+      "dCER": "0.08",
+      "UTMOS": "2.8",
+      "PESQ": "2.2",
+      "STOI": "0.87"
     },
     "Sample_1": {
       "File_name": "common_voice_zh-TW_30162459",
       "Transcription": "高雄市公車五甲幹線",
       "dWER": "N/A",
-      "UTMOS": "3.4",
-      "PESQ": "1.1",
-      "STOI": "0.65"
+      "UTMOS": "2.9",
+      "PESQ": "2.3",
+      "STOI": "0.89"
     },
     "Sample_2": {
       "File_name": "common_voice_zh-TW_24477793",
       "Transcription": "肉！很多肉！",
       "dWER": "N/A",
-      "UTMOS": "2.5",
-      "PESQ": "1.1",
-      "STOI": "0.61"
+      "UTMOS": "2.3",
+      "PESQ": "2.6",
+      "STOI": "0.94"
     },
     "Sample_3": {
       "File_name": "common_voice_zh-TW_24478020",
       "Transcription": "大家愛轉傳",
       "dWER": "N/A",
-      "UTMOS": "3.7",
-      "PESQ": "1.3",
-      "STOI": "0.78"
+      "UTMOS": "3.4",
+      "PESQ": "2.6",
+      "STOI": "0.94"
     },
     "Sample_4": {
       "File_name": "common_voice_zh-TW_25342071",
       "Transcription": "結果很平和",
       "dWER": "N/A",
-      "UTMOS": "3.8",
-      "PESQ": "1.3",
-      "STOI": "0.38"
+      "UTMOS": "3.2",
+      "PESQ": "1.8",
+      "STOI": "0.55"
     },
     "Sample_5": {
       "File_name": "common_voice_zh-TW_20748925",
       "Transcription": "英文數字請盡量轉為中文",
       "dWER": "N/A",
       "UTMOS": "3.2",
-      "PESQ": "1.1",
-      "STOI": "0.65"
+      "PESQ": "2.3",
+      "STOI": "0.88"
     },
     "Error_Sample_1": {
-      "File_name": "common_voice_zh-TW_27459935",
-      "Transcription": "由兩種相同元素組成的化合物",
+      "File_name": "common_voice_zh-TW_35051966",
+      "Transcription": "自問自答",
       "dWER": "N/A",
-      "UTMOS": "2.9",
-      "PESQ": "1.2",
-      "STOI": "0.62"
+      "UTMOS": "2.1",
+      "PESQ": "1.9",
+      "STOI": "0.90"
     }
   },
   "CommonVoice_Noise": {
     "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -297,8 +294,7 @@
   },
   "CommonVoice_Blank": {
     "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"

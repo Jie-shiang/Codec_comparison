@@ -4,7 +4,7 @@
     "causality": "Non-Causal",
     "trainingSet": "LibriTTS + LibriTTS train-clean-100",
     "testingSet": "LibriSpeech + test-clean + Multilingual Lspeech + VoiceBank + LibrilMix + VCTK",
-    "bitRate": "0.66",
+    "bitRate": "0.65",
     "parameters": {
       "frameRate": "50",
       "quantizers": "1",
@@ -14,53 +14,58 @@
   },
   "LibriSpeech": {
     "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "dWER": "0.01",
+      "UTMOS": "4.1",
+      "PESQ": "1.4",
+      "STOI": "0.86"
     },
     "Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "dWER": "0.00",
+      "UTMOS": "3.9",
+      "PESQ": "1.3",
+      "STOI": "0.85"
     },
     "Sample_2": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "dWER": "0.00",
+      "UTMOS": "3.9",
+      "PESQ": "1.4",
+      "STOI": "0.86"
     },
     "Sample_3": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "dWER": "0.00",
+      "UTMOS": "4.0",
+      "PESQ": "1.4",
+      "STOI": "0.89"
     },
     "Sample_4": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "260-123286-0000",
+      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "dWER": "0.00",
+      "UTMOS": "4.4",
+      "PESQ": "1.3",
+      "STOI": "0.85"
     },
     "Sample_5": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "dWER": "0.00",
+      "UTMOS": "4.4",
+      "PESQ": "1.6",
+      "STOI": "0.88"
     },
     "Error_Sample_1": {
-      "Transcription": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "5142-36586-0004",
+      "Transcription": "OH NO JASPER I MUST GO BY MY VERY OWN SELF",
+      "dWER": "0.82",
+      "UTMOS": "3.7",
+      "PESQ": "1.4",
+      "STOI": "0.84"
     }
   },
   "LibriSpeech_Noise": {
@@ -72,6 +77,7 @@
       "STOI": "N/A"
     },
     "Sample_1": {
+      "File_name": "Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -79,6 +85,7 @@
       "STOI": "N/A"
     },
     "Sample_2": {
+      "File_name": "Sample_2",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -86,6 +93,7 @@
       "STOI": "N/A"
     },
     "Sample_3": {
+      "File_name": "Sample_3",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -93,6 +101,7 @@
       "STOI": "N/A"
     },
     "Sample_4": {
+      "File_name": "Sample_4",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -100,6 +109,7 @@
       "STOI": "N/A"
     },
     "Sample_5": {
+      "File_name": "Sample_5",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -107,6 +117,7 @@
       "STOI": "N/A"
     },
     "Error_Sample_1": {
+      "File_name": "Error_Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -123,6 +134,7 @@
       "STOI": "N/A"
     },
     "Sample_1": {
+      "File_name": "Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -130,6 +142,7 @@
       "STOI": "N/A"
     },
     "Sample_2": {
+      "File_name": "Sample_2",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -137,6 +150,7 @@
       "STOI": "N/A"
     },
     "Sample_3": {
+      "File_name": "Sample_3",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -144,6 +158,7 @@
       "STOI": "N/A"
     },
     "Sample_4": {
+      "File_name": "Sample_4",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -151,6 +166,7 @@
       "STOI": "N/A"
     },
     "Sample_5": {
+      "File_name": "Sample_5",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -158,6 +174,7 @@
       "STOI": "N/A"
     },
     "Error_Sample_1": {
+      "File_name": "Error_Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -167,53 +184,58 @@
   },
   "CommonVoice": {
     "Total": {
-      "Transcription": "-",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "dCER": "0.07",
+      "UTMOS": "3.2",
+      "PESQ": "1.4",
+      "STOI": "0.79"
     },
     "Sample_1": {
-      "Transcription": "N/A",
+      "File_name": "common_voice_zh-TW_30162459",
+      "Transcription": "高雄市公車五甲幹線",
       "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "3.3",
+      "PESQ": "1.3",
+      "STOI": "0.81"
     },
     "Sample_2": {
-      "Transcription": "N/A",
+      "File_name": "common_voice_zh-TW_24477793",
+      "Transcription": "肉！很多肉！",
       "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "2.7",
+      "PESQ": "1.3",
+      "STOI": "0.84"
     },
     "Sample_3": {
-      "Transcription": "N/A",
+      "File_name": "common_voice_zh-TW_24478020",
+      "Transcription": "大家愛轉傳",
       "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "3.6",
+      "PESQ": "1.3",
+      "STOI": "0.84"
     },
     "Sample_4": {
-      "Transcription": "N/A",
+      "File_name": "common_voice_zh-TW_25342071",
+      "Transcription": "結果很平和",
       "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "3.5",
+      "PESQ": "1.3",
+      "STOI": "0.51"
     },
     "Sample_5": {
-      "Transcription": "N/A",
+      "File_name": "common_voice_zh-TW_20748925",
+      "Transcription": "英文數字請盡量轉為中文",
       "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "3.0",
+      "PESQ": "1.5",
+      "STOI": "0.80"
     },
     "Error_Sample_1": {
-      "Transcription": "N/A",
+      "File_name": "common_voice_zh-TW_20817145",
+      "Transcription": "成績考核委員會",
       "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "2.1",
+      "PESQ": "1.2",
+      "STOI": "0.83"
     }
   },
   "CommonVoice_Noise": {
@@ -225,6 +247,7 @@
       "STOI": "N/A"
     },
     "Sample_1": {
+      "File_name": "Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -232,6 +255,7 @@
       "STOI": "N/A"
     },
     "Sample_2": {
+      "File_name": "Sample_2",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -239,6 +263,7 @@
       "STOI": "N/A"
     },
     "Sample_3": {
+      "File_name": "Sample_3",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -246,6 +271,7 @@
       "STOI": "N/A"
     },
     "Sample_4": {
+      "File_name": "Sample_4",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -253,6 +279,7 @@
       "STOI": "N/A"
     },
     "Sample_5": {
+      "File_name": "Sample_5",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -260,6 +287,7 @@
       "STOI": "N/A"
     },
     "Error_Sample_1": {
+      "File_name": "Error_Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -276,6 +304,7 @@
       "STOI": "N/A"
     },
     "Sample_1": {
+      "File_name": "Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -283,6 +312,7 @@
       "STOI": "N/A"
     },
     "Sample_2": {
+      "File_name": "Sample_2",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -290,6 +320,7 @@
       "STOI": "N/A"
     },
     "Sample_3": {
+      "File_name": "Sample_3",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -297,6 +328,7 @@
       "STOI": "N/A"
     },
     "Sample_4": {
+      "File_name": "Sample_4",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -304,6 +336,7 @@
       "STOI": "N/A"
     },
     "Sample_5": {
+      "File_name": "Sample_5",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
@@ -311,6 +344,7 @@
       "STOI": "N/A"
     },
     "Error_Sample_1": {
+      "File_name": "Error_Sample_1",
       "Transcription": "N/A",
       "dWER": "N/A",
       "UTMOS": "N/A",
