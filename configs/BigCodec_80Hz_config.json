@@ -190,7 +190,7 @@
     "Sample_1": {
       "File_name": "common_voice_zh-TW_30162459",
       "Transcription": "高雄市公車五甲幹線",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "2.9",
       "PESQ": "2.3",
       "STOI": "0.89"
@@ -198,7 +198,7 @@
     "Sample_2": {
       "File_name": "common_voice_zh-TW_24477793",
       "Transcription": "肉！很多肉！",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "2.3",
       "PESQ": "2.6",
       "STOI": "0.94"
@@ -206,7 +206,7 @@
     "Sample_3": {
       "File_name": "common_voice_zh-TW_24478020",
       "Transcription": "大家愛轉傳",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "3.4",
       "PESQ": "2.6",
       "STOI": "0.94"
@@ -214,7 +214,7 @@
     "Sample_4": {
       "File_name": "common_voice_zh-TW_25342071",
       "Transcription": "結果很平和",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "3.2",
       "PESQ": "1.8",
       "STOI": "0.55"
@@ -222,7 +222,7 @@
     "Sample_5": {
       "File_name": "common_voice_zh-TW_20748925",
       "Transcription": "英文數字請盡量轉為中文",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "3.2",
       "PESQ": "2.3",
       "STOI": "0.88"
@@ -230,7 +230,7 @@
     "Error_Sample_1": {
       "File_name": "common_voice_zh-TW_35051966",
       "Transcription": "自問自答",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "2.1",
       "PESQ": "1.9",
       "STOI": "0.90"
@@ -246,7 +246,7 @@
     "Sample_1": {
       "File_name": "Sample_1",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -254,7 +254,7 @@
     "Sample_2": {
       "File_name": "Sample_2",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -262,7 +262,7 @@
     "Sample_3": {
       "File_name": "Sample_3",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -270,7 +270,7 @@
     "Sample_4": {
       "File_name": "Sample_4",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -278,7 +278,7 @@
     "Sample_5": {
       "File_name": "Sample_5",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -286,7 +286,7 @@
     "Error_Sample_1": {
       "File_name": "Error_Sample_1",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -302,7 +302,7 @@
     "Sample_1": {
       "File_name": "Sample_1",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -310,7 +310,7 @@
     "Sample_2": {
       "File_name": "Sample_2",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -318,7 +318,7 @@
     "Sample_3": {
       "File_name": "Sample_3",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -326,7 +326,7 @@
     "Sample_4": {
       "File_name": "Sample_4",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -334,7 +334,7 @@
     "Sample_5": {
       "File_name": "Sample_5",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"
@@ -342,7 +342,7 @@
     "Error_Sample_1": {
       "File_name": "Error_Sample_1",
       "Transcription": "N/A",
-      "dWER": "N/A",
+      "dCER": "N/A",
       "UTMOS": "N/A",
       "PESQ": "N/A",
       "STOI": "N/A"

@@ -411,7 +411,7 @@
                     <div class="control-subgroup">
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-dwer" checked>
-                            <label for="show-dwer">dWER</label>
+                            <label for="show-dwer">dWER/dCER</label>
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-utmos" checked>
@@ -540,7 +540,13 @@
                     case 'utmos':
                         return fileData.UTMOS || null;
                     case 'dwer':
+                        // 優先返回dWER，如果沒有則返回dCER
                         return fileData.dWER || fileData.dCER || null;
+                    case 'dwer_type':
+                        // 返回實際的metric類型
+                        if (fileData.dWER !== undefined) return 'dWER';
+                        if (fileData.dCER !== undefined) return 'dCER';
+                        return null;
                     case 'pesq':
                         return fileData.PESQ || null;
                     case 'stoi':
@@ -798,7 +804,9 @@
             }
             
             if (document.getElementById('show-dwer').checked) {
-                headers += '<th style="width: 90px;">dWER</th>';
+                // 動態決定顯示dWER還是dCER
+                const metricType = getCurrentMetricType();
+                headers += `<th style="width: 90px;">${metricType}</th>`;
             }
             if (document.getElementById('show-utmos').checked) {
                 headers += '<th style="width: 90px;">UTMOS</th>';
@@ -814,6 +822,18 @@
             }
             
             return headers;
+        }
+
+        function getCurrentMetricType() {
+            // 檢查當前模型的第一個可用數據來決定metric類型
+            const datasetKeys = Object.keys(datasets);
+            for (const dataset of datasetKeys) {
+                const metricType = getCodecData(dataset, currentModel, currentFrequency, 'Total', 'dwer_type');
+                if (metricType) {
+                    return metricType;
+                }
+            }
+            return 'dWER/dCER'; // 默認顯示
         }
 
         function renderModelSections() {
