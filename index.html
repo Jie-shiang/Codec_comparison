@@ -352,6 +352,10 @@
                     <label>Result</label>
                     <div class="control-subgroup">
                         <div class="checkbox-group">
+                            <input type="checkbox" id="show-config" checked>
+                            <label for="show-config">Config</label>
+                        </div>
+                        <div class="checkbox-group">
                             <input type="checkbox" id="show-original" checked>
                             <label for="show-original">Original</label>
                         </div>
@@ -844,44 +848,52 @@
             section.className = 'model-section';
 
             const modelInfo = getModelInfo(codecType, frequency);
+            const showConfig = document.getElementById('show-config').checked;
+
+            let configHtml = '';
+            if (showConfig) {
+                configHtml = `
+                    <div class="model-info">
+                        <div class="params-row">
+                            <div class="info-item">
+                                <div class="info-label">Causality</div>
+                                <div class="info-value">${modelInfo.causality}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Bit-rate (kbps)</div>
+                                <div class="info-value">${modelInfo.bitRate}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Frame Rate (Hz)</div>
+                                <div class="info-value">${modelInfo.parameters.frameRate}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"># of Quantizer</div>
+                                <div class="info-value">${modelInfo.parameters.quantizers}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Codebook Size</div>
+                                <div class="info-value">${modelInfo.parameters.codebookSize}</div>
+                            </div>
+                        </div>
+                        
+                        <table class="training-testing-table">
+                            <tr>
+                                <td class="label-cell">Training Set</td>
+                                <td class="value-cell">${modelInfo.trainingSet}</td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">Testing Set</td>
+                                <td class="value-cell">${modelInfo.testingSet}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+            }
 
             section.innerHTML = `
                 <div class="model-header">${codecType}</div>
-                <div class="model-info">
-                    <div class="params-row">
-                        <div class="info-item">
-                            <div class="info-label">Causality</div>
-                            <div class="info-value">${modelInfo.causality}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Bit-rate (kbps)</div>
-                            <div class="info-value">${modelInfo.bitRate}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Frame Rate (Hz)</div>
-                            <div class="info-value">${modelInfo.parameters.frameRate}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label"># of Quantizer</div>
-                            <div class="info-value">${modelInfo.parameters.quantizers}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Codebook Size</div>
-                            <div class="info-value">${modelInfo.parameters.codebookSize}</div>
-                        </div>
-                    </div>
-                    
-                    <table class="training-testing-table">
-                        <tr>
-                            <td class="label-cell">Training Set</td>
-                            <td class="value-cell">${modelInfo.trainingSet}</td>
-                        </tr>
-                        <tr>
-                            <td class="label-cell">Testing Set</td>
-                            <td class="value-cell">${modelInfo.testingSet}</td>
-                        </tr>
-                    </table>
-                </div>
+                ${configHtml}
                 ${createDatasetTables(codecType, frequency)}
             `;
 
@@ -1002,7 +1014,7 @@
         document.getElementById('sample-count').addEventListener('change', renderModelSections);
         
         [
-            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-dataset',
+            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-config', 'show-dataset',
             'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-transcript'
         ].forEach(id => {
             document.getElementById(id).addEventListener('change', renderModelSections);
