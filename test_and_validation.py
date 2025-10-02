@@ -2,8 +2,7 @@
 """
 Neural Audio Codec Test and Validation Module
 
-Comprehensive testing and validation module for neural audio codec evaluation pipeline.
-Includes test mode with 20 samples and file validation functionality.
+Comprehensive testing and validation module using EnhancedCodecEvaluationPipeline
 """
 
 import os
@@ -14,16 +13,14 @@ import shutil
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from tqdm import tqdm
 from datetime import datetime
-import time
 import librosa
 
-from metrics_evaluator import AudioMetricsEvaluator
+from enhanced_evaluation_pipeline import EnhancedCodecEvaluationPipeline
 
 
 class CodecTestValidator:
-    """Test and validation class for codec evaluation pipeline"""
+    """Test and validation class using EnhancedCodecEvaluationPipeline"""
     
     def __init__(self, 
                  inference_dir: str,
@@ -36,13 +33,13 @@ class CodecTestValidator:
                  original_dir: str = None):
         
         self.inference_dir = Path(inference_dir)
-        self.csv_file = Path(project_dir) / "csv" / csv_file
+        self.csv_file = csv_file
         self.model_name = model_name
         self.frequency = frequency
         self.project_dir = Path(project_dir)
         self.use_gpu = use_gpu
         self.gpu_id = gpu_id
-        self.original_dir = Path(original_dir) if original_dir else None
+        self.original_dir = original_dir
         
         self.result_dir = self.project_dir / "result" / "test_results"
         self.audio_dir = self.project_dir / "audio" / "test_audio"
@@ -54,9 +51,19 @@ class CodecTestValidator:
         
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
+        csv_path = self.project_dir / "csv" / csv_file
+        if 'common_voice' in str(csv_path).lower():
+            self.language = 'zh'
+            self.base_dataset_name = 'CommonVoice'
+        else:
+            self.language = 'en'
+            self.base_dataset_name = 'LibriSpeech'
+        
         print(f"Initializing test validator:")
         print(f"  Model: {self.model_name}")
         print(f"  Frequency: {self.frequency}")
+        print(f"  Dataset: {self.csv_file}")
+        print(f"  Language: {self.language}")
         print(f"  GPU acceleration: {'Enabled' if self.use_gpu else 'Disabled'}")
         if self.use_gpu:
             print(f"  GPU ID: {self.gpu_id}")
@@ -65,33 +72,7 @@ class CodecTestValidator:
         print(f"  Inference directory: {self.inference_dir}")
         print(f"  Test results directory: {self.result_dir}")
     
-    def load_test_data(self, num_samples: int = 20):
-        """Load first N samples from CSV for testing"""
-        try:
-            df = pd.read_csv(self.csv_file, encoding='utf-8')
-            print(f"Successfully loaded CSV: {self.csv_file}")
-            print(f"Total samples available: {len(df)}")
-            
-            test_df = df.head(num_samples)
-            print(f"Selected {len(test_df)} samples for testing")
-            
-            if 'common_voice' in str(self.csv_file).lower():
-                self.language = 'zh'
-                self.base_dataset_name = 'CommonVoice'
-                print("Detected Chinese dataset")
-            else:
-                self.language = 'en'
-                self.base_dataset_name = 'LibriSpeech'
-                print("Detected English dataset")
-                
-            return test_df
-            
-        except Exception as e:
-            print(f"Error loading CSV file: {e}")
-            return None
-    
     def validate_file_naming(self) -> dict:
-        """Validate inference file naming conventions"""
         print("\n" + "="*50)
         print("FILE NAMING VALIDATION")
         print("="*50)
@@ -103,7 +84,8 @@ class CodecTestValidator:
             'missing_files': []
         }
         
-        df = pd.read_csv(self.csv_file, encoding='utf-8')
+        csv_path = self.project_dir / "csv" / self.csv_file
+        df = pd.read_csv(csv_path, encoding='utf-8')
         expected_files = set(Path(fname).stem for fname in df['file_name'])
         
         print(f"Expected {len(expected_files)} inference files based on CSV")
@@ -179,13 +161,6 @@ class CodecTestValidator:
             if len(validation_report['needs_processing']) > 5:
                 print(f"  ... and {len(validation_report['needs_processing']) - 5} more")
         
-        if validation_report['other_files']:
-            print(f"\nOTHER FILES ({len(validation_report['other_files'])}):")
-            for item in validation_report['other_files'][:5]:
-                print(f"  • {item['file']} - {item['action']}")
-            if len(validation_report['other_files']) > 5:
-                print(f"  ... and {len(validation_report['other_files']) - 5} more")
-        
         if validation_report['missing_files']:
             print(f"\nMISSING FILES ({len(validation_report['missing_files'])}):")
             for item in validation_report['missing_files'][:5]:
@@ -201,7 +176,6 @@ class CodecTestValidator:
         return validation_report
     
     def auto_fix_file_naming(self, validation_report: dict, dry_run: bool = True) -> None:
-        """Automatically fix file naming issues"""
         if not validation_report['needs_processing']:
             print("No files need processing.")
             return
@@ -225,75 +199,59 @@ class CodecTestValidator:
         if dry_run:
             print(f"\nTo actually perform the renaming, run with --fix_naming flag")
     
-    def find_inference_audio(self, original_filename: str) -> Path:
-        """Find corresponding inference audio file"""
-        base_name = Path(original_filename).stem
-        
-        possible_names = [
-            f"{base_name}_inference.wav",
-            f"{base_name}_inference.flac",
-            f"{base_name}.wav",
-            f"{base_name}.flac"
-        ]
-        
-        for name in possible_names:
-            inference_path = self.inference_dir / name
-            if inference_path.exists():
-                return inference_path
-                
-        return None
-    
-    def resolve_original_path(self, csv_path: str) -> Path:
-        """Resolve original file path from CSV relative path"""
-        if self.original_dir:
-            clean_path = csv_path.lstrip('./')
-            return self.original_dir / clean_path
-        else:
-            return Path(csv_path)
-    
-    def validate_audio_files(self, test_df: pd.DataFrame) -> dict:
-        """Validate audio file integrity and properties"""
+    def validate_audio_files(self, num_samples: int = 20) -> dict:
         print("\n" + "="*50)
         print("AUDIO FILE VALIDATION")
         print("="*50)
         
+        csv_path = self.project_dir / "csv" / self.csv_file
+        df = pd.read_csv(csv_path, encoding='utf-8')
+        test_df = df.head(num_samples)
+        
         validation_results = {
             'valid_files': [],
             'corrupted_files': [],
-            'missing_files': [],
-            'format_issues': []
+            'missing_files': []
         }
         
         for idx, row in test_df.iterrows():
             file_name = row['file_name']
-            original_path = self.resolve_original_path(row['file_path'])
-            inference_path = self.find_inference_audio(file_name)
+            base_name = Path(file_name).stem
             
-            original_status = self.check_audio_file(original_path, "original")
+            possible_names = [
+                f"{base_name}_inference.wav",
+                f"{base_name}_inference.flac",
+                f"{base_name}.wav",
+                f"{base_name}.flac"
+            ]
+            
+            inference_path = None
+            for name in possible_names:
+                test_path = self.inference_dir / name
+                if test_path.exists():
+                    inference_path = test_path
+                    break
             
             if inference_path and inference_path.exists():
-                inference_status = self.check_audio_file(inference_path, "inference")
+                inference_status = self.check_audio_file(inference_path)
+                
+                if inference_status['valid']:
+                    validation_results['valid_files'].append({
+                        'file_name': file_name,
+                        'inference': inference_status
+                    })
+                else:
+                    validation_results['corrupted_files'].append({
+                        'file_name': file_name,
+                        'inference': inference_status
+                    })
             else:
-                inference_status = {
-                    'valid': False,
-                    'error': 'File not found',
-                    'path': 'N/A'
-                }
-            
-            file_result = {
-                'file_name': file_name,
-                'original': original_status,
-                'inference': inference_status
-            }
-            
-            if original_status['valid'] and inference_status['valid']:
-                validation_results['valid_files'].append(file_result)
-            elif not inference_path:
-                validation_results['missing_files'].append(file_result)
-            elif not original_status['valid'] or not inference_status['valid']:
-                validation_results['corrupted_files'].append(file_result)
+                validation_results['missing_files'].append({
+                    'file_name': file_name,
+                    'status': 'No inference file found'
+                })
         
-        print(f"Valid pairs: {len(validation_results['valid_files'])}")
+        print(f"Valid files: {len(validation_results['valid_files'])}")
         print(f"Corrupted files: {len(validation_results['corrupted_files'])}")
         print(f"Missing inference files: {len(validation_results['missing_files'])}")
         
@@ -301,25 +259,16 @@ class CodecTestValidator:
             print(f"\nCORRUPTED FILES:")
             for item in validation_results['corrupted_files'][:3]:
                 print(f"  • {item['file_name']}")
-                if not item['original']['valid']:
-                    print(f"    Original: {item['original']['error']}")
-                if not item['inference']['valid']:
-                    print(f"    Inference: {item['inference']['error']}")
+                print(f"    Inference: {item['inference']['error']}")
         
         if validation_results['missing_files']:
             print(f"\nMISSING INFERENCE FILES:")
             for item in validation_results['missing_files'][:3]:
                 print(f"  • {item['file_name']}")
         
-        if not validation_results['valid_files'] and self.original_dir is None:
-            print(f"\nNOTE: No original directory specified with --original_dir")
-            print(f"      Original file validation skipped. Only inference files were checked.")
-            print(f"      To validate original files, use: --original_dir /path/to/original/files")
-        
         return validation_results
     
-    def check_audio_file(self, file_path: Path, file_type: str) -> dict:
-        """Check individual audio file validity"""
+    def check_audio_file(self, file_path: Path) -> dict:
         try:
             if not file_path.exists():
                 return {'valid': False, 'error': 'File does not exist', 'path': str(file_path)}
@@ -348,163 +297,111 @@ class CodecTestValidator:
             return {'valid': False, 'error': str(e), 'path': str(file_path)}
     
     def run_test_evaluation(self, num_samples: int = 20) -> dict:
-        """Run test evaluation on first N samples"""
         print("\n" + "="*60)
         print(f"RUNNING TEST EVALUATION ({num_samples} SAMPLES)")
         print("="*60)
         
-        start_time = time.time()
+        csv_path = self.project_dir / "csv" / self.csv_file
+        full_df = pd.read_csv(csv_path, encoding='utf-8')
+        test_df = full_df.head(num_samples)
         
-        test_df = self.load_test_data(num_samples)
-        if test_df is None:
-            return None
+        temp_csv = self.project_dir / "csv" / f"temp_test_{self.language}_{self.model_name}_{self.timestamp}.csv"
+        test_df.to_csv(temp_csv, index=False, encoding='utf-8')
         
-        print("\nLoading evaluation models...")
-        model_start = time.time()
-        evaluator = AudioMetricsEvaluator(
-            language=self.language,
-            use_gpu=self.use_gpu,
-            gpu_id=self.gpu_id
-        )
-        evaluator.load_models()
-        model_time = time.time() - model_start
-        print(f"Models loaded in: {model_time:.2f} seconds")
-        
-        results = []
-        eval_start = time.time()
-        
-        print(f"\nEvaluating {len(test_df)} test samples...")
-        for idx, row in tqdm(test_df.iterrows(), total=len(test_df), desc="Test Evaluation"):
-            file_name = row['file_name']
-            ground_truth = row['transcription']
-            original_path = self.resolve_original_path(row['file_path'])
+        try:
+            # Determine which metrics to compute based on language
+            metrics_to_compute = ['utmos', 'pesq', 'stoi']
+            if self.language == 'zh':
+                metrics_to_compute.append('dcer')
+            else:
+                metrics_to_compute.append('dwer')
             
-            inference_path = self.find_inference_audio(file_name)
+            pipeline = EnhancedCodecEvaluationPipeline(
+                inference_dir=str(self.inference_dir),
+                csv_file=temp_csv.name,
+                model_name=self.model_name,
+                frequency=self.frequency,
+                causality="Non-Causal",
+                bit_rate="1.5",
+                dataset_type="clean",
+                project_dir=str(self.project_dir),
+                quantizers="4",
+                codebook_size="1024",
+                n_params="Test",
+                training_set="Test Dataset",
+                testing_set="Test Samples",
+                metrics_to_compute=metrics_to_compute,
+                use_gpu=self.use_gpu,
+                gpu_id=self.gpu_id,
+                original_dir=self.original_dir,
+                language=self.language  # Pass language explicitly
+            )
             
-            if not original_path.exists() or not inference_path:
-                continue
+            results_df = pipeline.run_evaluation()
             
-            try:
-                metrics_result = evaluator.evaluate_audio_pair(
-                    str(original_path), 
-                    str(inference_path), 
-                    ground_truth
-                )
+            dataset_suffix = self.base_dataset_name.lower()
+            test_csv_path = self.result_dir / f"test_detailed_results_{self.model_name}_{dataset_suffix}_{self.timestamp}.csv"
+            results_df.to_csv(test_csv_path, index=False, encoding='utf-8')
+            
+            summary_data = self.create_test_summary(results_df)
+            summary_csv_path = self.result_dir / f"test_summary_results_{self.model_name}_{dataset_suffix}_{self.timestamp}.csv"
+            summary_df = pd.DataFrame([summary_data])
+            summary_df.to_csv(summary_csv_path, index=False, encoding='utf-8')
+            
+            test_config = self.generate_test_config(results_df)
+            config_path = self.config_dir / f"test_config_{self.model_name}_{dataset_suffix}_{self.timestamp}.json"
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(test_config, f, ensure_ascii=False, indent=2)
+            
+            self.copy_test_audio_files(results_df[:5])
+            
+            print("\n" + "="*60)
+            print("TEST EVALUATION COMPLETED")
+            print("="*60)
+            print(f"Successfully evaluated: {len(results_df)} files")
+            
+            if len(results_df) > 0:
+                print(f"\nMETRICS SUMMARY:")
+                primary_metric = 'dCER' if self.language == 'zh' else 'dWER'
+                primary_key = 'dcer' if self.language == 'zh' else 'dwer'
                 
-                if metrics_result:
-                    result_data = {
-                        'file_name': file_name,
-                        'original_path': str(original_path),
-                        'inference_path': str(inference_path),
-                        'ground_truth': ground_truth,
-                        'utmos': metrics_result.get('utmos', 0.0) or 0.0,
-                        'pesq': metrics_result.get('pesq', 0.0) or 0.0,
-                        'stoi': metrics_result.get('stoi', 0.0) or 0.0
-                    }
-                    
-                    if self.language == 'zh':
-                        result_data.update({
-                            'original_cer': metrics_result.get('original_cer', 0.0),
-                            'inference_cer': metrics_result.get('inference_cer', 0.0),
-                            'dcer': metrics_result.get('dcer', 0.0)
-                        })
-                        metric_name = 'dCER'
-                    else:
-                        result_data.update({
-                            'original_wer': metrics_result.get('original_wer', 0.0),
-                            'inference_wer': metrics_result.get('inference_wer', 0.0),
-                            'dwer': metrics_result.get('dwer', 0.0)
-                        })
-                        metric_name = 'dWER'
-                    
-                    result_data.update({k: v for k, v in metrics_result.items() 
-                                      if k in ['original_transcript', 'inference_transcript']})
-                    
-                    results.append(result_data)
+                valid_primary = results_df[primary_key].dropna()
+                if len(valid_primary) > 0:
+                    print(f"{primary_metric}: {valid_primary.mean():.4f} ± {valid_primary.std():.4f}")
                 
-            except Exception as e:
-                print(f"Error evaluating {file_name}: {e}")
-                continue
-        
-        eval_time = time.time() - eval_start
-        total_time = time.time() - start_time
-        
-        if not results:
-            print("No files were successfully evaluated!")
-            return None
-        
-        results_df = pd.DataFrame(results)
-        
-        # Generate file paths with dataset suffix
-        dataset_suffix = self.base_dataset_name.lower()
-        test_csv_path = self.result_dir / f"test_detailed_results_{self.model_name}_{dataset_suffix}_{self.timestamp}.csv"
-        results_df.to_csv(test_csv_path, index=False, encoding='utf-8')
-        
-        summary_data = self.create_test_summary_statistics(results_df)
-        summary_csv_path = self.result_dir / f"test_summary_results_{self.model_name}_{dataset_suffix}_{self.timestamp}.csv"
-        summary_df = pd.DataFrame([summary_data])
-        summary_df.to_csv(summary_csv_path, index=False, encoding='utf-8')
-        
-        test_config = self.generate_test_config(results_df)
-        config_path = self.config_dir / f"test_config_{self.model_name}_{dataset_suffix}_{self.timestamp}.json"
-        with open(config_path, 'w', encoding='utf-8') as f:
-            json.dump(test_config, f, ensure_ascii=False, indent=2)
-        
-        self.copy_test_audio_files(results_df[:5])
-        
-        stats = self.calculate_test_statistics(results_df)
-        validation_results = self.validate_test_results(results_df, stats)
-        
-        print("\n" + "="*60)
-        print("TEST EVALUATION COMPLETED")
-        print("="*60)
-        print(f"Successfully evaluated: {len(results)}/{len(test_df)} files")
-        print(f"Total time: {total_time:.2f} seconds")
-        print(f"Model loading: {model_time:.2f} seconds")
-        print(f"Evaluation: {eval_time:.2f} seconds")
-        print(f"Average per file: {eval_time/len(results):.2f} seconds")
-        
-        print(f"\nMETRICS SUMMARY:")
-        primary_metric = 'dCER' if self.language == 'zh' else 'dWER'
-        primary_key = 'dcer' if self.language == 'zh' else 'dwer'
-        print(f"{primary_metric}: {stats[primary_key]['mean']:.4f} ± {stats[primary_key]['std']:.4f}")
-        print(f"UTMOS: {stats['utmos']['mean']:.3f} ± {stats['utmos']['std']:.3f}")
-        print(f"PESQ: {stats['pesq']['mean']:.3f} ± {stats['pesq']['std']:.3f}")
-        print(f"STOI: {stats['stoi']['mean']:.3f} ± {stats['stoi']['std']:.3f}")
-        
-        print(f"\nOUTPUT FILES:")
-        print(f"Detailed CSV: {test_csv_path}")
-        print(f"Summary CSV: {summary_csv_path}")
-        print(f"Config JSON: {config_path}")
-        print(f"Audio files: {self.audio_dir}")
-        
-        if validation_results['issues']:
-            print(f"\nVALIDATION ISSUES DETECTED:")
-            for issue in validation_results['issues']:
-                print(f"  • {issue}")
-        else:
-            print(f"\nAll validation checks passed!")
-        
-        return {
-            'results_df': results_df,
-            'statistics': stats,
-            'validation': validation_results,
-            'timing': {
-                'total_time': total_time,
-                'model_loading_time': model_time,
-                'evaluation_time': eval_time,
-                'avg_per_file': eval_time/len(results)
-            },
-            'files': {
-                'detailed_csv': test_csv_path,
-                'summary_csv': summary_csv_path,
-                'config': config_path,
-                'audio_dir': self.audio_dir
+                for metric in ['utmos', 'pesq', 'stoi']:
+                    valid_values = results_df[metric].dropna()
+                    if len(valid_values) > 0:
+                        print(f"{metric.upper()}: {valid_values.mean():.3f} ± {valid_values.std():.3f}")
+            
+            print(f"\nOUTPUT FILES:")
+            print(f"Detailed CSV: {test_csv_path}")
+            print(f"Summary CSV: {summary_csv_path}")
+            print(f"Config JSON: {config_path}")
+            print(f"Audio files: {self.audio_dir}")
+            
+            return {
+                'results_df': results_df,
+                'summary': summary_data,
+                'files': {
+                    'detailed_csv': test_csv_path,
+                    'summary_csv': summary_csv_path,
+                    'config': config_path,
+                    'audio_dir': self.audio_dir
+                }
             }
-        }
+            
+        except Exception as e:
+            print(f"Error during test evaluation: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+            
+        finally:
+            if temp_csv.exists():
+                temp_csv.unlink()
     
-    def create_test_summary_statistics(self, results_df: pd.DataFrame) -> dict:
-        """Create comprehensive test summary statistics"""
+    def create_test_summary(self, results_df: pd.DataFrame) -> dict:
         summary_data = {
             'Model': self.model_name,
             'Frequency': self.frequency,
@@ -533,96 +430,96 @@ class CodecTestValidator:
                         f'{metric.upper()}_Std': round(valid_values.std(), 4),
                         f'{metric.upper()}_Min': round(valid_values.min(), 4),
                         f'{metric.upper()}_Max': round(valid_values.max(), 4),
-                        f'{metric.upper()}_Median': round(valid_values.median(), 4),
-                        f'{metric.upper()}_Q25': round(valid_values.quantile(0.25), 4),
-                        f'{metric.upper()}_Q75': round(valid_values.quantile(0.75), 4)
+                        f'{metric.upper()}_Median': round(valid_values.median(), 4)
                     })
         
         return summary_data
     
-    def calculate_test_statistics(self, results_df: pd.DataFrame) -> dict:
-        """Calculate test statistics"""
-        stats = {}
-        
-        metric_cols = ['utmos', 'pesq', 'stoi']
-        if self.language == 'zh':
-            metric_cols.append('dcer')
-        else:
-            metric_cols.append('dwer')
-        
-        for col in metric_cols:
-            if col in results_df.columns:
-                values = results_df[col].dropna()
-                stats[col] = {
-                    'mean': values.mean(),
-                    'std': values.std(),
-                    'min': values.min(),
-                    'max': values.max(),
-                    'count': len(values)
-                }
-        
-        return stats
-    
-    def validate_test_results(self, results_df: pd.DataFrame, stats: dict) -> dict:
-        """Validate test results for correctness"""
-        issues = []
-        
-        if 'utmos' in stats:
-            if stats['utmos']['mean'] < 1.0 or stats['utmos']['mean'] > 5.0:
-                issues.append(f"UTMOS mean ({stats['utmos']['mean']:.3f}) outside expected range [1.0, 5.0]")
-        
-        if 'pesq' in stats:
-            if stats['pesq']['mean'] < 0.5 or stats['pesq']['mean'] > 4.5:
-                issues.append(f"PESQ mean ({stats['pesq']['mean']:.3f}) outside expected range [0.5, 4.5]")
-        
-        if 'stoi' in stats:
-            if stats['stoi']['mean'] < 0.0 or stats['stoi']['mean'] > 1.0:
-                issues.append(f"STOI mean ({stats['stoi']['mean']:.3f}) outside expected range [0.0, 1.0]")
-        
-        if 'dwer' in stats:
-            if stats['dwer']['mean'] > 1.0:
-                issues.append(f"dWER mean ({stats['dwer']['mean']:.3f}) seems too high (>1.0)")
-        
-        if 'dcer' in stats:
-            if stats['dcer']['mean'] > 1.0:
-                issues.append(f"dCER mean ({stats['dcer']['mean']:.3f}) seems too high (>1.0)")
-        
-        expected_count = len(results_df)
-        for metric, stat in stats.items():
-            if stat['count'] < expected_count * 0.8:
-                issues.append(f"{metric.upper()} has low coverage: {stat['count']}/{expected_count} samples")
-        
-        return {
-            'valid': len(issues) == 0,
-            'issues': issues
-        }
-    
     def generate_test_config(self, results_df: pd.DataFrame) -> dict:
-        """Generate test configuration JSON"""
         metric_name = 'dCER' if self.language == 'zh' else 'dWER'
         metric_col = 'dcer' if self.language == 'zh' else 'dwer'
         
+        # Filter out rows with missing inference_path (NaN values)
+        valid_df = results_df.copy()
+        if 'inference_path' in valid_df.columns:
+            valid_df = valid_df[valid_df['inference_path'].notna()]
+        
+        if len(valid_df) == 0:
+            print(f"Warning: No valid data with inference paths found")
+            return {}
+        
+        if metric_col not in valid_df.columns:
+            print(f"Warning: {metric_col} column not found in results")
+            return {}
+        
+        valid_results = valid_df.dropna(subset=[metric_col, 'utmos', 'pesq', 'stoi'])
+        
+        if len(valid_results) == 0:
+            print("Warning: No valid results with all metrics")
+            # Try without ASR metric
+            valid_results = valid_df.dropna(subset=['utmos', 'pesq', 'stoi'])
+            if len(valid_results) == 0:
+                return {}
+        
+        # Calculate total stats
         total_stats = {
-            metric_name: f"{results_df[metric_col].mean():.2f}",
-            'UTMOS': f"{results_df['utmos'].mean():.1f}",
-            'PESQ': f"{results_df['pesq'].mean():.1f}",
-            'STOI': f"{results_df['stoi'].mean():.2f}"
+            'UTMOS': f"{valid_results['utmos'].mean():.1f}",
+            'PESQ': f"{valid_results['pesq'].mean():.1f}",
+            'STOI': f"{valid_results['stoi'].mean():.2f}"
         }
         
+        # Convert metric column to numeric and calculate mean
+        metric_values = pd.to_numeric(valid_results[metric_col], errors='coerce')
+        if metric_values.notna().any():
+            total_stats[metric_name] = f"{metric_values.mean():.2f}"
+        
         samples = {}
-        for i in range(min(5, len(results_df))):
-            row = results_df.iloc[i]
-            samples[f'Sample_{i+1}'] = {
-                'File_name': Path(row['file_name']).stem,  # 新增 File_name 欄位
-                'Transcription': row['ground_truth'][:50] + '...' if len(row['ground_truth']) > 50 else row['ground_truth'],
-                metric_name: f"{row[metric_col]:.2f}",
+        for i in range(min(5, len(valid_results))):
+            row = valid_results.iloc[i]
+            sample_data = {
+                'File_name': Path(row['file_name']).stem,
+                'Transcription': row['ground_truth'][:100] + '...' if len(row['ground_truth']) > 100 else row['ground_truth'],
+                'Origin': row.get('original_transcript', 'N/A')[:100] + '...' if isinstance(row.get('original_transcript'), str) and len(row.get('original_transcript', '')) > 100 else row.get('original_transcript', 'N/A'),
+                'Inference': row.get('inference_transcript', 'N/A')[:100] + '...' if isinstance(row.get('inference_transcript'), str) and len(row.get('inference_transcript', '')) > 100 else row.get('inference_transcript', 'N/A'),
                 'UTMOS': f"{row['utmos']:.1f}",
                 'PESQ': f"{row['pesq']:.1f}",
                 'STOI': f"{row['stoi']:.2f}"
             }
+            
+            # Add metric if it's numeric
+            metric_val = pd.to_numeric(row[metric_col], errors='coerce')
+            if pd.notna(metric_val):
+                sample_data[metric_name] = f"{metric_val:.2f}"
+            
+            samples[f'Sample_{i+1}'] = sample_data
         
-        max_error_idx = results_df[metric_col].idxmax()
-        error_sample = results_df.loc[max_error_idx]
+        # Find error sample with proper error handling
+        try:
+            metric_numeric = pd.to_numeric(valid_results[metric_col], errors='coerce')
+            if metric_numeric.notna().any():
+                max_error_idx = metric_numeric.idxmax()
+            else:
+                max_error_idx = valid_results.index[0]
+        except Exception as e:
+            print(f"Warning: Could not find max error: {e}")
+            max_error_idx = valid_results.index[0]
+        
+        error_sample = valid_results.loc[max_error_idx]
+        
+        error_sample_data = {
+            'File_name': Path(error_sample['file_name']).stem,
+            'Transcription': error_sample['ground_truth'][:100] + '...' if len(error_sample['ground_truth']) > 100 else error_sample['ground_truth'],
+            'Origin': error_sample.get('original_transcript', 'N/A')[:100] + '...' if isinstance(error_sample.get('original_transcript'), str) and len(error_sample.get('original_transcript', '')) > 100 else error_sample.get('original_transcript', 'N/A'),
+            'Inference': error_sample.get('inference_transcript', 'N/A')[:100] + '...' if isinstance(error_sample.get('inference_transcript'), str) and len(error_sample.get('inference_transcript', '')) > 100 else error_sample.get('inference_transcript', 'N/A'),
+            'UTMOS': f"{error_sample['utmos']:.1f}",
+            'PESQ': f"{error_sample['pesq']:.1f}",
+            'STOI': f"{error_sample['stoi']:.2f}"
+        }
+        
+        # Add error metric if numeric
+        error_metric_val = pd.to_numeric(error_sample[metric_col], errors='coerce')
+        if pd.notna(error_metric_val):
+            error_sample_data[metric_name] = f"{error_metric_val:.2f}"
         
         config = {
             "model_info": {
@@ -641,34 +538,13 @@ class CodecTestValidator:
             f"{self.base_dataset_name}": {
                 "Total": total_stats,
                 **samples,
-                "Error_Sample_1": {
-                    'File_name': Path(error_sample['file_name']).stem,  # 新增 File_name 欄位
-                    'Transcription': error_sample['ground_truth'][:50] + '...' if len(error_sample['ground_truth']) > 50 else error_sample['ground_truth'],
-                    metric_name: f"{error_sample[metric_col]:.2f}",
-                    'UTMOS': f"{error_sample['utmos']:.1f}",
-                    'PESQ': f"{error_sample['pesq']:.1f}",
-                    'STOI': f"{error_sample['stoi']:.2f}"
-                }
+                "Error_Sample_1": error_sample_data
             }
         }
         
         return config
     
-    def sort_by_speaker_chapter(self, utt_id: str) -> tuple:
-        """Sort audio files by speaker and chapter (LibriSpeech format)"""
-        try:
-            parts = utt_id.split('-')
-            if len(parts) >= 2:
-                speaker = int(parts[0])
-                chapter = int(parts[1])
-                return (speaker, chapter, utt_id)
-            else:
-                return (0, 0, utt_id)
-        except:
-            return (0, 0, utt_id)
-
     def copy_test_audio_files(self, results_df: pd.DataFrame) -> None:
-        """Copy test audio files for web interface"""
         dataset_dir = self.audio_dir / self.base_dataset_name
         original_dir = dataset_dir / "original"
         inference_dir = dataset_dir / self.model_name / self.frequency
@@ -678,41 +554,58 @@ class CodecTestValidator:
         
         print(f"\nCopying test audio files...")
         
-        selected_samples = []
+        copied_count = 0
+        skipped_count = 0
         
-        if self.base_dataset_name == 'LibriSpeech':
-            sorted_df = results_df.copy()
-            sorted_df['sort_key'] = sorted_df['file_name'].apply(self.sort_by_speaker_chapter)
-            sorted_df = sorted_df.sort_values('sort_key')
-            
-            speakers_seen = set()
-            
-            for idx, row in sorted_df.iterrows():
-                speaker_id = row['file_name'].split('-')[0]
-                if speaker_id not in speakers_seen and len(selected_samples) < 5:
-                    speakers_seen.add(speaker_id)
-                    selected_samples.append(row)
-                    print(f"Selected: {row['file_name']} (Speaker {speaker_id})")
-        else:
-            selected_samples = results_df.head(5).to_dict('records')
-        
-        for row in selected_samples:
+        for idx, row in results_df.iterrows():
             file_name = row['file_name']
             base_name = Path(file_name).stem
             
-            original_path = Path(row['original_path'])
-            inference_path = Path(row['inference_path'])
+            # Check if paths exist and are not NaN
+            if 'original_path' not in row or 'inference_path' not in row:
+                skipped_count += 1
+                continue
+                
+            # Handle NaN values
+            if pd.isna(row['original_path']) or pd.isna(row['inference_path']):
+                skipped_count += 1
+                if skipped_count <= 3:
+                    print(f"  Skipping {base_name}: Missing path information")
+                continue
             
-            if original_path.exists() and inference_path.exists():
-                original_dest = original_dir / f"{base_name}.flac"
-                shutil.copy2(original_path, original_dest)
+            try:
+                original_path = Path(row['original_path'])
+                inference_path = Path(row['inference_path'])
                 
-                inference_dest = inference_dir / f"{base_name}.wav"
-                shutil.copy2(inference_path, inference_dest)
-                
-                print(f"  Copied: {base_name}")
-            else:
-                print(f"  Warning: Could not copy {base_name} - files not found")
+                if original_path.exists() and inference_path.exists():
+                    try:
+                        original_dest = original_dir / f"{base_name}.flac"
+                        shutil.copy2(original_path, original_dest)
+                        
+                        inference_dest = inference_dir / f"{base_name}.wav"
+                        shutil.copy2(inference_path, inference_dest)
+                        
+                        print(f"  Copied: {base_name}")
+                        copied_count += 1
+                    except Exception as e:
+                        print(f"  Warning: Failed to copy {base_name}: {e}")
+                else:
+                    if not original_path.exists():
+                        print(f"  Warning: Original file not found: {base_name}")
+                    if not inference_path.exists():
+                        print(f"  Warning: Inference file not found: {base_name}")
+                    skipped_count += 1
+            except Exception as e:
+                print(f"  Error processing {base_name}: {e}")
+                skipped_count += 1
+                continue
+        
+        if skipped_count > 3:
+            print(f"  ... and {skipped_count - 3} more files skipped")
+        
+        print(f"Successfully copied {copied_count} sample pairs")
+        if skipped_count > 0:
+            print(f"Skipped {skipped_count} files due to missing paths or files")
 
 
 def main():
@@ -767,9 +660,7 @@ def main():
             validation_report = validator.validate_file_naming()
             validator.auto_fix_file_naming(validation_report, dry_run=not args.fix_naming)
             
-            test_df = validator.load_test_data(args.num_samples)
-            if test_df is not None:
-                audio_validation = validator.validate_audio_files(test_df)
+            audio_validation = validator.validate_audio_files(args.num_samples)
         
         if args.mode in ["test", "both"]:
             print("\nStarting test evaluation...")

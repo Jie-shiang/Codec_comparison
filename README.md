@@ -14,7 +14,8 @@ A comprehensive evaluation pipeline for neural audio codecs with automated metri
 ├── index.html                        # Web interface
 ├── csv/                              # Dataset files
 │   ├── librispeech_test_clean_filtered.csv
-│   └── common_voice_zh_TW_train_filtered.csv
+│   ├── common_voice_zh_TW_train_filtered.csv
+│   └── common_voice_zh_CN_train_filtered.csv
 ├── result/                           # Evaluation reports (auto-generated)
 │   ├── detailed_results_ModelName_clean.csv
 │   ├── summary_results_ModelName_clean.csv
@@ -63,15 +64,13 @@ original file at /mnt/Internal/ASR/librispeech/LibriSpeech/test-clean
 ```bash
 # Validate file naming and check for issues
 python test_and_validation.py \
-    --original_dir /path/to/your/original/files \
-    --inference_dir /path/to/your/inference/files \
+    --inference_dir /path/to/inference \
     --csv_file librispeech_test_clean_filtered.csv \
     --mode validate
 
 # Fix naming issues if needed (dry run first, then actual fix)
 python test_and_validation.py \
-    --original_dir /path/to/your/original/files \
-    --inference_dir /path/to/your/inference/files \
+    --inference_dir /path/to/inference \
     --csv_file librispeech_test_clean_filtered.csv \
     --mode validate \
     --fix_naming
@@ -97,6 +96,17 @@ python test_and_validation.py \
 python test_and_validation.py \
     --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/librispeech_recon \
     --csv_file librispeech_test_clean_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "TestCodec" \
+    --mode test \
+    --num_samples 20 \
+    --use_gpu \
+    --gpu_id 0
+
+# For Example
+python test_and_validation.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/common_voice_recon \
+    --csv_file common_voice_zh_CN_train_filtered.csv \
     --original_dir /mnt/Internal/ASR \
     --model_name "TestCodec" \
     --mode test \
@@ -141,7 +151,7 @@ python enhanced_evaluation_pipeline.py \
 
 python enhanced_evaluation_pipeline.py \
     --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/common_voice_recon \
-    --csv_file common_voice_zh_TW_train_filtered.csv \
+    --csv_file common_voice_zh_CN_train_filtered.csv \
     --original_dir /mnt/Internal/ASR \
     --model_name "LSCodec" \
     --frequency "50Hz" \

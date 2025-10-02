@@ -825,12 +825,32 @@
         }
 
         function getCurrentMetricType() {
-            // 檢查當前模型的第一個可用數據來決定metric類型
+            // 檢查當前模型的數據來決定metric類型
             const datasetKeys = Object.keys(datasets);
             for (const dataset of datasetKeys) {
-                const metricType = getCodecData(dataset, currentModel, currentFrequency, 'Total', 'dwer_type');
-                if (metricType) {
-                    return metricType;
+                try {
+                    const codecData = datasets[dataset].codecData[currentModel]?.[currentFrequency];
+                    if (!codecData) continue;
+                    
+                    const datasetKey = getDatasetKey(dataset);
+                    const datasetData = codecData[datasetKey];
+                    if (!datasetData) continue;
+                    
+                    // 檢查Total或任意Sample來確定metric類型
+                    const filesToCheck = ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5'];
+                    for (const fileId of filesToCheck) {
+                        const fileData = datasetData[fileId];
+                        if (fileData) {
+                            if (fileData.dWER !== undefined) {
+                                return 'dWER';
+                            }
+                            if (fileData.dCER !== undefined) {
+                                return 'dCER';
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking metric type:', error);
                 }
             }
             return 'dWER/dCER'; // 默認顯示
@@ -1004,13 +1024,15 @@
                         .join('');
                     
                     if (rows) {
+                        // 為每個數據集生成表頭，這樣可以確保正確顯示metric類型
+                        const tableHeaders = createTableHeaders();
                         tablesHtml += `
                             <div class="dataset-section">
                                 <div class="dataset-title">${title}</div>
                                 <table>
                                     <thead>
                                         <tr>
-                                            ${createTableHeaders()}
+                                            ${tableHeaders}
                                         </tr>
                                     </thead>
                                     <tbody>
