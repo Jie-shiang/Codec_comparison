@@ -17,6 +17,8 @@ from pesq import pesq
 from pystoi import stoi
 import warnings
 import Levenshtein
+import opencc
+import pandas as pd
 
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -32,6 +34,17 @@ class AudioMetricsEvaluator:
         self.device = self._setup_device(device)
         self.asr_pipeline = None
         self.utmos_model = None
+        
+        # Initialize Traditional to Simplified Chinese converter
+        if self.language == 'zh':
+            try:
+                self.t2s_converter = opencc.OpenCC('t2s.json')  # Traditional to Simplified
+                print("OpenCC Traditional to Simplified converter initialized")
+            except Exception as e:
+                print(f"Warning: Could not initialize OpenCC: {e}")
+                self.t2s_converter = None
+        else:
+            self.t2s_converter = None
         
     def _setup_device(self, device=None):
         """Setup computation device with GPU support"""
@@ -123,14 +136,30 @@ class AudioMetricsEvaluator:
             print(f"After all models loaded: {mem_info['allocated']:.1f}GB allocated, {mem_info['free']:.1f}GB free")
         
         print("All models loaded successfully!")
+
+    def convert_traditional_to_simplified(self, text: str) -> str:
+        """Convert Traditional Chinese to Simplified Chinese"""
+        if not text or pd.isna(text):
+            return ""
         
+        if self.language == 'zh' and self.t2s_converter:
+            try:
+                return self.t2s_converter.convert(text)
+            except Exception as e:
+                print(f"Warning: OpenCC conversion failed: {e}")
+                return text
+        return text
+
     def normalize_text(self, text: str) -> str:
         """Optimized text normalization for WER/CER calculation"""
         if not text:
             return ""
             
         if self.language == 'zh':
-            # Remove all non-Chinese characters and punctuation
+            # Step 1: Convert Traditional to Simplified
+            text = self.convert_traditional_to_simplified(text)
+            
+            # Step 2: Remove all non-Chinese characters and punctuation
             text = re.sub(r'[^\u4e00-\u9fff\s]', '', text)
             text = re.sub(r'\s+', '', text)
             return text.strip()
@@ -202,12 +231,24 @@ class AudioMetricsEvaluator:
     def calculate_dwer_dcer(self, original_audio_path: str, inference_audio_path: str, ground_truth: str) -> dict:
         """Optimized dWER or dCER calculation"""
         try:
+            # Get raw transcripts from Whisper
             original_transcript = self.transcribe_audio(original_audio_path)
             inference_transcript = self.transcribe_audio(inference_audio_path)
             
-            ground_truth_norm = self.normalize_text(ground_truth)
-            original_norm = self.normalize_text(original_transcript)
-            inference_norm = self.normalize_text(inference_transcript)
+            # For Chinese: Convert to Simplified before normalization
+            if self.language == 'zh':
+                original_transcript_simplified = self.convert_traditional_to_simplified(original_transcript)
+                inference_transcript_simplified = self.convert_traditional_to_simplified(inference_transcript)
+                ground_truth_simplified = self.convert_traditional_to_simplified(ground_truth)
+            else:
+                original_transcript_simplified = original_transcript
+                inference_transcript_simplified = inference_transcript
+                ground_truth_simplified = ground_truth
+            
+            # Normalize for metric calculation
+            ground_truth_norm = self.normalize_text(ground_truth_simplified)
+            original_norm = self.normalize_text(original_transcript_simplified)
+            inference_norm = self.normalize_text(inference_transcript_simplified)
             
             if self.language == 'zh':
                 original_cer = self.fast_cer(ground_truth_norm, original_norm)
@@ -215,8 +256,10 @@ class AudioMetricsEvaluator:
                 dcer = inference_cer - original_cer
                 
                 return {
-                    'original_transcript': original_transcript,
-                    'inference_transcript': inference_transcript,
+                    'original_transcript_raw': original_transcript,  # Whisper 原始輸出（可能繁體）
+                    'inference_transcript_raw': inference_transcript,
+                    'original_transcript': original_norm,  # 簡體 + 無標點
+                    'inference_transcript': inference_norm,
                     'original_cer': original_cer,
                     'inference_cer': inference_cer,
                     'dcer': dcer,
@@ -228,8 +271,10 @@ class AudioMetricsEvaluator:
                 dwer = inference_wer - original_wer
                 
                 return {
-                    'original_transcript': original_transcript,
-                    'inference_transcript': inference_transcript,
+                    'original_transcript_raw': original_transcript,
+                    'inference_transcript_raw': inference_transcript,
+                    'original_transcript': original_norm,
+                    'inference_transcript': inference_norm,
                     'original_wer': original_wer,
                     'inference_wer': inference_wer,
                     'dwer': dwer,
@@ -239,7 +284,7 @@ class AudioMetricsEvaluator:
         except Exception as e:
             print(f"Error calculating dWER/dCER: {e}")
             return None
-    
+
     def calculate_utmos(self, audio_path: str) -> float:
         """Calculate UTMOS score with error handling"""
         try:

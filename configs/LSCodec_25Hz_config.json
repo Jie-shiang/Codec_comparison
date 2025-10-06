@@ -1,0 +1,437 @@
+{
+  "model_info": {
+    "modelName": "LSCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.25",
+    "parameters": {
+      "frameRate": "25",
+      "quantizers": "1",
+      "codebookSize": "1024",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.7",
+      "PESQ": "1.4",
+      "STOI": "0.65",
+      "dWER": "0.24"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": " He began a confused complaint against the wizard, who had vanished behind the curtain on the left.",
+      "Inference": " He began a confused complaint against the wizard, who had vanished behind the curtain on the left.",
+      "UTMOS": "3.8",
+      "PESQ": "1.3",
+      "STOI": "0.67",
+      "dWER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": " also a popular contrivance whereby love-making may be suspended but not stopped during the picnic season",
+      "Inference": " Wally.",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.38",
+      "dWER": "0.94"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": " here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since polly's first rapturous entrance had taken her into his good graces for all time",
+      "Inference": " here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since polly's first rapturous entrance had taken her into his good graces for all time",
+      "UTMOS": "4.2",
+      "PESQ": "1.4",
+      "STOI": "0.70",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0000",
+      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Origin": " Saturday, August 15th. The sea unbroken all round. No land in sight.",
+      "Inference": " Saturday, August 15th. The sea unbroken all round. No land in sight.",
+      "UTMOS": "4.3",
+      "PESQ": "1.5",
+      "STOI": "0.70",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": " Out in the woods stood a nice little fir tree.",
+      "Inference": " Out in the woods stood a nice little fir tree.",
+      "UTMOS": "4.3",
+      "PESQ": "1.5",
+      "STOI": "0.76",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "61-70968-0045",
+      "Transcription": "PRAY FOLLOW US WITH MINE AND MY LORD SHERIFF'S MEN",
+      "Origin": " Pray follow us, with mine and my Lord Sheriff's men.",
+      "Inference": " Pray follow us with might in my Lord Jareth's men.",
+      "UTMOS": "4.0",
+      "PESQ": "1.3",
+      "STOI": "0.71",
+      "dWER": "1.00"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "LibriSpeech_Blank": {
+    "Total": {
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "3.0",
+      "PESQ": "1.3",
+      "STOI": "0.65",
+      "dCER": "0.36"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_30162459",
+      "Transcription": "高雄市公车五甲干线",
+      "Origin": "高雄市公車五甲幹線",
+      "Inference": "高手是紅色人甲派的線",
+      "UTMOS": "3.1",
+      "PESQ": "1.1",
+      "STOI": "0.59",
+      "dCER": "0.56"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_24477793",
+      "Transcription": "肉！很多肉！",
+      "Origin": "肉很多肉",
+      "Inference": "肉很多肉",
+      "UTMOS": "2.4",
+      "PESQ": "1.2",
+      "STOI": "0.59",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_24478020",
+      "Transcription": "大家爱转传",
+      "Origin": "大家愛轉傳",
+      "Inference": "大家爱赚纯",
+      "UTMOS": "3.1",
+      "PESQ": "1.4",
+      "STOI": "0.69",
+      "dCER": "-0.20"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_25342071",
+      "Transcription": "结果很平和",
+      "Origin": "结果很平和",
+      "Inference": "NaN",
+      "UTMOS": "3.3",
+      "PESQ": "1.6",
+      "STOI": "0.36",
+      "dCER": "1.00"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_20748925",
+      "Transcription": "英文数字请尽量转为中文",
+      "Origin": "英文数字请尽量转为中文",
+      "Inference": "英文数字请尽量找回中文",
+      "UTMOS": "2.9",
+      "PESQ": "1.3",
+      "STOI": "0.66",
+      "dCER": "0.18"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_25342071",
+      "Transcription": "结果很平和",
+      "Origin": "结果很平和",
+      "Inference": "NaN",
+      "UTMOS": "3.3",
+      "PESQ": "1.6",
+      "STOI": "0.36",
+      "dCER": "1.00"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice_Blank": {
+    "Total": {
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  }
+}

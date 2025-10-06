@@ -29,3 +29,6 @@ soundfile>=0.10.0
 jupyter>=1.0.0
 matplotlib>=3.5.0
 seaborn>=0.11.0
+
+# Chinese text processing
+opencc-python-reimplemented>=0.1.7

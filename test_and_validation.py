@@ -456,7 +456,6 @@ class CodecTestValidator:
         
         if len(valid_results) == 0:
             print("Warning: No valid results with all metrics")
-            # Try without ASR metric
             valid_results = valid_df.dropna(subset=['utmos', 'pesq', 'stoi'])
             if len(valid_results) == 0:
                 return {}
@@ -468,7 +467,6 @@ class CodecTestValidator:
             'STOI': f"{valid_results['stoi'].mean():.2f}"
         }
         
-        # Convert metric column to numeric and calculate mean
         metric_values = pd.to_numeric(valid_results[metric_col], errors='coerce')
         if metric_values.notna().any():
             total_stats[metric_name] = f"{metric_values.mean():.2f}"
@@ -476,24 +474,28 @@ class CodecTestValidator:
         samples = {}
         for i in range(min(5, len(valid_results))):
             row = valid_results.iloc[i]
+            
+            # Use normalized transcripts (not raw) for JSON config
+            origin_text = row.get('original_transcript', 'N/A')
+            inference_text = row.get('inference_transcript', 'N/A')
+            
             sample_data = {
                 'File_name': Path(row['file_name']).stem,
                 'Transcription': row['ground_truth'][:100] + '...' if len(row['ground_truth']) > 100 else row['ground_truth'],
-                'Origin': row.get('original_transcript', 'N/A')[:100] + '...' if isinstance(row.get('original_transcript'), str) and len(row.get('original_transcript', '')) > 100 else row.get('original_transcript', 'N/A'),
-                'Inference': row.get('inference_transcript', 'N/A')[:100] + '...' if isinstance(row.get('inference_transcript'), str) and len(row.get('inference_transcript', '')) > 100 else row.get('inference_transcript', 'N/A'),
+                'Origin': origin_text[:100] + '...' if isinstance(origin_text, str) and len(origin_text) > 100 else origin_text,
+                'Inference': inference_text[:100] + '...' if isinstance(inference_text, str) and len(inference_text) > 100 else inference_text,
                 'UTMOS': f"{row['utmos']:.1f}",
                 'PESQ': f"{row['pesq']:.1f}",
                 'STOI': f"{row['stoi']:.2f}"
             }
             
-            # Add metric if it's numeric
             metric_val = pd.to_numeric(row[metric_col], errors='coerce')
             if pd.notna(metric_val):
                 sample_data[metric_name] = f"{metric_val:.2f}"
             
             samples[f'Sample_{i+1}'] = sample_data
         
-        # Find error sample with proper error handling
+        # Find error sample
         try:
             metric_numeric = pd.to_numeric(valid_results[metric_col], errors='coerce')
             if metric_numeric.notna().any():
@@ -506,17 +508,20 @@ class CodecTestValidator:
         
         error_sample = valid_results.loc[max_error_idx]
         
+        # Use normalized transcripts for error sample too
+        error_origin_text = error_sample.get('original_transcript', 'N/A')
+        error_inference_text = error_sample.get('inference_transcript', 'N/A')
+        
         error_sample_data = {
             'File_name': Path(error_sample['file_name']).stem,
             'Transcription': error_sample['ground_truth'][:100] + '...' if len(error_sample['ground_truth']) > 100 else error_sample['ground_truth'],
-            'Origin': error_sample.get('original_transcript', 'N/A')[:100] + '...' if isinstance(error_sample.get('original_transcript'), str) and len(error_sample.get('original_transcript', '')) > 100 else error_sample.get('original_transcript', 'N/A'),
-            'Inference': error_sample.get('inference_transcript', 'N/A')[:100] + '...' if isinstance(error_sample.get('inference_transcript'), str) and len(error_sample.get('inference_transcript', '')) > 100 else error_sample.get('inference_transcript', 'N/A'),
+            'Origin': error_origin_text[:100] + '...' if isinstance(error_origin_text, str) and len(error_origin_text) > 100 else error_origin_text,
+            'Inference': error_inference_text[:100] + '...' if isinstance(error_inference_text, str) and len(error_inference_text) > 100 else error_inference_text,
             'UTMOS': f"{error_sample['utmos']:.1f}",
             'PESQ': f"{error_sample['pesq']:.1f}",
             'STOI': f"{error_sample['stoi']:.2f}"
         }
         
-        # Add error metric if numeric
         error_metric_val = pd.to_numeric(error_sample[metric_col], errors='coerce')
         if pd.notna(error_metric_val):
             error_sample_data[metric_name] = f"{error_metric_val:.2f}"

@@ -1,8 +1,8 @@
 {
   "model_info": {
     "modelName": "BigCodec",
-    "causality": "Causal",
-    "trainingSet": "LibriSpeech + train-clean",
+    "causality": "Non-Causal",
+    "trainingSet": "LibriSpeech",
     "testingSet": "LibriSpeech + test-clean + MLS",
     "bitRate": "1.04",
     "parameters": {
@@ -14,58 +14,70 @@
   },
   "LibriSpeech": {
     "Total": {
-      "dWER": "0.02",
       "UTMOS": "4.1",
       "PESQ": "2.7",
-      "STOI": "0.94"
+      "STOI": "0.94",
+      "dWER": "0.02"
     },
     "Sample_1": {
       "File_name": "61-70968-0000",
       "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "dWER": "0.00",
+      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Inference": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
       "UTMOS": "4.0",
       "PESQ": "2.1",
-      "STOI": "0.94"
+      "STOI": "0.94",
+      "dWER": "0.00"
     },
     "Sample_2": {
       "File_name": "121-121726-0000",
       "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "dWER": "0.00",
+      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Inference": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
       "UTMOS": "4.2",
       "PESQ": "2.7",
-      "STOI": "0.95"
+      "STOI": "0.95",
+      "dWER": "0.00"
     },
     "Sample_3": {
       "File_name": "237-126133-0000",
       "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "dWER": "0.00",
+      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Inference": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
       "UTMOS": "4.4",
       "PESQ": "3.0",
-      "STOI": "0.96"
+      "STOI": "0.96",
+      "dWER": "0.00"
     },
     "Sample_4": {
       "File_name": "260-123286-0000",
       "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "dWER": "0.00",
+      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Inference": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
       "UTMOS": "4.3",
       "PESQ": "2.6",
-      "STOI": "0.94"
+      "STOI": "0.94",
+      "dWER": "0.00"
     },
     "Sample_5": {
       "File_name": "672-122797-0000",
       "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "dWER": "0.00",
+      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Inference": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
       "UTMOS": "4.4",
       "PESQ": "2.7",
-      "STOI": "0.94"
+      "STOI": "0.94",
+      "dWER": "0.00"
     },
     "Error_Sample_1": {
       "File_name": "121-121726-0011",
       "Transcription": "HUSBAND THE NEXT THING TO A WIFE",
-      "dWER": "1.00",
+      "Origin": "HUSBAND THE NEXT THING TO A WIFE",
+      "Inference": "THE NEXT THING TO A WIFE",
       "UTMOS": "4.4",
       "PESQ": "3.5",
-      "STOI": "0.97"
+      "STOI": "0.97",
+      "dWER": "1.00"
     }
   },
   "LibriSpeech_Noise": {
@@ -182,58 +194,70 @@
   },
   "CommonVoice": {
     "Total": {
-      "dCER": "0.08",
       "UTMOS": "2.8",
       "PESQ": "2.2",
-      "STOI": "0.87"
+      "STOI": "0.87",
+      "dCER": "0.08"
     },
     "Sample_1": {
       "File_name": "common_voice_zh-TW_30162459",
-      "Transcription": "高雄市公車五甲幹線",
-      "dCER": "N/A",
+      "Transcription": "高雄市公车五甲干线",
+      "Origin": "高雄市公車五甲幹線",
+      "Inference": "高雄市風車與腳踏線",
       "UTMOS": "2.9",
       "PESQ": "2.3",
-      "STOI": "0.89"
+      "STOI": "0.89",
+      "dCER": "0.33"
     },
     "Sample_2": {
       "File_name": "common_voice_zh-TW_24477793",
       "Transcription": "肉！很多肉！",
-      "dCER": "N/A",
+      "Origin": "肉很多肉",
+      "Inference": "肉很多肉",
       "UTMOS": "2.3",
       "PESQ": "2.6",
-      "STOI": "0.94"
+      "STOI": "0.94",
+      "dCER": "0.00"
     },
     "Sample_3": {
       "File_name": "common_voice_zh-TW_24478020",
-      "Transcription": "大家愛轉傳",
-      "dCER": "N/A",
+      "Transcription": "大家爱转传",
+      "Origin": "大家愛轉傳",
+      "Inference": "大家爱转传",
       "UTMOS": "3.4",
       "PESQ": "2.6",
-      "STOI": "0.94"
+      "STOI": "0.94",
+      "dCER": "-0.60"
     },
     "Sample_4": {
       "File_name": "common_voice_zh-TW_25342071",
-      "Transcription": "結果很平和",
-      "dCER": "N/A",
+      "Transcription": "结果很平和",
+      "Origin": "结果很平和",
+      "Inference": "結果很平和",
       "UTMOS": "3.2",
       "PESQ": "1.8",
-      "STOI": "0.55"
+      "STOI": "0.55",
+      "dCER": "0.20"
     },
     "Sample_5": {
       "File_name": "common_voice_zh-TW_20748925",
-      "Transcription": "英文數字請盡量轉為中文",
-      "dCER": "N/A",
+      "Transcription": "英文数字请尽量转为中文",
+      "Origin": "英文数字请尽量转为中文",
+      "Inference": "英文數字請盡量轉為中文",
       "UTMOS": "3.2",
       "PESQ": "2.3",
-      "STOI": "0.88"
+      "STOI": "0.88",
+      "dCER": "0.45"
     },
     "Error_Sample_1": {
-      "File_name": "common_voice_zh-TW_35051966",
-      "Transcription": "自問自答",
-      "dCER": "N/A",
-      "UTMOS": "2.1",
-      "PESQ": "1.9",
-      "STOI": "0.90"
+      "File_name": "common_voice_zh-TW_26783758",
+      "Transcription": "位置接近",
+      "Origin": "位置接近",
+      "Inference": "為君皆濟",
+      "UTMOS": "3.3",
+      "PESQ": "2.1",
+      "STOI": "0.87",
+      "dCER": "1.00"
     }
   },
   "CommonVoice_Noise": {

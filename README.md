@@ -167,6 +167,43 @@ python enhanced_evaluation_pipeline.py \
     --use_gpu \
     --gpu_id 1
 
+# Option A.2: Compute all metrics at once / For example, 25Hz version of LSCodec
+python enhanced_evaluation_pipeline.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/25Hz/librispeech_recon \
+    --csv_file librispeech_test_clean_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "LSCodec" \
+    --frequency "25Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "0.25" \
+    --quantizers "1" \
+    --codebook_size "1024" \
+    --n_params "N/A" \
+    --training_set "N/A" \
+    --testing_set "N/A" \
+    --metrics dwer utmos pesq stoi \
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 2
+
+python enhanced_evaluation_pipeline.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/25Hz/common_voice_recon \
+    --csv_file common_voice_zh_CN_train_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "LSCodec" \
+    --frequency "25Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "0.25" \
+    --quantizers "1" \
+    --codebook_size "1024" \
+    --n_params "N/A" \
+    --training_set "N/A" \
+    --testing_set "N/A" \
+    --metrics dcer utmos pesq stoi \
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 3
+
 
 # Option B: Compute metrics incrementally (recommended for large datasets)
 # Step 1: Compute dWER first (fastest)

@@ -152,6 +152,7 @@ class EnhancedCodecEvaluationPipeline:
     def create_empty_result_dataframe(self, input_df: pd.DataFrame) -> pd.DataFrame:
         columns = [
             'file_name', 'original_path', 'inference_path', 'ground_truth',
+            'original_transcript_raw', 'inference_transcript_raw',
             'original_transcript', 'inference_transcript',
             'utmos', 'pesq', 'stoi'
         ]
@@ -243,8 +244,8 @@ class EnhancedCodecEvaluationPipeline:
         return existing_df
     
     def evaluate_metrics_selectively(self, evaluator: AudioMetricsEvaluator, 
-                                   original_path: str, inference_path: str, 
-                                   ground_truth: str) -> dict:
+                                original_path: str, inference_path: str, 
+                                ground_truth: str) -> dict:
         results = {}
         
         results['original_path'] = str(original_path)
@@ -257,7 +258,6 @@ class EnhancedCodecEvaluationPipeline:
         need_asr = compute_dwer or compute_dcer
         
         if need_asr:
-            # Call calculate_dwer_dcer with proper parameters
             asr_result = evaluator.calculate_dwer_dcer(
                 str(original_path), 
                 str(inference_path), 
@@ -265,7 +265,9 @@ class EnhancedCodecEvaluationPipeline:
             )
             
             if asr_result:
-                # Always store transcripts
+                # Store both raw and normalized transcripts
+                results['original_transcript_raw'] = asr_result.get('original_transcript_raw', '')
+                results['inference_transcript_raw'] = asr_result.get('inference_transcript_raw', '')
                 results['original_transcript'] = asr_result.get('original_transcript', '')
                 results['inference_transcript'] = asr_result.get('inference_transcript', '')
                 
@@ -282,10 +284,6 @@ class EnhancedCodecEvaluationPipeline:
                         results['original_cer'] = asr_result.get('original_cer', np.nan)
                         results['inference_cer'] = asr_result.get('inference_cer', np.nan)
                         results['dcer'] = asr_result.get('dcer', np.nan)
-                
-                # If user requested both metrics, we would need to compute with both languages
-                # For now, we compute based on the evaluator's language setting
-                # If you need both, you'd need to create two evaluators or modify the evaluator class
         
         if 'utmos' in self.metrics_to_compute:
             results['utmos'] = evaluator.calculate_utmos(inference_path)
