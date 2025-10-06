@@ -17,7 +17,7 @@
         }
         
         .container {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -79,6 +79,7 @@
             align-items: center;
             gap: 8px;
             margin-left: 10px;
+            flex-wrap: wrap;
         }
         
         .checkbox-group {
@@ -256,11 +257,12 @@
         }
         
         .transcript {
-            max-width: 180px;
+            max-width: 200px;
             text-align: left;
-            font-size: 11px;
+            font-size: 10px;
             line-height: 1.3;
             color: #555;
+            padding: 4px;
         }
         
         .play-button {
@@ -340,6 +342,14 @@
                             <input type="checkbox" id="show-bigcodec" checked>
                             <label for="show-bigcodec">BigCodec</label>
                             <select id="bigcodec-freq">
+                                <option value="80Hz">80Hz</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-secousticodec" checked>
+                            <label for="show-secousticodec">SecoustiCodec</label>
+                            <select id="secousticodec-freq">
+                                <option value="20Hz">20Hz</option>
                                 <option value="80Hz">80Hz</option>
                             </select>
                         </div>
@@ -425,9 +435,25 @@
                             <input type="checkbox" id="show-stoi" checked>
                             <label for="show-stoi">STOI</label>
                         </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Text</label>
+                    <div class="control-subgroup">
                         <div class="checkbox-group">
-                            <input type="checkbox" id="show-transcript" checked>
-                            <label for="show-transcript">Transcription</label>
+                            <input type="checkbox" id="show-transcription" checked>
+                            <label for="show-transcription">Transcription</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-origin">
+                            <label for="show-origin">Origin</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-inference">
+                            <label for="show-inference">Inference</label>
                         </div>
                     </div>
                 </div>
@@ -512,6 +538,8 @@
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '25Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '50Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'BigCodec', '80Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'SecoustiCodec', '20Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'SecoustiCodec', '80Hz'));
             }
             
             await Promise.all(loadPromises);
@@ -535,15 +563,17 @@
                 if (!fileData) return null;
                 
                 switch (dataType) {
-                    case 'transcript':
+                    case 'transcription':
                         return fileData.Transcription || null;
+                    case 'origin':
+                        return fileData.Origin || null;
+                    case 'inference':
+                        return fileData.Inference || null;
                     case 'utmos':
                         return fileData.UTMOS || null;
                     case 'dwer':
-                        // 優先返回dWER，如果沒有則返回dCER
                         return fileData.dWER || fileData.dCER || null;
                     case 'dwer_type':
-                        // 返回實際的metric類型
                         if (fileData.dWER !== undefined) return 'dWER';
                         if (fileData.dCER !== undefined) return 'dCER';
                         return null;
@@ -604,6 +634,8 @@
                     return `${basePath}/${datasetPath}/FocalCodec/${frequency}/${actualFileName}.wav`;
                 case 'bigcodec':
                     return `${basePath}/${datasetPath}/BigCodec/${frequency}/${actualFileName}.wav`;
+                case 'secousticodec':
+                    return `${basePath}/${datasetPath}/SecoustiCodec/${frequency}/${actualFileName}.wav`;
                 default:
                     return '';
             }
@@ -740,11 +772,18 @@
             const pesq = getCodecData(dataset, codecType, frequency, fileId, 'pesq') || 'X';
             const stoi = getCodecData(dataset, codecType, frequency, fileId, 'stoi') || 'X';
             
-            let transcript = 'X';
+            let transcription = 'X';
+            let origin = 'X';
+            let inference = 'X';
+            
             if (!isTotalRow) {
-                transcript = getCodecData(dataset, codecType, frequency, fileId, 'transcript') || 'X';
+                transcription = getCodecData(dataset, codecType, frequency, fileId, 'transcription') || 'X';
+                origin = getCodecData(dataset, codecType, frequency, fileId, 'origin') || 'X';
+                inference = getCodecData(dataset, codecType, frequency, fileId, 'inference') || 'X';
             } else {
-                transcript = '-';
+                transcription = '-';
+                origin = '-';
+                inference = '-';
             }
             
             let displayFileName = fileId;
@@ -768,13 +807,17 @@
                 inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'focalcodec', frequency)}</td>`;
             } else if (codecType === 'BigCodec' && document.getElementById('show-bigcodec').checked) {
                 inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'bigcodec', frequency)}</td>`;
+            } else if (codecType === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'secousticodec', frequency)}</td>`;
             }
             
             const dwerCell = document.getElementById('show-dwer').checked ? `<td class="metric-cell">${dwer}</td>` : '';
             const utmosCell = document.getElementById('show-utmos').checked ? `<td class="metric-cell">${utmos}</td>` : '';
             const pesqCell = document.getElementById('show-pesq').checked ? `<td class="metric-cell">${pesq}</td>` : '';
             const stoiCell = document.getElementById('show-stoi').checked ? `<td class="metric-cell">${stoi}</td>` : '';
-            const transcriptCell = document.getElementById('show-transcript').checked ? `<td class="transcript">${transcript}</td>` : '';
+            const transcriptionCell = document.getElementById('show-transcription').checked ? `<td class="transcript">${transcription}</td>` : '';
+            const originCell = document.getElementById('show-origin').checked ? `<td class="transcript">${origin}</td>` : '';
+            const inferenceTextCell = document.getElementById('show-inference').checked ? `<td class="transcript">${inference}</td>` : '';
             
             return `
                 <tr class="${rowClass}">
@@ -785,7 +828,9 @@
                     ${utmosCell}
                     ${pesqCell}
                     ${stoiCell}
-                    ${transcriptCell}
+                    ${transcriptionCell}
+                    ${originCell}
+                    ${inferenceTextCell}
                 </tr>
             `;
         }
@@ -799,12 +844,12 @@
             
             if ((currentModel === 'LSCodec' && document.getElementById('show-lscodec').checked) ||
                 (currentModel === 'FocalCodec' && document.getElementById('show-focalcodec').checked) ||
-                (currentModel === 'BigCodec' && document.getElementById('show-bigcodec').checked)) {
+                (currentModel === 'BigCodec' && document.getElementById('show-bigcodec').checked) ||
+                (currentModel === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked)) {
                 headers += '<th class="inference-header" style="width: 190px;">Inference</th>';
             }
             
             if (document.getElementById('show-dwer').checked) {
-                // 動態決定顯示dWER還是dCER
                 const metricType = getCurrentMetricType();
                 headers += `<th style="width: 90px;">${metricType}</th>`;
             }
@@ -817,15 +862,20 @@
             if (document.getElementById('show-stoi').checked) {
                 headers += '<th style="width: 90px;">STOI</th>';
             }
-            if (document.getElementById('show-transcript').checked) {
-                headers += '<th style="width: 190px;">Transcription</th>';
+            if (document.getElementById('show-transcription').checked) {
+                headers += '<th style="width: 200px;">Transcription</th>';
+            }
+            if (document.getElementById('show-origin').checked) {
+                headers += '<th style="width: 200px;">Origin</th>';
+            }
+            if (document.getElementById('show-inference').checked) {
+                headers += '<th style="width: 200px;">Inference Text</th>';
             }
             
             return headers;
         }
 
         function getCurrentMetricType() {
-            // 檢查當前模型的數據來決定metric類型
             const datasetKeys = Object.keys(datasets);
             for (const dataset of datasetKeys) {
                 try {
@@ -836,7 +886,6 @@
                     const datasetData = codecData[datasetKey];
                     if (!datasetData) continue;
                     
-                    // 檢查Total或任意Sample來確定metric類型
                     const filesToCheck = ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5'];
                     for (const fileId of filesToCheck) {
                         const fileData = datasetData[fileId];
@@ -853,7 +902,7 @@
                     console.error('Error checking metric type:', error);
                 }
             }
-            return 'dWER/dCER'; // 默認顯示
+            return 'dWER/dCER';
         }
 
         function renderModelSections() {
@@ -863,6 +912,7 @@
             const showLSCodec = document.getElementById('show-lscodec').checked;
             const showFocalCodec = document.getElementById('show-focalcodec').checked;
             const showBigCodec = document.getElementById('show-bigcodec').checked;
+            const showSecoustiCodec = document.getElementById('show-secousticodec').checked;
             
             if (showLSCodec) {
                 currentModel = 'LSCodec';
@@ -880,6 +930,12 @@
                 currentModel = 'BigCodec';
                 currentFrequency = document.getElementById('bigcodec-freq').value;
                 container.appendChild(createModelSection('BigCodec', currentFrequency));
+            }
+            
+            if (showSecoustiCodec) {
+                currentModel = 'SecoustiCodec';
+                currentFrequency = document.getElementById('secousticodec-freq').value;
+                container.appendChild(createModelSection('SecoustiCodec', currentFrequency));
             }
         }
 
@@ -1024,7 +1080,6 @@
                         .join('');
                     
                     if (rows) {
-                        // 為每個數據集生成表頭，這樣可以確保正確顯示metric類型
                         const tableHeaders = createTableHeaders();
                         tablesHtml += `
                             <div class="dataset-section">
@@ -1051,13 +1106,16 @@
         document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('bigcodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('secousticodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('dataset-type').addEventListener('change', renderModelSections);
         document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
         document.getElementById('sample-count').addEventListener('change', renderModelSections);
         
         [
-            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-original', 'show-total', 'show-sample', 'show-error', 'show-config', 'show-dataset',
-            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-transcript'
+            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-secousticodec',
+            'show-original', 'show-total', 'show-sample', 'show-error', 'show-config', 'show-dataset',
+            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 
+            'show-transcription', 'show-origin', 'show-inference'
         ].forEach(id => {
             document.getElementById(id).addEventListener('change', renderModelSections);
         });
