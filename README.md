@@ -94,7 +94,7 @@ python test_and_validation.py \
 
 # For Example
 python test_and_validation.py \
-    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/librispeech_recon \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon \
     --csv_file librispeech_test_clean_filtered.csv \
     --original_dir /mnt/Internal/ASR \
     --model_name "TestCodec" \
@@ -105,7 +105,7 @@ python test_and_validation.py \
 
 # For Example
 python test_and_validation.py \
-    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/common_voice_recon \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/common_voice_recon \
     --csv_file common_voice_zh_CN_train_filtered.csv \
     --original_dir /mnt/Internal/ASR \
     --model_name "TestCodec" \
@@ -132,7 +132,7 @@ python cleanup_test_files.py \
 
 # Option A: Compute all metrics at once
 python enhanced_evaluation_pipeline.py \
-    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/librispeech_recon \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon \
     --csv_file librispeech_test_clean_filtered.csv \
     --original_dir /mnt/Internal/ASR \
     --model_name "LSCodec" \
@@ -150,7 +150,7 @@ python enhanced_evaluation_pipeline.py \
     --gpu_id 0
 
 python enhanced_evaluation_pipeline.py \
-    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/common_voice_recon \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/common_voice_recon \
     --csv_file common_voice_zh_CN_train_filtered.csv \
     --original_dir /mnt/Internal/ASR \
     --model_name "LSCodec" \
@@ -165,7 +165,7 @@ python enhanced_evaluation_pipeline.py \
     --metrics dcer utmos pesq stoi \
     --dataset_type "clean" \
     --use_gpu \
-    --gpu_id 0
+    --gpu_id 1
 
 
 # Option B: Compute metrics incrementally (recommended for large datasets)
