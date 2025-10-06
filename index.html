@@ -444,7 +444,7 @@
                     <label>Text</label>
                     <div class="control-subgroup">
                         <div class="checkbox-group">
-                            <input type="checkbox" id="show-transcription" checked>
+                            <input type="checkbox" id="show-transcription">
                             <label for="show-transcription">Transcription</label>
                         </div>
                         <div class="checkbox-group">
@@ -652,12 +652,27 @@
                 return '<span class="no-audio">No File</span>';
             }
             
+            // For original files, try multiple formats
+            let sourceTags = '';
+            if (codecType === 'original') {
+                const basePath = audioPath.replace(/\.[^.]+$/, ''); // Remove extension
+                sourceTags = `
+                    <source src="${basePath}.flac" type="audio/flac">
+                    <source src="${basePath}.mp3" type="audio/mpeg">
+                    <source src="${basePath}.wav" type="audio/wav">
+                `;
+            } else {
+                // For inference files, use the specific format
+                const ext = audioPath.split('.').pop();
+                const mimeType = ext === 'wav' ? 'audio/wav' : ext === 'flac' ? 'audio/flac' : 'audio/mpeg';
+                sourceTags = `<source src="${audioPath}" type="${mimeType}">`;
+            }
+            
             return `
                 <div class="audio-controls">
-                    <button class="play-button" onclick="toggleAudio('${audioPath}', this)">Play</button>
-                    <audio preload="none">
-                        <source src="${audioPath}" type="audio/wav">
-                        <source src="${audioPath}" type="audio/flac">
+                    <button class="play-button" onclick="toggleAudio('audio_${dataset}_${fileId}_${codecType}', this)">Play</button>
+                    <audio preload="none" id="audio_${dataset}_${fileId}_${codecType}">
+                        ${sourceTags}
                         Your browser does not support audio playback.
                     </audio>
                     ${frequency ? `<div class="codec-info">${frequency}</div>` : ''}
@@ -665,14 +680,16 @@
             `;
         }
         
-        function toggleAudio(audioPath, button) {
+        function toggleAudio(audioId, button) {
+            // Pause all other audio elements
             document.querySelectorAll('audio').forEach(audio => {
-                if (audio.src !== location.origin + '/' + audioPath) {
+                if (audio.id !== audioId) {
                     audio.pause();
                     audio.currentTime = 0;
                 }
             });
 
+            // Reset all other play buttons
             document.querySelectorAll('.play-button').forEach(btn => {
                 if (btn !== button) {
                     btn.textContent = 'Play';
@@ -680,11 +697,10 @@
                 }
             });
 
-            const audioControl = button.parentElement;
-            const audio = audioControl.querySelector('audio');
-
-            if (!audio.src || audio.src !== location.origin + '/' + audioPath) {
-                audio.src = audioPath;
+            const audio = document.getElementById(audioId);
+            if (!audio) {
+                console.error('Audio element not found:', audioId);
+                return;
             }
 
             if (audio.paused) {
@@ -698,7 +714,7 @@
                 }, { once: true });
 
                 audio.addEventListener('error', function(e) {
-                    console.error('Audio load failed:', audioPath, e);
+                    console.error('Audio load failed:', audioId, e);
                     button.textContent = 'Load Failed';
                     button.disabled = false;
                 }, { once: true });
