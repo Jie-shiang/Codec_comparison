@@ -326,6 +326,7 @@
                             <input type="checkbox" id="show-lscodec" checked>
                             <label for="show-lscodec">LSCodec</label>
                             <select id="lscodec-freq">
+                                <option value="25Hz">25Hz</option>
                                 <option value="50Hz">50Hz</option>
                             </select>
                         </div>
@@ -533,6 +534,7 @@
             
             for (const datasetName of datasetNames) {
                 statusInfo.textContent = `Loading ${datasetName} data...`;
+                loadPromises.push(loadCodecData(datasetName, 'LSCodec', '25Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'LSCodec', '50Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '12.5Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '25Hz'));
