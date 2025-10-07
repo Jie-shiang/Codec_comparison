@@ -853,7 +853,7 @@
             `;
         }
 
-        function createTableHeaders() {
+        function createTableHeaders(dataset) {
             let headers = '<th style="width: 120px;">File ID</th>';
             
             if (document.getElementById('show-original').checked) {
@@ -868,7 +868,8 @@
             }
             
             if (document.getElementById('show-dwer').checked) {
-                const metricType = getCurrentMetricType();
+                // Determine metric type based on dataset
+                const metricType = dataset.includes('commonvoice') ? 'dCER' : 'dWER';
                 headers += `<th style="width: 90px;">${metricType}</th>`;
             }
             if (document.getElementById('show-utmos').checked) {
@@ -1098,7 +1099,7 @@
                         .join('');
                     
                     if (rows) {
-                        const tableHeaders = createTableHeaders();
+                        const tableHeaders = createTableHeaders(dataset);
                         tablesHtml += `
                             <div class="dataset-section">
                                 <div class="dataset-title">${title}</div>
