@@ -1,5 +1,7 @@
 # Neural Audio Codec Evaluation Pipeline
 
+**🌐 [View Live Demo](https://jie-shiang.github.io/Codec_comparison/)**
+
 A comprehensive evaluation pipeline for neural audio codecs with automated metrics assessment, selective metric calculation, and multi-language support.
 
 ## Project Structure
