@@ -119,6 +119,15 @@
             margin-left: 2px;
         }
         
+        .bitrate-select {
+            display: none;
+            margin-left: 5px;
+        }
+        
+        .bitrate-select.visible {
+            display: inline-block;
+        }
+        
         .status-info {
             background: #d4edda;
             border: 1px solid #c3e6cb;
@@ -354,6 +363,25 @@
                                 <option value="80Hz">80Hz</option>
                             </select>
                         </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-mimicodec" checked>
+                            <label for="show-mimicodec">MimiCodec</label>
+                            <select id="mimicodec-freq">
+                                <option value="12.5Hz">12.5Hz</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-nanocodec" checked>
+                            <label for="show-nanocodec">NanoCodec</label>
+                            <select id="nanocodec-freq">
+                                <option value="12.5Hz">12.5Hz</option>
+                                <option value="21.5Hz">21.5Hz</option>
+                            </select>
+                            <select id="nanocodec-bitrate" class="bitrate-select">
+                                <option value="0.6">0.6</option>
+                                <option value="1.78">1.78</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -500,10 +528,29 @@
 
         let currentModel = 'LSCodec';
         let currentFrequency = '50Hz';
+        let currentBitrate = null;
 
-        async function loadCodecData(dataset, codecType, frequency) {
+        // Toggle bitrate selector visibility for NanoCodec
+        function toggleNanoCodecBitrate() {
+            const nanocodecFreq = document.getElementById('nanocodec-freq').value;
+            const bitrateSelect = document.getElementById('nanocodec-bitrate');
+            
+            if (nanocodecFreq === '12.5Hz') {
+                bitrateSelect.classList.add('visible');
+            } else {
+                bitrateSelect.classList.remove('visible');
+            }
+        }
+
+        async function loadCodecData(dataset, codecType, frequency, bitrate = null) {
             const basePath = `configs`;
-            const jsonPath = `${basePath}/${codecType}_${frequency}_config.json`;
+            let jsonPath;
+            
+            if (codecType === 'NanoCodec' && frequency === '12.5Hz' && bitrate) {
+                jsonPath = `${basePath}/${codecType}_${frequency}_${bitrate}_config.json`;
+            } else {
+                jsonPath = `${basePath}/${codecType}_${frequency}_config.json`;
+            }
             
             try {
                 const response = await fetch(jsonPath);
@@ -513,7 +560,9 @@
                     if (!datasets[dataset].codecData[codecType]) {
                         datasets[dataset].codecData[codecType] = {};
                     }
-                    datasets[dataset].codecData[codecType][frequency] = data;
+                    
+                    const key = bitrate ? `${frequency}_${bitrate}` : frequency;
+                    datasets[dataset].codecData[codecType][key] = data;
                     
                     return data;
                 } else {
@@ -542,6 +591,10 @@
                 loadPromises.push(loadCodecData(datasetName, 'BigCodec', '80Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'SecoustiCodec', '20Hz'));
                 loadPromises.push(loadCodecData(datasetName, 'SecoustiCodec', '80Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'MimiCodec', '12.5Hz'));
+                loadPromises.push(loadCodecData(datasetName, 'NanoCodec', '12.5Hz', '0.6'));
+                loadPromises.push(loadCodecData(datasetName, 'NanoCodec', '12.5Hz', '1.78'));
+                loadPromises.push(loadCodecData(datasetName, 'NanoCodec', '21.5Hz'));
             }
             
             await Promise.all(loadPromises);
@@ -551,6 +604,7 @@
                 statusInfo.style.display = 'none';
             }, 2000);
             
+            toggleNanoCodecBitrate();
             renderModelSections();
         }
 
@@ -638,6 +692,20 @@
                     return `${basePath}/${datasetPath}/BigCodec/${frequency}/${actualFileName}.wav`;
                 case 'secousticodec':
                     return `${basePath}/${datasetPath}/SecoustiCodec/${frequency}/${actualFileName}.wav`;
+                case 'mimicodec':
+                    return `${basePath}/${datasetPath}/MimiCodec/${frequency}/${actualFileName}.wav`;
+                case 'nanocodec':
+                    // Handle NanoCodec special path structure
+                    if (frequency.includes('_')) {
+                        // Format: 12.5Hz_0.6 or 12.5Hz_1.78
+                        const parts = frequency.split('_');
+                        const freq = parts[0]; // 12.5Hz
+                        const bitrate = parts[1]; // 0.6 or 1.78
+                        return `${basePath}/${datasetPath}/NanoCodec/${freq}/${bitrate}/${actualFileName}.wav`;
+                    } else {
+                        // Format: 21.5Hz
+                        return `${basePath}/${datasetPath}/NanoCodec/${frequency}/${actualFileName}.wav`;
+                    }
                 default:
                     return '';
             }
@@ -654,17 +722,15 @@
                 return '<span class="no-audio">No File</span>';
             }
             
-            // For original files, try multiple formats
             let sourceTags = '';
             if (codecType === 'original') {
-                const basePath = audioPath.replace(/\.[^.]+$/, ''); // Remove extension
+                const basePath = audioPath.replace(/\.[^.]+$/, '');
                 sourceTags = `
                     <source src="${basePath}.flac" type="audio/flac">
                     <source src="${basePath}.mp3" type="audio/mpeg">
                     <source src="${basePath}.wav" type="audio/wav">
                 `;
             } else {
-                // For inference files, use the specific format
                 const ext = audioPath.split('.').pop();
                 const mimeType = ext === 'wav' ? 'audio/wav' : ext === 'flac' ? 'audio/flac' : 'audio/mpeg';
                 sourceTags = `<source src="${audioPath}" type="${mimeType}">`;
@@ -683,7 +749,6 @@
         }
         
         function toggleAudio(audioId, button) {
-            // Pause all other audio elements
             document.querySelectorAll('audio').forEach(audio => {
                 if (audio.id !== audioId) {
                     audio.pause();
@@ -691,7 +756,6 @@
                 }
             });
 
-            // Reset all other play buttons
             document.querySelectorAll('.play-button').forEach(btn => {
                 if (btn !== button) {
                     btn.textContent = 'Play';
@@ -827,6 +891,10 @@
                 inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'bigcodec', frequency)}</td>`;
             } else if (codecType === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked) {
                 inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'secousticodec', frequency)}</td>`;
+            } else if (codecType === 'MimiCodec' && document.getElementById('show-mimicodec').checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'mimicodec', frequency)}</td>`;
+            } else if (codecType === 'NanoCodec' && document.getElementById('show-nanocodec').checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'nanocodec', frequency)}</td>`;
             }
             
             const dwerCell = document.getElementById('show-dwer').checked ? `<td class="metric-cell">${dwer}</td>` : '';
@@ -863,12 +931,13 @@
             if ((currentModel === 'LSCodec' && document.getElementById('show-lscodec').checked) ||
                 (currentModel === 'FocalCodec' && document.getElementById('show-focalcodec').checked) ||
                 (currentModel === 'BigCodec' && document.getElementById('show-bigcodec').checked) ||
-                (currentModel === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked)) {
+                (currentModel === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked) ||
+                (currentModel === 'MimiCodec' && document.getElementById('show-mimicodec').checked) ||
+                (currentModel === 'NanoCodec' && document.getElementById('show-nanocodec').checked)) {
                 headers += '<th class="inference-header" style="width: 190px;">Inference</th>';
             }
             
             if (document.getElementById('show-dwer').checked) {
-                // Determine metric type based on dataset
                 const metricType = dataset.includes('commonvoice') ? 'dCER' : 'dWER';
                 headers += `<th style="width: 90px;">${metricType}</th>`;
             }
@@ -894,36 +963,6 @@
             return headers;
         }
 
-        function getCurrentMetricType() {
-            const datasetKeys = Object.keys(datasets);
-            for (const dataset of datasetKeys) {
-                try {
-                    const codecData = datasets[dataset].codecData[currentModel]?.[currentFrequency];
-                    if (!codecData) continue;
-                    
-                    const datasetKey = getDatasetKey(dataset);
-                    const datasetData = codecData[datasetKey];
-                    if (!datasetData) continue;
-                    
-                    const filesToCheck = ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5'];
-                    for (const fileId of filesToCheck) {
-                        const fileData = datasetData[fileId];
-                        if (fileData) {
-                            if (fileData.dWER !== undefined) {
-                                return 'dWER';
-                            }
-                            if (fileData.dCER !== undefined) {
-                                return 'dCER';
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error checking metric type:', error);
-                }
-            }
-            return 'dWER/dCER';
-        }
-
         function renderModelSections() {
             const container = document.getElementById('model-sections');
             container.innerHTML = '';
@@ -932,6 +971,8 @@
             const showFocalCodec = document.getElementById('show-focalcodec').checked;
             const showBigCodec = document.getElementById('show-bigcodec').checked;
             const showSecoustiCodec = document.getElementById('show-secousticodec').checked;
+            const showMimiCodec = document.getElementById('show-mimicodec').checked;
+            const showNanoCodec = document.getElementById('show-nanocodec').checked;
             
             if (showLSCodec) {
                 currentModel = 'LSCodec';
@@ -955,6 +996,24 @@
                 currentModel = 'SecoustiCodec';
                 currentFrequency = document.getElementById('secousticodec-freq').value;
                 container.appendChild(createModelSection('SecoustiCodec', currentFrequency));
+            }
+            
+            if (showMimiCodec) {
+                currentModel = 'MimiCodec';
+                currentFrequency = document.getElementById('mimicodec-freq').value;
+                container.appendChild(createModelSection('MimiCodec', currentFrequency));
+            }
+            
+            if (showNanoCodec) {
+                currentModel = 'NanoCodec';
+                const freq = document.getElementById('nanocodec-freq').value;
+                if (freq === '12.5Hz') {
+                    const bitrate = document.getElementById('nanocodec-bitrate').value;
+                    currentFrequency = `${freq}_${bitrate}`;
+                } else {
+                    currentFrequency = freq;
+                }
+                container.appendChild(createModelSection('NanoCodec', currentFrequency));
             }
         }
 
@@ -1122,16 +1181,24 @@
             return tablesHtml;
         }
         
+        // Event listeners
         document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('bigcodec-freq').addEventListener('change', renderModelSections);
         document.getElementById('secousticodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('mimicodec-freq').addEventListener('change', renderModelSections);
+        document.getElementById('nanocodec-freq').addEventListener('change', function() {
+            toggleNanoCodecBitrate();
+            renderModelSections();
+        });
+        document.getElementById('nanocodec-bitrate').addEventListener('change', renderModelSections);
         document.getElementById('dataset-type').addEventListener('change', renderModelSections);
         document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
         document.getElementById('sample-count').addEventListener('change', renderModelSections);
         
         [
-            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-secousticodec',
+            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-secousticodec', 
+            'show-mimicodec', 'show-nanocodec',
             'show-original', 'show-total', 'show-sample', 'show-error', 'show-config', 'show-dataset',
             'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 
             'show-transcription', 'show-origin', 'show-inference'
