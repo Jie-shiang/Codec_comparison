@@ -3,7 +3,7 @@
 Segmented Audio Evaluation Pipeline
 
 Evaluate neural audio codecs on segmented audio files by merging segments
-before computing metrics.
+with smart overlap handling before computing metrics.
 """
 
 import os
@@ -25,11 +25,12 @@ from segment_utils import (
 
 
 class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
-    """Evaluation pipeline for segmented audio files"""
+    """Evaluation pipeline for segmented audio files with smart merge"""
     
     def __init__(self,
                  segment_csv_file: str,
                  segment_length: float,
+                 split_output_dir: str = None,
                  keep_merged_files: bool = True,
                  **kwargs):
         """
@@ -38,9 +39,13 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         Args:
             segment_csv_file: CSV file with segment metadata (e.g., xxx_1.0s.csv)
             segment_length: Segment length in seconds
+            split_output_dir: Directory where split segments are stored (auto-detected from metadata if not provided)
             keep_merged_files: Whether to keep merged files for debugging
             **kwargs: All other arguments for EnhancedCodecEvaluationPipeline
         """
+        
+        # Remove csv_file from kwargs if present to avoid duplicate
+        kwargs.pop('csv_file', None)
         
         # Initialize parent class with segment CSV
         super().__init__(csv_file=segment_csv_file, **kwargs)
@@ -49,14 +54,73 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         self.segment_str = f"{segment_length:.1f}s"
         self.keep_merged_files = keep_merged_files
         
+        # Try to load split_output_dir from metadata file if not provided
+        if split_output_dir is None:
+            split_output_dir = self.load_split_output_dir_from_metadata()
+        
+        # Set split output directory
+        if split_output_dir:
+            self.split_output_dir = Path(split_output_dir)
+        else:
+            # Fallback: use original_dir
+            self.split_output_dir = self.original_dir if self.original_dir else None
+        
         # Directory for merged files - under inference_dir/merged
         self.merged_dir = self.inference_dir / "merged"
         self.merged_dir.mkdir(parents=True, exist_ok=True)
         
-        print(f"Segmented evaluation initialized:")
+        # Override audio and config directories to include segment length
+        # This prevents mixing with non-segmented evaluations
+        self.audio_dir = self.project_dir / f"audio_{self.segment_str}"
+        self.config_dir = self.project_dir / f"configs_{self.segment_str}"
+        self.audio_dir.mkdir(parents=True, exist_ok=True)
+        self.config_dir.mkdir(parents=True, exist_ok=True)
+        
+        print(f"Segmented evaluation initialized with smart merge:")
         print(f"  Segment length: {self.segment_str}")
+        print(f"  Split output directory: {self.split_output_dir}")
         print(f"  Keep merged files: {self.keep_merged_files}")
         print(f"  Merged files directory: {self.merged_dir}")
+        print(f"  Audio output directory: {self.audio_dir}")
+        print(f"  Config output directory: {self.config_dir}")
+        print(f"  Smart overlap handling: enabled")
+    
+    def load_split_output_dir_from_metadata(self) -> str:
+        """Load split_output_dir from metadata file"""
+        metadata_file = self.csv_file.with_suffix('.metadata.txt')
+        
+        if not metadata_file.exists():
+            return None
+        
+        try:
+            with open(metadata_file, 'r') as f:
+                for line in f:
+                    if line.startswith('split_output_dir='):
+                        split_dir = line.strip().split('=', 1)[1]
+                        print(f"Loaded split_output_dir from metadata: {split_dir}")
+                        return split_dir
+        except Exception as e:
+            print(f"Warning: Could not read metadata file: {e}")
+        
+        return None
+    
+    def resolve_segment_path(self, csv_path: str) -> Path:
+        """
+        Resolve full path to segment file.
+        
+        Args:
+            csv_path: Path from CSV (relative to split_output_dir)
+            
+        Returns:
+            Full path to segment file
+        """
+        if self.split_output_dir is None:
+            # Fallback to original behavior
+            clean_path = csv_path.lstrip('./')
+            return self.original_dir / clean_path if self.original_dir else Path(csv_path)
+        
+        clean_path = csv_path.lstrip('./')
+        return self.split_output_dir / clean_path
     
     def load_csv_data(self):
         """Load segment CSV data and group by original file"""
@@ -65,9 +129,22 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             print(f"Successfully loaded segment CSV: {self.csv_file}")
             print(f"Total segments: {len(df)}")
             
+            # Verify CSV has required columns for smart merge
+            required_cols = ['start_time', 'end_time', 'overlap_with_previous', 'use_duration_for_merge']
+            missing_cols = [col for col in required_cols if col not in df.columns]
+            if missing_cols:
+                print(f"Warning: CSV missing smart merge columns: {missing_cols}")
+                print(f"Please re-run audio_splitter.py to generate updated CSV")
+                sys.exit(1)
+            
             # Group by original file
             grouped = df.groupby('original_file_name')
             print(f"Unique original files: {len(grouped)}")
+            
+            # Count files with overlapping segments
+            overlapping_files = df[df['overlap_with_previous'] > 0]['original_file_name'].nunique()
+            if overlapping_files > 0:
+                print(f"Files with overlapping segments: {overlapping_files}")
             
             # Detect dataset type
             if 'common_voice' in str(self.csv_file).lower():
@@ -104,7 +181,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                                 original_file_name: str,
                                 segment_df: pd.DataFrame) -> tuple:
         """
-        Find and merge all segments for an original file.
+        Find and merge all segments for an original file with smart overlap handling.
         
         Returns:
             (merged_original_path, merged_inference_path, success)
@@ -121,7 +198,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             print(f"No segments found for {original_file_name}")
             return None, None, False
         
-        # Paths for merged files - now under inference_dir/merged
+        # Paths for merged files
         merged_original_path = self.merged_dir / "original" / f"{base_name}_merged.wav"
         merged_inference_path = self.merged_dir / "inference" / f"{base_name}_merged_inference.wav"
         
@@ -129,8 +206,6 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         merged_inference_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Find inference segments in inference directory
-        # The inference directory should have the same structure with segment_length subfolder
-        # e.g., /path/to/inference/1.0s/file_001_inference.wav
         inference_segment_dir = self.inference_dir / self.segment_str
         
         if not inference_segment_dir.exists():
@@ -144,12 +219,14 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             extension="wav"
         )
         
-        # Find original segments
+        # Find original segments using the split_output_dir
         original_segments = []
         for _, seg_row in file_segments.iterrows():
-            seg_path = self.resolve_original_path(seg_row['segment_file_path'])
+            seg_path = self.resolve_segment_path(seg_row['segment_file_path'])
             if seg_path.exists():
                 original_segments.append(str(seg_path))
+            else:
+                print(f"  Warning: Segment not found: {seg_path}")
         
         # Validate segments
         is_valid, error_msg = validate_segment_integrity(original_segments, inference_segments)
@@ -158,9 +235,24 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             print(f"  Validation failed for {original_file_name}: {error_msg}")
             return None, None, False
         
-        # Merge original segments
+        # Prepare segment info for smart merging
+        segment_info = []
+        for _, seg_row in file_segments.iterrows():
+            info = {
+                'segment_path': '',  # Will be filled during merge
+                'segment_index': int(seg_row['segment_index']),
+                'segment_duration': seg_row['segment_duration'],
+                'start_time': seg_row['start_time'],
+                'end_time': seg_row['end_time'],
+                'overlap_with_previous': seg_row['overlap_with_previous'],
+                'use_duration_for_merge': seg_row['use_duration_for_merge']
+            }
+            segment_info.append(info)
+        
+        # Merge original segments with smart overlap handling
         success_original = merge_audio_segments(
             segment_paths=original_segments,
+            segment_info=segment_info,
             output_path=str(merged_original_path),
             sample_rate=16000
         )
@@ -169,9 +261,10 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             print(f"  Failed to merge original segments for {original_file_name}")
             return None, None, False
         
-        # Merge inference segments
+        # Merge inference segments with smart overlap handling
         success_inference = merge_audio_segments(
             segment_paths=inference_segments,
+            segment_info=segment_info,
             output_path=str(merged_inference_path),
             sample_rate=16000
         )
@@ -197,7 +290,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         self.start_time = datetime.now().timestamp()
         
         print("=" * 70)
-        print("STARTING SEGMENTED AUDIO EVALUATION")
+        print("STARTING SEGMENTED AUDIO EVALUATION (SMART MERGE)")
         print("=" * 70)
         
         # Load segment CSV and group by original file
@@ -262,7 +355,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                     print(f"  Skipping {original_file_name}: {skip_reason}")
                 continue
             
-            # Find and merge segments
+            # Find and merge segments with smart overlap handling
             merged_original, merged_inference, success = self.find_and_merge_segments(
                 original_file_name, file_segments
             )
@@ -332,6 +425,8 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         print(f"Skipped: {skipped_count} files")
         print(f"Failed: {failed_count} files")
         print(f"Result file: {self.result_csv_path}")
+        print(f"Audio files copied to: {self.audio_dir}")
+        print(f"Config files saved to: {self.config_dir}")
         if self.keep_merged_files:
             print(f"Merged files saved in: {self.merged_dir}")
         
@@ -378,16 +473,16 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Segmented Audio Codec Evaluation Pipeline",
+        description="Segmented Audio Codec Evaluation Pipeline with Smart Merge",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Evaluate 1.0s segmented LibriSpeech files
+  # Evaluate with custom split directory
   python segmented_evaluation_pipeline.py \\
       --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon \\
       --segment_csv_file librispeech_test_clean_filtered_1.0s.csv \\
       --segment_length 1.0 \\
-      --original_dir /mnt/Internal/ASR \\
+      --split_output_dir /mnt/Internal/jieshiang/Split_Result \\
       --model_name "LSCodec" \\
       --frequency "50Hz" \\
       --causality "Non-Causal" \\
@@ -395,19 +490,17 @@ Examples:
       --metrics dwer utmos pesq stoi \\
       --use_gpu --gpu_id 0
   
-  # Evaluate 2.0s segmented Common Voice files
+  # Auto-detect split directory from metadata
   python segmented_evaluation_pipeline.py \\
-      --inference_dir /path/to/inference/2.0s \\
-      --segment_csv_file common_voice_zh_CN_train_filtered_2.0s.csv \\
-      --segment_length 2.0 \\
-      --original_dir /mnt/Internal/ASR \\
-      --model_name "MyCodec" \\
-      --frequency "25Hz" \\
-      --causality "Causal" \\
-      --bit_rate "1.0" \\
-      --metrics dcer utmos pesq stoi \\
-      --keep_merged_files \\
-      --use_gpu --gpu_id 1
+      --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon \\
+      --segment_csv_file librispeech_test_clean_filtered_1.0s.csv \\
+      --segment_length 1.0 \\
+      --model_name "LSCodec" \\
+      --frequency "50Hz" \\
+      --causality "Non-Causal" \\
+      --bit_rate "0.45" \\
+      --metrics dwer utmos pesq stoi \\
+      --use_gpu --gpu_id 0
         """
     )
     
@@ -416,6 +509,8 @@ Examples:
                        help="Segment CSV filename (e.g., xxx_1.0s.csv in ./csv/ directory)")
     parser.add_argument("--segment_length", required=True, type=float,
                        help="Segment length in seconds (must match CSV)")
+    parser.add_argument("--split_output_dir", type=str, default=None,
+                       help="Directory where split segments are stored (auto-detected if not provided)")
     parser.add_argument("--keep_merged_files", action="store_true",
                        help="Keep merged audio files for debugging (default: True)")
     parser.add_argument("--no_keep_merged_files", action="store_true",
@@ -475,9 +570,9 @@ Examples:
     pipeline = SegmentedEvaluationPipeline(
         segment_csv_file=args.segment_csv_file,
         segment_length=args.segment_length,
+        split_output_dir=args.split_output_dir,
         keep_merged_files=keep_merged,
         inference_dir=args.inference_dir,
-        csv_file=args.segment_csv_file,  # Will be used by parent class
         model_name=args.model_name,
         frequency=args.frequency,
         causality=args.causality,

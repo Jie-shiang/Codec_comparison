@@ -2,7 +2,7 @@
 """
 Audio Splitter Tool
 
-Split audio files into segments of specified length and generate metadata CSV.
+Split audio files into segments with smart overlap handling and customizable output directory.
 """
 
 import os
@@ -17,12 +17,13 @@ from segment_utils import split_audio_file, get_segment_duration
 
 
 class AudioSplitter:
-    """Audio file splitting and metadata generation"""
+    """Audio file splitting and metadata generation with customizable output directory"""
     
     def __init__(self,
                  csv_file: str,
                  original_dir: str,
                  segment_length: float,
+                 split_output_dir: str = None,
                  output_format: str = "wav",
                  sample_rate: int = 16000,
                  project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison"):
@@ -34,17 +35,27 @@ class AudioSplitter:
         self.sample_rate = sample_rate
         self.project_dir = Path(project_dir)
         
+        # Set split output directory
+        if split_output_dir:
+            self.split_output_dir = Path(split_output_dir)
+        else:
+            # Default: use original_dir
+            self.split_output_dir = self.original_dir
+        
         self.csv_path = self.project_dir / "csv" / csv_file
         
         # Create segment length string (e.g., "1.0s")
         self.segment_str = f"{segment_length:.1f}s"
         
-        print(f"Initializing Audio Splitter:")
+        print(f"Initializing Audio Splitter with Smart Overlap Handling:")
         print(f"  Input CSV: {self.csv_path}")
         print(f"  Original directory: {self.original_dir}")
+        print(f"  Split output directory: {self.split_output_dir}")
         print(f"  Segment length: {self.segment_length}s")
         print(f"  Output format: {self.output_format}")
         print(f"  Sample rate: {self.sample_rate}Hz")
+        print(f"\n  Strategy: All segments will be {self.segment_length}s")
+        print(f"  Last segment overlaps with previous if needed to ensure full length")
     
     def load_csv(self) -> pd.DataFrame:
         """Load input CSV file"""
@@ -60,6 +71,48 @@ class AudioSplitter:
         """Resolve full path to audio file"""
         clean_path = csv_path.lstrip('./')
         return self.original_dir / clean_path
+    
+    def get_output_directory_structure(self, original_file_path: str) -> Path:
+        """
+        Determine output directory structure for split files.
+        
+        Structure: {split_output_dir}/{dataset}/{subset}/{segment_length}/...
+        Example: /mnt/Internal/jieshiang/Split_Result/LibriSpeech/test-clean/1.0s/8463/287645/
+        """
+        relative_path = Path(original_file_path.lstrip('./'))
+        path_parts = relative_path.parts
+        
+        # Find the index of the main dataset directory
+        dataset_root_idx = None
+        dataset_root_keywords = [
+            'test-clean', 'test-other', 'train-clean-100', 'train-clean-360', 
+            'train-other-500', 'dev-clean', 'dev-other', 'clips'
+        ]
+        
+        for i, part in enumerate(path_parts):
+            if part in dataset_root_keywords:
+                dataset_root_idx = i
+                break
+        
+        if dataset_root_idx is None:
+            # Fallback: just use segment_str as subdirectory
+            return self.split_output_dir / self.segment_str
+        
+        # Extract dataset path up to and including the subset
+        # e.g., ['librispeech', 'LibriSpeech', 'test-clean']
+        dataset_parts = path_parts[:dataset_root_idx + 1]
+        
+        # Build output path: split_output_dir / dataset_parts / segment_str / remaining_structure
+        output_base = self.split_output_dir / Path(*dataset_parts) / self.segment_str
+        
+        # Add remaining directory structure (e.g., speaker_id/chapter_id)
+        subdir_parts = path_parts[dataset_root_idx + 1:-1]  # Exclude filename
+        if subdir_parts:
+            output_dir = output_base / Path(*subdir_parts)
+        else:
+            output_dir = output_base
+        
+        return output_dir
     
     def split_all_files(self, df: pd.DataFrame) -> pd.DataFrame:
         """Split all audio files and create segment metadata"""
@@ -78,19 +131,17 @@ class AudioSplitter:
             # Get speaker_id if available (for Common Voice datasets)
             speaker_id = row.get('speaker_id', None)
             
-            # Resolve full path
+            # Resolve full path to original audio
             full_audio_path = self.resolve_audio_path(original_file_path)
             
             if not full_audio_path.exists():
                 failed_files.append(original_file_name)
                 continue
             
-            # Determine output directory
-            # e.g., /mnt/Internal/ASR/librispeech/LibriSpeech/test-clean/1.0s/
-            audio_dir = full_audio_path.parent
-            segment_output_dir = audio_dir / self.segment_str
+            # Determine output directory for split segments
+            segment_output_dir = self.get_output_directory_structure(original_file_path)
             
-            # Split audio file
+            # Split audio file with smart overlap handling
             segments_info = split_audio_file(
                 input_path=str(full_audio_path),
                 output_dir=str(segment_output_dir),
@@ -104,13 +155,12 @@ class AudioSplitter:
                 continue
             
             # Create records for each segment
-            for seg_idx, (seg_path, seg_duration) in enumerate(segments_info, start=1):
-                seg_path = Path(seg_path)
+            for seg_info in segments_info:
+                seg_path = Path(seg_info['segment_path'])
                 
-                # Generate relative path for CSV
-                # e.g., ./librispeech/LibriSpeech/test-clean/1.0s/61-70968-0000_001.wav
+                # Generate relative path for CSV (relative to split_output_dir)
                 try:
-                    relative_seg_path = seg_path.relative_to(self.original_dir)
+                    relative_seg_path = seg_path.relative_to(self.split_output_dir)
                     relative_seg_path_str = f"./{relative_seg_path}"
                 except ValueError:
                     # If relative path fails, use absolute path
@@ -121,8 +171,12 @@ class AudioSplitter:
                     'segment_file_path': relative_seg_path_str,
                     'original_file_name': original_file_name,
                     'original_file_path': original_file_path,
-                    'segment_index': f"{seg_idx:03d}",
-                    'segment_duration': round(seg_duration, 3),
+                    'segment_index': f"{seg_info['segment_index']:03d}",
+                    'segment_duration': seg_info['segment_duration'],
+                    'start_time': seg_info['start_time'],
+                    'end_time': seg_info['end_time'],
+                    'overlap_with_previous': seg_info['overlap_with_previous'],
+                    'use_duration_for_merge': seg_info['use_duration_for_merge'],
                     'original_duration': round(original_duration, 3),
                     'transcription': transcription
                 }
@@ -146,21 +200,40 @@ class AudioSplitter:
         print(f"\nSuccessfully created {len(segment_df)} segment records")
         print(f"Total original files processed: {len(df) - len(failed_files)}")
         
+        # Show overlap statistics
+        overlapping_segments = segment_df[segment_df['overlap_with_previous'] > 0]
+        if len(overlapping_segments) > 0:
+            print(f"\nOverlap Statistics:")
+            print(f"  Segments with overlap: {len(overlapping_segments)}")
+            print(f"  Average overlap: {overlapping_segments['overlap_with_previous'].mean():.3f}s")
+            print(f"  Max overlap: {overlapping_segments['overlap_with_previous'].max():.3f}s")
+        
         return segment_df
     
     def save_segment_csv(self, segment_df: pd.DataFrame) -> Path:
         """Save segment metadata to CSV"""
         
         # Generate output CSV filename
-        # e.g., librispeech_test_clean_filtered_1.0s.csv
         base_csv_name = Path(self.csv_file).stem
         output_csv_name = f"{base_csv_name}_{self.segment_str}.csv"
         output_csv_path = self.project_dir / "csv" / output_csv_name
         
+        # Add metadata about split output directory to CSV header (as comment)
+        # We'll save this info in the first row or as a separate metadata file
+        
         # Save CSV
         segment_df.to_csv(output_csv_path, index=False, encoding='utf-8')
         
+        # Save metadata file with split_output_dir info
+        metadata_file = output_csv_path.with_suffix('.metadata.txt')
+        with open(metadata_file, 'w') as f:
+            f.write(f"split_output_dir={self.split_output_dir}\n")
+            f.write(f"segment_length={self.segment_length}\n")
+            f.write(f"output_format={self.output_format}\n")
+            f.write(f"sample_rate={self.sample_rate}\n")
+        
         print(f"\nSegment CSV saved: {output_csv_path}")
+        print(f"Metadata saved: {metadata_file}")
         print(f"Total segments: {len(segment_df)}")
         
         return output_csv_path
@@ -178,6 +251,8 @@ class AudioSplitter:
         print(f"Total segments created: {len(segment_df)}")
         print(f"Average segments per file: {len(segment_df) / unique_files:.1f}")
         
+        print(f"\nOutput directory: {self.split_output_dir}")
+        
         # Segment duration statistics
         print(f"\nSegment Duration Statistics:")
         print(f"  Target length: {self.segment_length:.1f}s")
@@ -185,6 +260,19 @@ class AudioSplitter:
         print(f"  Median: {segment_df['segment_duration'].median():.3f}s")
         print(f"  Min: {segment_df['segment_duration'].min():.3f}s")
         print(f"  Max: {segment_df['segment_duration'].max():.3f}s")
+        
+        # Overlap statistics
+        overlapping = segment_df[segment_df['overlap_with_previous'] > 0]
+        if len(overlapping) > 0:
+            print(f"\nOverlap Handling:")
+            print(f"  Files with last segment overlap: {overlapping['original_file_name'].nunique()}")
+            print(f"  Total overlapping segments: {len(overlapping)}")
+            print(f"  Average overlap duration: {overlapping['overlap_with_previous'].mean():.3f}s")
+        
+        # Merge duration statistics
+        print(f"\nMerge Duration Statistics:")
+        print(f"  Average use_duration: {segment_df['use_duration_for_merge'].mean():.3f}s")
+        print(f"  Min use_duration: {segment_df['use_duration_for_merge'].min():.3f}s")
         
         # Count segments per original file
         segments_per_file = segment_df.groupby('original_file_name').size()
@@ -199,7 +287,7 @@ class AudioSplitter:
         """Run the complete splitting pipeline"""
         
         print("\n" + "="*70)
-        print("STARTING AUDIO SPLITTING PIPELINE")
+        print("STARTING SMART AUDIO SPLITTING PIPELINE")
         print("="*70)
         
         # Load original CSV
@@ -223,28 +311,47 @@ class AudioSplitter:
         print("="*70)
         print(f"\nOutput CSV: {output_csv_path}")
         print(f"Total segments: {len(segment_df)}")
+        print(f"Split files location: {self.split_output_dir}")
+        print(f"\nAll segments are {self.segment_length}s (full length)")
+        print(f"Overlap information saved in CSV for smart merging")
         
         return segment_df, output_csv_path
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Split audio files into segments and generate metadata CSV",
+        description="Split audio files with smart overlap handling and customizable output",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Split LibriSpeech files into 1.0s segments
+  # Split to custom directory
+  python audio_splitter.py \\
+      --csv_file librispeech_test_clean_filtered.csv \\
+      --original_dir /mnt/Internal/ASR \\
+      --split_output_dir /mnt/Internal/jieshiang/Split_Result \\
+      --segment_length 1.0
+  
+  # Split to same directory as original (default)
   python audio_splitter.py \\
       --csv_file librispeech_test_clean_filtered.csv \\
       --original_dir /mnt/Internal/ASR \\
       --segment_length 1.0
-  
-  # Split Common Voice files into 2.0s segments
-  python audio_splitter.py \\
-      --csv_file common_voice_zh_CN_train_filtered.csv \\
-      --original_dir /mnt/Internal/ASR \\
-      --segment_length 2.0 \\
-      --output_format wav
+
+Output Structure:
+  {split_output_dir}/LibriSpeech/test-clean/1.0s/8463/287645/
+  ├── 8463-287645-0001_001.wav
+  ├── 8463-287645-0001_002.wav
+  └── ...
+
+Segmentation Strategy:
+  - All segments will be exactly segment_length seconds
+  - If remainder < segment_length, last segment overlaps with previous
+  - Example (4.1s file, 1.0s segments):
+    Seg 1: 0.0-1.0s (1.0s)
+    Seg 2: 1.0-2.0s (1.0s)
+    Seg 3: 2.0-3.0s (1.0s)
+    Seg 4: 3.1-4.1s (1.0s) ← overlaps 0.1s with Seg 3
+  - During merge: only use 0.1s from Seg 4 to reconstruct 4.1s
         """
     )
     
@@ -252,6 +359,8 @@ Examples:
                        help="Input CSV filename (in ./csv/ directory)")
     parser.add_argument("--original_dir", required=True, type=str,
                        help="Root directory for original audio files")
+    parser.add_argument("--split_output_dir", type=str, default=None,
+                       help="Output directory for split segments (default: same as original_dir)")
     parser.add_argument("--segment_length", required=True, type=float,
                        help="Segment length in seconds (e.g., 1.0, 2.0, 3.0)")
     parser.add_argument("--output_format", type=str, default="wav",
@@ -268,6 +377,7 @@ Examples:
     splitter = AudioSplitter(
         csv_file=args.csv_file,
         original_dir=args.original_dir,
+        split_output_dir=args.split_output_dir,
         segment_length=args.segment_length,
         output_format=args.output_format,
         sample_rate=args.sample_rate,

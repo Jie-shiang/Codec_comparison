@@ -2,14 +2,14 @@
 """
 Audio Segmentation Utilities
 
-Common utilities for audio file splitting and merging operations.
+Common utilities for audio file splitting and merging operations with smart overlap handling.
 """
 
 import librosa
 import soundfile as sf
 import numpy as np
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 import warnings
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -21,9 +21,13 @@ def split_audio_file(
     segment_length: float,
     output_format: str = "wav",
     sample_rate: int = 16000
-) -> List[Tuple[str, float]]:
+) -> List[Dict]:
     """
-    Split an audio file into segments of specified length.
+    Split an audio file into segments with smart overlap handling.
+    
+    All segments will be exactly segment_length seconds (or the full file if shorter).
+    If the last segment would be shorter than segment_length, it will overlap with 
+    the previous segment to ensure full length.
     
     Args:
         input_path: Path to input audio file
@@ -33,16 +37,19 @@ def split_audio_file(
         sample_rate: Target sample rate
         
     Returns:
-        List of (segment_path, segment_duration) tuples
+        List of segment info dictionaries containing:
+        - segment_path: Path to saved segment
+        - segment_index: Segment number (1-based)
+        - segment_duration: Duration of segment (should be segment_length)
+        - start_time: Start time in original audio
+        - end_time: End time in original audio
+        - overlap_with_previous: Overlap duration with previous segment (0 for first segments)
+        - use_duration_for_merge: How much of this segment to use when merging
     """
     try:
         # Load audio file
         audio, sr = librosa.load(input_path, sr=sample_rate, mono=True)
         total_duration = len(audio) / sr
-        
-        # Calculate segment parameters
-        segment_samples = int(segment_length * sr)
-        num_segments = int(np.ceil(len(audio) / segment_samples))
         
         # Create output directory
         output_dir = Path(output_dir)
@@ -51,15 +58,53 @@ def split_audio_file(
         # Get base filename (without extension)
         base_name = Path(input_path).stem
         
+        # Calculate segment parameters
+        segment_samples = int(segment_length * sr)
+        
+        # Calculate number of segments
+        num_full_segments = int(total_duration // segment_length)
+        remainder = total_duration - (num_full_segments * segment_length)
+        
+        # Determine total number of segments
+        if remainder > 0:
+            num_segments = num_full_segments + 1
+        else:
+            num_segments = num_full_segments
+            remainder = 0
+        
         segments_info = []
         
         for i in range(num_segments):
-            # Extract segment
-            start_sample = i * segment_samples
-            end_sample = min((i + 1) * segment_samples, len(audio))
-            segment_audio = audio[start_sample:end_sample]
+            # Calculate start and end for this segment
+            if i < num_full_segments:
+                # Regular segments: no overlap
+                start_sample = i * segment_samples
+                end_sample = (i + 1) * segment_samples
+                start_time = i * segment_length
+                end_time = (i + 1) * segment_length
+                overlap = 0.0
+                use_duration = segment_length
+                
+            else:
+                # Last segment: take from end to ensure full length
+                # This may overlap with previous segment
+                end_sample = len(audio)
+                start_sample = max(0, end_sample - segment_samples)
+                end_time = total_duration
+                start_time = end_time - segment_length
+                
+                # Calculate overlap with previous segment
+                if num_full_segments > 0:
+                    previous_end_time = num_full_segments * segment_length
+                    overlap = previous_end_time - start_time
+                else:
+                    overlap = 0.0
+                
+                # For merging, only use the non-overlapping part (remainder)
+                use_duration = remainder
             
-            # Calculate actual segment duration
+            # Extract segment
+            segment_audio = audio[start_sample:end_sample]
             actual_duration = len(segment_audio) / sr
             
             # Generate output filename: original_001.wav, original_002.wav, etc.
@@ -69,8 +114,19 @@ def split_audio_file(
             # Save segment
             sf.write(str(segment_path), segment_audio, sr)
             
-            segments_info.append((str(segment_path), actual_duration))
+            # Store segment information
+            segment_info = {
+                'segment_path': str(segment_path),
+                'segment_index': i + 1,
+                'segment_duration': round(actual_duration, 3),
+                'start_time': round(start_time, 3),
+                'end_time': round(end_time, 3),
+                'overlap_with_previous': round(overlap, 3),
+                'use_duration_for_merge': round(use_duration, 3)
+            }
             
+            segments_info.append(segment_info)
+        
         return segments_info
         
     except Exception as e:
@@ -80,14 +136,19 @@ def split_audio_file(
 
 def merge_audio_segments(
     segment_paths: List[str],
+    segment_info: List[Dict],
     output_path: str,
     sample_rate: int = 16000
 ) -> bool:
     """
-    Merge multiple audio segments into a single file.
+    Merge multiple audio segments into a single file with smart overlap handling.
+    
+    Uses segment_info to determine how much of each segment to use,
+    avoiding overlapping regions.
     
     Args:
         segment_paths: List of paths to audio segments (in order)
+        segment_info: List of segment info dictionaries from split_audio_file
         output_path: Path to save merged audio
         sample_rate: Sample rate for output file
         
@@ -99,25 +160,43 @@ def merge_audio_segments(
             print("No segments to merge")
             return False
         
-        # Load all segments
-        segments = []
-        for seg_path in segment_paths:
+        if len(segment_paths) != len(segment_info):
+            print(f"Mismatch: {len(segment_paths)} paths but {len(segment_info)} info entries")
+            return False
+        
+        merged_audio = []
+        
+        for i, (seg_path, info) in enumerate(zip(segment_paths, segment_info)):
             if not Path(seg_path).exists():
                 print(f"Segment not found: {seg_path}")
                 return False
             
+            # Load segment
             audio, sr = librosa.load(seg_path, sr=sample_rate, mono=True)
-            segments.append(audio)
+            
+            # Get the duration to use for this segment
+            use_duration = info['use_duration_for_merge']
+            use_samples = int(use_duration * sr)
+            
+            # For the last segment, take from the end
+            if i == len(segment_paths) - 1 and info['overlap_with_previous'] > 0:
+                # Last segment with overlap: take only the non-overlapping part from the end
+                segment_to_use = audio[-use_samples:]
+            else:
+                # Regular segment or first segment: take from beginning
+                segment_to_use = audio[:use_samples]
+            
+            merged_audio.append(segment_to_use)
         
         # Concatenate all segments
-        merged_audio = np.concatenate(segments)
+        final_audio = np.concatenate(merged_audio)
         
         # Create output directory if needed
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Save merged audio
-        sf.write(str(output_path), merged_audio, sample_rate)
+        sf.write(str(output_path), final_audio, sample_rate)
         
         return True
         

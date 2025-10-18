@@ -87,6 +87,12 @@ python test_and_validation.py \
     --csv_file librispeech_test_clean_filtered.csv \
     --mode validate \
     --fix_naming
+
+python test_and_validation.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon/1.0s \
+    --csv_file librispeech_test_clean_filtered_1.0s.csv \
+    --mode validate \
+    --fix_naming
 ```
 
 ### Step 3: Test Mode (Quick Validation)

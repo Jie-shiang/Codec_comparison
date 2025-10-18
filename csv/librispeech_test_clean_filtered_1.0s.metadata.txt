@@ -1,0 +1,4 @@
+split_output_dir=/mnt/Internal/jieshiang/Split_Result
+segment_length=1.0
+output_format=wav
+sample_rate=16000
