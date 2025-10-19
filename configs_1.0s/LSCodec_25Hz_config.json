@@ -12,210 +12,6 @@
       "nParams": "45M"
     }
   },
-  "LibriSpeech": {
-    "Total": {
-      "UTMOS": "3.3",
-      "PESQ": "1.3",
-      "STOI": "0.18",
-      "dWER": "0.47"
-    },
-    "Sample_1": {
-      "File_name": "61-70968-0000",
-      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Inference": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "UTMOS": "3.4",
-      "PESQ": "1.3",
-      "STOI": "0.19",
-      "dWER": "0.00"
-    },
-    "Sample_2": {
-      "File_name": "121-121726-0000",
-      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Inference": "ALL THROUGH A POPULAR CONTRIVANCE WE ARE LOVEMAKING A BE SUSPENDED BUT NO IN THE PICNIC SEASON",
-      "UTMOS": "2.6",
-      "PESQ": "1.1",
-      "STOI": "0.20",
-      "dWER": "0.94"
-    },
-    "Sample_3": {
-      "File_name": "237-126133-0000",
-      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Inference": "HERE SHE WOULD DAY PUMPETH AND SOOTH THE MOT LOVELY PLANTS OF RICH EXOTICS REJOICING THE HEART OF OLD TURNIP GARDENER WHO SET POLLYS FIRST REDRESS ENTRANCE PARTICULAR IN HIS GOOD GRACES FOR ALL TIME",
-      "UTMOS": "3.4",
-      "PESQ": "1.8",
-      "STOI": "0.24",
-      "dWER": "1.00"
-    },
-    "Sample_4": {
-      "File_name": "260-123286-0000",
-      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Inference": "AUGUST 15TH THE SEA BROKE IT ALL RIGHT NOW LAND IN SIGHT",
-      "UTMOS": "3.4",
-      "PESQ": "1.2",
-      "STOI": "0.22",
-      "dWER": "0.42"
-    },
-    "Sample_5": {
-      "File_name": "672-122797-0000",
-      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Inference": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "UTMOS": "3.6",
-      "PESQ": "1.2",
-      "STOI": "0.25",
-      "dWER": "0.00"
-    },
-    "Error_Sample_1": {
-      "File_name": "1089-134686-0034",
-      "Transcription": "THE RECTOR PAUSED AND THEN SHAKING HIS CLASPED HANDS BEFORE HIM WENT ON",
-      "Origin": "THE RECTOR PAUSED AND THEN SHAKING HIS CLASPED HANDS BEFORE HIM WENT ON",
-      "Inference": "THE WRECKED PAWS GONE THEN SHAKING HIS CLASP TO HERS BEFORE HIM WENT ON",
-      "UTMOS": "3.4",
-      "PESQ": "1.3",
-      "STOI": "0.11",
-      "dWER": "1.00"
-    }
-  },
-  "LibriSpeech_Noise": {
-    "Total": {
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "LibriSpeech_Blank": {
-    "Total": {
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
   "CommonVoice": {
     "Total": {
       "UTMOS": "2.1",
@@ -284,154 +80,72 @@
       "dCER": "1.00"
     }
   },
-  "CommonVoice_Noise": {
+  "LibriSpeech": {
     "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "3.3",
+      "PESQ": "1.3",
+      "STOI": "0.18",
+      "dWER": "0.47"
     },
     "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Inference": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "UTMOS": "3.4",
+      "PESQ": "1.3",
+      "STOI": "0.19",
+      "dWER": "0.00"
     },
     "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Inference": "ALL THROUGH A POPULAR CONTRIVANCE WE ARE LOVEMAKING A BE SUSPENDED BUT NO IN THE PICNIC SEASON",
+      "UTMOS": "2.6",
+      "PESQ": "1.1",
+      "STOI": "0.20",
+      "dWER": "0.94"
     },
     "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Inference": "HERE SHE WOULD DAY PUMPETH AND SOOTH THE MOT LOVELY PLANTS OF RICH EXOTICS REJOICING THE HEART OF OLD TURNIP GARDENER WHO SET POLLYS FIRST REDRESS ENTRANCE PARTICULAR IN HIS GOOD GRACES FOR ALL TIME",
+      "UTMOS": "3.4",
+      "PESQ": "1.8",
+      "STOI": "0.24",
+      "dWER": "1.00"
     },
     "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "260-123286-0000",
+      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Inference": "AUGUST 15TH THE SEA BROKE IT ALL RIGHT NOW LAND IN SIGHT",
+      "UTMOS": "3.4",
+      "PESQ": "1.2",
+      "STOI": "0.22",
+      "dWER": "0.42"
     },
     "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Inference": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "UTMOS": "3.6",
+      "PESQ": "1.2",
+      "STOI": "0.25",
+      "dWER": "0.00"
     },
     "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice_Blank": {
-    "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "1089-134686-0034",
+      "Transcription": "THE RECTOR PAUSED AND THEN SHAKING HIS CLASPED HANDS BEFORE HIM WENT ON",
+      "Origin": "THE RECTOR PAUSED AND THEN SHAKING HIS CLASPED HANDS BEFORE HIM WENT ON",
+      "Inference": "THE WRECKED PAWS GONE THEN SHAKING HIS CLASP TO HERS BEFORE HIM WENT ON",
+      "UTMOS": "3.4",
+      "PESQ": "1.3",
+      "STOI": "0.11",
+      "dWER": "1.00"
     }
   }
 }

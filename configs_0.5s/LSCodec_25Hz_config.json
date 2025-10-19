@@ -12,210 +12,6 @@
       "nParams": "45M"
     }
   },
-  "LibriSpeech": {
-    "Total": {
-      "UTMOS": "1.6",
-      "PESQ": "1.1",
-      "STOI": "0.12",
-      "dWER": "0.94"
-    },
-    "Sample_1": {
-      "File_name": "61-70968-0000",
-      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Inference": "YOU",
-      "UTMOS": "1.4",
-      "PESQ": "1.0",
-      "STOI": "0.31",
-      "dWER": "1.00"
-    },
-    "Sample_2": {
-      "File_name": "121-121726-0000",
-      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Inference": "ARORAS COP TO GOVERNMENTS WAS ABOUT TO BE CAPABLE TO SUSPEND A POLITICAL DATE RUNNING THE COURT TO SUS",
-      "UTMOS": "2.0",
-      "PESQ": "1.0",
-      "STOI": "0.24",
-      "dWER": "0.94"
-    },
-    "Sample_3": {
-      "File_name": "237-126133-0000",
-      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Inference": "HE OR SHE WOULD PAY CONFERENCE BUT LOVELY AND STRICTLY AND WITH GREAT BEING THOUGHT HE OR HER WOULD PROVIDE A TOAST TO HIS POOR FRIENDS TO HIS FRIENDS BUT TO HER EIGHT WHITE RACES WERE ALL FINE",
-      "UTMOS": "1.8",
-      "PESQ": "1.0",
-      "STOI": "0.17",
-      "dWER": "1.00"
-    },
-    "Sample_4": {
-      "File_name": "260-123286-0000",
-      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Inference": "",
-      "UTMOS": "1.4",
-      "PESQ": "1.2",
-      "STOI": "-0.01",
-      "dWER": "0.42"
-    },
-    "Sample_5": {
-      "File_name": "672-122797-0000",
-      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Inference": "LORD ORDER THE RESTOREMENT",
-      "UTMOS": "1.3",
-      "PESQ": "1.1",
-      "STOI": "0.04",
-      "dWER": "1.00"
-    },
-    "Error_Sample_1": {
-      "File_name": "1089-134686-0000",
-      "Transcription": "HE HOPED THERE WOULD BE STEW FOR DINNER TURNIPS AND CARROTS AND BRUISED POTATOES AND FAT MUTTON PIECES TO BE LADLED OUT IN THICK PEPPERED FLOUR FATTENED SAUCE",
-      "Origin": "HE HOPED THERE WOULD BE STEW FOR DINNER TURNIPS AND CARROTS AND BRUISED POTATOES AND FAT MUTTON PIECES TO BE LADLED OUT IN THICK PEPPERED FLOUR FATTENED SAUCE",
-      "Inference": "IS",
-      "UTMOS": "1.2",
-      "PESQ": "1.0",
-      "STOI": "0.17",
-      "dWER": "1.00"
-    }
-  },
-  "LibriSpeech_Noise": {
-    "Total": {
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "LibriSpeech_Blank": {
-    "Total": {
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
   "CommonVoice": {
     "Total": {
       "dWER": "N/A",
@@ -291,154 +87,72 @@
       "STOI": "N/A"
     }
   },
-  "CommonVoice_Noise": {
+  "LibriSpeech": {
     "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "UTMOS": "1.6",
+      "PESQ": "1.1",
+      "STOI": "0.12",
+      "dWER": "0.94"
     },
     "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Inference": "YOU",
+      "UTMOS": "1.4",
+      "PESQ": "1.0",
+      "STOI": "0.31",
+      "dWER": "1.00"
     },
     "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Inference": "ARORAS COP TO GOVERNMENTS WAS ABOUT TO BE CAPABLE TO SUSPEND A POLITICAL DATE RUNNING THE COURT TO SUS",
+      "UTMOS": "2.0",
+      "PESQ": "1.0",
+      "STOI": "0.24",
+      "dWER": "0.94"
     },
     "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Inference": "HE OR SHE WOULD PAY CONFERENCE BUT LOVELY AND STRICTLY AND WITH GREAT BEING THOUGHT HE OR HER WOULD PROVIDE A TOAST TO HIS POOR FRIENDS TO HIS FRIENDS BUT TO HER EIGHT WHITE RACES WERE ALL FINE",
+      "UTMOS": "1.8",
+      "PESQ": "1.0",
+      "STOI": "0.17",
+      "dWER": "1.00"
     },
     "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "260-123286-0000",
+      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Inference": "",
+      "UTMOS": "1.4",
+      "PESQ": "1.2",
+      "STOI": "-0.01",
+      "dWER": "0.42"
     },
     "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Inference": "LORD ORDER THE RESTOREMENT",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.04",
+      "dWER": "1.00"
     },
     "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice_Blank": {
-    "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
+      "File_name": "1089-134686-0000",
+      "Transcription": "HE HOPED THERE WOULD BE STEW FOR DINNER TURNIPS AND CARROTS AND BRUISED POTATOES AND FAT MUTTON PIECES TO BE LADLED OUT IN THICK PEPPERED FLOUR FATTENED SAUCE",
+      "Origin": "HE HOPED THERE WOULD BE STEW FOR DINNER TURNIPS AND CARROTS AND BRUISED POTATOES AND FAT MUTTON PIECES TO BE LADLED OUT IN THICK PEPPERED FLOUR FATTENED SAUCE",
+      "Inference": "IS",
+      "UTMOS": "1.2",
+      "PESQ": "1.0",
+      "STOI": "0.17",
+      "dWER": "1.00"
     }
   }
 }

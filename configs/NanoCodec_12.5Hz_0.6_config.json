@@ -12,6 +12,74 @@
       "nParams": "N/A"
     }
   },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "3.0",
+      "PESQ": "1.9",
+      "STOI": "0.84",
+      "dCER": "0.11"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_30162459",
+      "Transcription": "高雄市公车五甲干线",
+      "Origin": "高雄市公车五甲干线",
+      "Inference": "包雄市轰车渔甲饭线",
+      "UTMOS": "3.3",
+      "PESQ": "2.0",
+      "STOI": "0.86",
+      "dCER": "0.44"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_24477793",
+      "Transcription": "肉！很多肉！",
+      "Origin": "肉,很多肉。",
+      "Inference": "肉很多肉",
+      "UTMOS": "2.1",
+      "PESQ": "1.9",
+      "STOI": "0.89",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_24478020",
+      "Transcription": "大家爱转传",
+      "Origin": "大家爱转传",
+      "Inference": "大家爱Johnson",
+      "UTMOS": "3.9",
+      "PESQ": "2.5",
+      "STOI": "0.91",
+      "dCER": "1.40"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_25342071",
+      "Transcription": "结果很平和",
+      "Origin": "结果很平和",
+      "Inference": "照片向",
+      "UTMOS": "2.9",
+      "PESQ": "1.6",
+      "STOI": "0.41",
+      "dCER": "1.00"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_20748925",
+      "Transcription": "英文数字请尽量转为中文",
+      "Origin": "英文数字请尽量转为中文",
+      "Inference": "英文数字请尽量转回中文",
+      "UTMOS": "2.9",
+      "PESQ": "2.0",
+      "STOI": "0.84",
+      "dCER": "0.09"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_25342071",
+      "Transcription": "结果很平和",
+      "Origin": "结果很平和",
+      "Inference": "照片向",
+      "UTMOS": "2.9",
+      "PESQ": "1.6",
+      "STOI": "0.41",
+      "dCER": "1.00"
+    }
+  },
   "LibriSpeech": {
     "Total": {
       "UTMOS": "4.1",
@@ -78,360 +146,6 @@
       "PESQ": "2.1",
       "STOI": "0.92",
       "dWER": "1.00"
-    }
-  },
-  "LibriSpeech_Noise": {
-    "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "LibriSpeech_Blank": {
-    "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice": {
-    "Total": {
-      "UTMOS": "3.0",
-      "PESQ": "1.9",
-      "STOI": "0.84",
-      "dCER": "0.09"
-    },
-    "Sample_1": {
-      "File_name": "common_voice_zh-TW_30162459",
-      "Transcription": "高雄市公车五甲干线",
-      "Origin": "高雄市公車五甲幹線",
-      "Inference": "包雄市轟車漁甲飯線",
-      "UTMOS": "3.3",
-      "PESQ": "2.0",
-      "STOI": "0.86",
-      "dCER": "0.33"
-    },
-    "Sample_2": {
-      "File_name": "common_voice_zh-TW_24477793",
-      "Transcription": "肉！很多肉！",
-      "Origin": "肉,很多肉。",
-      "Inference": "肉很多肉",
-      "UTMOS": "2.1",
-      "PESQ": "1.9",
-      "STOI": "0.89",
-      "dCER": "0.00"
-    },
-    "Sample_3": {
-      "File_name": "common_voice_zh-TW_24478020",
-      "Transcription": "大家爱转传",
-      "Origin": "大家愛轉傳",
-      "Inference": "大家愛Johnson",
-      "UTMOS": "3.9",
-      "PESQ": "2.5",
-      "STOI": "0.91",
-      "dCER": "0.00"
-    },
-    "Sample_4": {
-      "File_name": "common_voice_zh-TW_25342071",
-      "Transcription": "结果很平和",
-      "Origin": "结果很平和",
-      "Inference": "照片向",
-      "UTMOS": "2.9",
-      "PESQ": "1.6",
-      "STOI": "0.41",
-      "dCER": "1.00"
-    },
-    "Sample_5": {
-      "File_name": "common_voice_zh-TW_20748925",
-      "Transcription": "英文数字请尽量转为中文",
-      "Origin": "英文数字请尽量转为中文",
-      "Inference": "英文数字请尽量转回中文",
-      "UTMOS": "2.9",
-      "PESQ": "2.0",
-      "STOI": "0.84",
-      "dCER": "0.09"
-    },
-    "Error_Sample_1": {
-      "File_name": "common_voice_zh-TW_25342071",
-      "Transcription": "结果很平和",
-      "Origin": "结果很平和",
-      "Inference": "照片向",
-      "UTMOS": "2.9",
-      "PESQ": "1.6",
-      "STOI": "0.41",
-      "dCER": "1.00"
-    }
-  },
-  "CommonVoice_Noise": {
-    "Total": {
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    }
-  },
-  "CommonVoice_Blank": {
-    "Total": {
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
     }
   }
 }

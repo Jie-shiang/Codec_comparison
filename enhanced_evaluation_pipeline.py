@@ -20,7 +20,6 @@ import time
 
 from metrics_evaluator import AudioMetricsEvaluator
 
-
 class EnhancedCodecEvaluationPipeline:
     """Enhanced evaluation pipeline with selective metric calculation"""
     
@@ -452,6 +451,10 @@ class EnhancedCodecEvaluationPipeline:
         self.copy_sample_audio_files(results_df)
     
     def generate_or_update_json_config(self, results_df: pd.DataFrame, config_path: Path) -> dict:
+        """
+        Generate or update JSON config - MODIFIED VERSION
+        Only includes current dataset_type, no placeholders for noise/blank
+        """
         existing_config = {}
         if config_path.exists():
             try:
@@ -470,11 +473,9 @@ class EnhancedCodecEvaluationPipeline:
         
         if not available_metrics:
             print("Warning: No WER/CER metrics found in results")
-            # Still create config but without ASR metrics
             primary_metric = 'dWER' if self.language == 'en' else 'dCER'
             metric_col = 'dwer' if self.language == 'en' else 'dcer'
         else:
-            # Use first available metric as primary
             metric_col = available_metrics[0]
             primary_metric = 'dWER' if metric_col == 'dwer' else 'dCER'
         
@@ -486,6 +487,7 @@ class EnhancedCodecEvaluationPipeline:
         
         current_dataset_data = self.generate_dataset_section(valid_results, primary_metric, metric_col, available_metrics)
         
+        # Build config with model_info
         config = {
             "model_info": {
                 "modelName": self.model_name,
@@ -502,30 +504,29 @@ class EnhancedCodecEvaluationPipeline:
             }
         }
         
-        all_datasets = ["LibriSpeech", "LibriSpeech_Noise", "LibriSpeech_Blank", 
-                       "CommonVoice", "CommonVoice_Noise", "CommonVoice_Blank"]
+        # === MODIFIED: Only include current dataset, no placeholders ===
+        # Preserve existing datasets from config if they exist
+        for dataset_key in existing_config.keys():
+            if dataset_key != "model_info" and dataset_key != self.dataset_name:
+                config[dataset_key] = existing_config[dataset_key]
+                print(f"Preserved existing {dataset_key} section")
         
-        for dataset in all_datasets:
-            if dataset == self.dataset_name:
-                config[dataset] = current_dataset_data
-                print(f"Updated {dataset} section with evaluation results")
-            elif dataset in existing_config:
-                config[dataset] = existing_config[dataset]
-                print(f"Preserved existing {dataset} section")
-            else:
-                config[dataset] = self.create_dataset_specific_placeholder(dataset)
-                print(f"Created placeholder {dataset} section")
+        # Add current dataset
+        config[self.dataset_name] = current_dataset_data
+        print(f"Updated {self.dataset_name} section with evaluation results")
+        # === END MODIFICATION ===
         
         return config
-    
+
     def generate_dataset_section(self, valid_results: pd.DataFrame, metric_name: str, metric_col: str, available_metrics: list = None) -> dict:
+        """Generate dataset section with samples"""
         total_stats = {
             'UTMOS': f"{valid_results['utmos'].mean():.1f}",
             'PESQ': f"{valid_results['pesq'].mean():.1f}",
             'STOI': f"{valid_results['stoi'].mean():.2f}"
         }
         
-        # Add computed metrics to total stats with numeric conversion
+        # Add computed metrics to total stats
         if 'dwer' in valid_results.columns:
             dwer_numeric = pd.to_numeric(valid_results['dwer'], errors='coerce')
             if dwer_numeric.notna().any():
@@ -551,7 +552,7 @@ class EnhancedCodecEvaluationPipeline:
                     'STOI': f"{row['stoi']:.2f}"
                 }
                 
-                # Add computed metrics to samples with numeric conversion
+                # Add computed metrics to samples
                 if 'dwer' in row.index:
                     dwer_val = pd.to_numeric(row['dwer'], errors='coerce')
                     if pd.notna(dwer_val):
@@ -577,7 +578,7 @@ class EnhancedCodecEvaluationPipeline:
                     'STOI': f"{row['stoi']:.2f}"
                 }
                 
-                # Add computed metrics to error sample with numeric conversion
+                # Add computed metrics to error sample
                 if 'dwer' in row.index:
                     dwer_val = pd.to_numeric(row['dwer'], errors='coerce')
                     if pd.notna(dwer_val):
@@ -597,51 +598,7 @@ class EnhancedCodecEvaluationPipeline:
         }
         
         return dataset_section
-    
-    def create_dataset_specific_placeholder(self, dataset_name: str) -> dict:
-        # Determine which metrics to include based on dataset
-        metrics_dict = {}
-        
-        # If both metrics were requested, include both in placeholder
-        if 'dwer' in self.metrics_to_compute or dataset_name.startswith('LibriSpeech'):
-            metrics_dict['dWER'] = "N/A"
-        if 'dcer' in self.metrics_to_compute or dataset_name.startswith('CommonVoice'):
-            metrics_dict['dCER'] = "N/A"
-            
-        placeholder_section = {
-            "Total": {
-                **metrics_dict,
-                'UTMOS': "N/A",
-                'PESQ': "N/A",
-                'STOI': "N/A"
-            }
-        }
-        
-        for i in range(1, 6):
-            placeholder_section[f"Sample_{i}"] = {
-                'File_name': "N/A",
-                'Transcription': "N/A",
-                'Origin': "N/A",
-                'Inference': "N/A",
-                **metrics_dict,
-                'UTMOS': "N/A",
-                'PESQ': "N/A",
-                'STOI': "N/A"
-            }
-        
-        placeholder_section["Error_Sample_1"] = {
-            'File_name': "N/A",
-            'Transcription': "N/A",
-            'Origin': "N/A",
-            'Inference': "N/A",
-            **metrics_dict,
-            'UTMOS': "N/A",
-            'PESQ': "N/A",
-            'STOI': "N/A"
-        }
-        
-        return placeholder_section
-    
+
     def get_dataset_path_for_audio(self) -> str:
         if self.dataset_type == "clean":
             return self.base_dataset_name
@@ -923,7 +880,6 @@ class EnhancedCodecEvaluationPipeline:
         
         return results_df
 
-
 def main():
     parser = argparse.ArgumentParser(description="Enhanced Neural Audio Codec Evaluation Pipeline")
     
@@ -1010,7 +966,6 @@ def main():
         print(f"\nError during execution: {e}")
         import traceback
         traceback.print_exc()
-
 
 if __name__ == "__main__":
     main()
