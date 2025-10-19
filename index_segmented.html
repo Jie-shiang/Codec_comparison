@@ -466,8 +466,7 @@
 
         function getConfigFileName(codec, frequency, segment) {
             const codecName = codec === 'lscodec' ? 'LSCodec' : codec;
-            const segmentClean = segment.replace('s', '');
-            return `${codecName}_${segmentClean}s_clean.json`;
+            return `${codecName}_${frequency}_config.json`;
         }
 
         function getSelectedSegments() {
