@@ -420,7 +420,7 @@
             </div>
         </div>
 
-        <div class="status-info" id="status-info">
+        <div class="status-info" id="status-info" style="display: none;">
             Loading configurations...
         </div>
 
@@ -461,7 +461,10 @@
                 }
             }
             
-            updateDisplay();
+            // Wait a bit to ensure DOM is ready
+            setTimeout(() => {
+                updateDisplay();
+            }, 100);
         }
 
         function getConfigFileName(codec, frequency, segment) {
@@ -471,8 +474,9 @@
 
         function getSelectedSegments() {
             const segments = [];
-            const radios = document.querySelectorAll('input[name="segment"]:checked');
-            radios.forEach(radio => segments.push(radio.value));
+            if (document.getElementById('seg-0.5s').checked) segments.push('0.5s');
+            if (document.getElementById('seg-1.0s').checked) segments.push('1.0s');
+            if (document.getElementById('seg-2.0s').checked) segments.push('2.0s');
             return segments;
         }
 
@@ -542,7 +546,10 @@
                 statusDiv.innerHTML = '⚠️ No configurations found for the selected options.';
                 resultsDiv.innerHTML = '';
             } else {
-                statusDiv.innerHTML = `✅ Displaying ${configCount} configuration(s) for segment length: <span class="segment-highlight">${selectedSegments.join(', ')}</span>`;
+                const segmentText = selectedSegments.length > 1 
+                    ? selectedSegments.join(', ') 
+                    : selectedSegments[0];
+                statusDiv.innerHTML = `✅ Displaying ${configCount} configuration(s) | Segment length: <span class="segment-highlight">${segmentText}</span>`;
                 resultsDiv.innerHTML = html;
             }
         }
