@@ -186,78 +186,10 @@
             font-size: 14px;
         }
         
-        .model-info {
-            background: #f8f9fa;
-            padding: 15px 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .params-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .info-label {
-            font-size: 12px;
-            color: #666;
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-        
-        .info-value {
-            font-size: 14px;
-            color: #333;
-        }
-        
-        .training-testing-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        
-        .training-testing-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            vertical-align: top;
-        }
-        
-        .training-testing-table .label-cell {
-            background: #e9ecef;
-            font-weight: bold;
-            width: 150px;
-            text-align: center;
-        }
-        
-        .training-testing-table .value-cell {
-            background: white;
-        }
-        
-        .dataset-section {
-            margin-bottom: 30px;
-        }
-        
-        .dataset-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            padding: 8px 15px;
-            background: #e9ecef;
-            border-radius: 5px;
-        }
-        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 0;
             font-size: 12px;
         }
         
@@ -360,7 +292,7 @@
             <a href="https://github.com/Jie-shiang/Codec_comparison" target="_blank" class="nav-button github">GitHub Repository</a>
         </div>
         
-        <div class="status-info" id="status-info" style="display: none;">
+        <div class="status-info" id="status-info">
             Loading configurations...
         </div>
         
@@ -374,7 +306,7 @@
                             <label for="seg-0.5s">0.5s</label>
                         </div>
                         <div class="checkbox-group">
-                            <input type="checkbox" id="seg-1.0s" value="1.0s" onchange="updateDisplay()">
+                            <input type="checkbox" id="seg-1.0s" value="1.0s" checked onchange="updateDisplay()">
                             <label for="seg-1.0s">1.0s</label>
                         </div>
                         <div class="checkbox-group">
@@ -438,14 +370,6 @@
                             <input type="checkbox" id="show-error" checked onchange="updateDisplay()">
                             <label for="show-error">Error Example</label>
                         </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-config" checked onchange="updateDisplay()">
-                            <label for="show-config">Config</label>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-dataset" checked onchange="updateDisplay()">
-                            <label for="show-dataset">Dataset Title</label>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -499,38 +423,130 @@
     </div>
 
     <script>
-        let allConfigs = {};
+        const datasets = {
+            librispeech: {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
+            },
+            commonvoice: {
+                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
+                errorExamples: ['Error_Sample_1'],
+                codecData: {}
+            }
+        };
+
+        let currentModel = 'LSCodec';
+        let currentFrequency = '50Hz';
+        let currentSegment = '1.0s';
+
+        async function loadCodecData(dataset, codecType, frequency, segment) {
+            const basePath = `configs_${segment}`;
+            const jsonPath = `${basePath}/${codecType}_${frequency}_config.json`;
+            
+            try {
+                const response = await fetch(jsonPath);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (!datasets[dataset].codecData[codecType]) {
+                        datasets[dataset].codecData[codecType] = {};
+                    }
+                    if (!datasets[dataset].codecData[codecType][frequency]) {
+                        datasets[dataset].codecData[codecType][frequency] = {};
+                    }
+                    
+                    datasets[dataset].codecData[codecType][frequency][segment] = data;
+                    console.log(`✓ Loaded: ${jsonPath} for ${dataset}`);
+                    return data;
+                } else {
+                    console.warn(`✗ Failed to load ${jsonPath}: ${response.status}`);
+                    return null;
+                }
+            } catch (error) {
+                console.error(`✗ Error loading ${jsonPath}:`, error);
+                return null;
+            }
+        }
 
         async function loadAllConfigs() {
-            const codecs = ['lscodec'];
-            const frequencies = ['25Hz', '50Hz'];
-            const segments = ['0.5s', '1.0s', '2.0s'];
+            const statusInfo = document.getElementById('status-info');
+            const loadPromises = [];
             
-            for (const codec of codecs) {
-                for (const freq of frequencies) {
-                    for (const seg of segments) {
-                        const configKey = `${codec}_${freq}_${seg}`;
-                        const codecName = 'LSCodec';
-                        const configPath = `configs_${seg}/${codecName}_${freq}_config.json`;
-                        
-                        try {
-                            const response = await fetch(configPath);
-                            if (response.ok) {
-                                allConfigs[configKey] = await response.json();
-                                console.log(`✓ Loaded: ${configPath}`);
-                            } else {
-                                console.log(`✗ Not found: ${configPath}`);
-                            }
-                        } catch (error) {
-                            console.log(`✗ Error loading: ${configPath}`, error);
-                        }
+            const segments = ['0.5s', '1.0s', '2.0s'];
+            const frequencies = ['25Hz', '50Hz'];
+            const datasetNames = Object.keys(datasets);
+            
+            for (const datasetName of datasetNames) {
+                for (const segment of segments) {
+                    for (const freq of frequencies) {
+                        statusInfo.textContent = `Loading ${datasetName} ${segment} ${freq} data...`;
+                        loadPromises.push(loadCodecData(datasetName, 'LSCodec', freq, segment));
                     }
                 }
             }
             
+            await Promise.all(loadPromises);
+            
+            statusInfo.textContent = 'All codec data loaded successfully!';
             setTimeout(() => {
-                updateDisplay();
-            }, 100);
+                statusInfo.style.display = 'none';
+            }, 2000);
+            
+            updateDisplay();
+        }
+
+        function getCodecData(dataset, codecType, frequency, segment, fileId, dataType) {
+            try {
+                const codecData = datasets[dataset].codecData[codecType]?.[frequency]?.[segment];
+                if (!codecData) {
+                    console.warn(`No codec data for ${dataset} ${codecType} ${frequency} ${segment}`);
+                    return null;
+                }
+                
+                const datasetKey = getDatasetKey(dataset);
+                const fileData = codecData[datasetKey]?.[fileId];
+                
+                if (!fileData) {
+                    console.warn(`No file data for ${fileId} in ${datasetKey}`);
+                    return null;
+                }
+                
+                switch (dataType) {
+                    case 'transcription':
+                        return fileData.Transcription || null;
+                    case 'origin':
+                        return fileData.Origin || null;
+                    case 'inference':
+                        return fileData.Inference || null;
+                    case 'utmos':
+                        return fileData.UTMOS || null;
+                    case 'dwer':
+                        return fileData.dWER || fileData.dCER || null;
+                    case 'pesq':
+                        return fileData.PESQ || null;
+                    case 'stoi':
+                        return fileData.STOI || null;
+                    case 'filename':
+                        return fileData.File_name || null;
+                    default:
+                        return null;
+                }
+            } catch (error) {
+                console.error('Error getting codec data:', error);
+                return null;
+            }
+        }
+
+        function getDatasetKey(dataset) {
+            switch(dataset) {
+                case 'librispeech':
+                    return 'Librispeech';
+                case 'commonvoice':
+                    return 'Commonvoice';
+                default:
+                    return 'Librispeech';
+            }
         }
 
         function getSelectedSegments() {
@@ -563,95 +579,50 @@
                 return;
             }
 
-            // Create unified table for all selected segments
-            const html = createUnifiedCodecSection('lscodec', frequency, selectedSegments);
-            
-            if (html) {
-                statusDiv.style.display = 'none';
-                resultsDiv.innerHTML = html;
-            } else {
-                statusDiv.style.display = 'block';
-                statusDiv.innerHTML = '⚠️ No configurations found for the selected options.';
-                resultsDiv.innerHTML = '';
-            }
-        }
+            currentModel = 'LSCodec';
+            currentFrequency = frequency;
 
-        function createUnifiedCodecSection(codecType, frequency, segments) {
             let html = '<div class="codec-section">';
             html += '<div class="codec-header">LSCodec</div>';
             
-            // Loop through each segment and create experiment section
-            for (const segment of segments) {
-                const configKey = `${codecType}_${frequency}_${segment}`;
-                const config = allConfigs[configKey];
-                
-                if (config) {
-                    html += createExperimentSection(codecType, frequency, segment, config);
-                }
+            for (const segment of selectedSegments) {
+                currentSegment = segment;
+                html += createExperimentSection('LSCodec', frequency, segment);
             }
             
             html += '</div>';
             
-            return html;
+            statusDiv.style.display = 'none';
+            resultsDiv.innerHTML = html;
         }
 
-        function createExperimentSection(codecType, frequency, segment, config) {
-            let html = '<div class="experiment-section">';
-            
+        function createExperimentSection(codecType, frequency, segment) {
             const datasetType = document.getElementById('dataset-type').value;
             const datasetName = datasetType.charAt(0).toUpperCase() + datasetType.slice(1);
             
+            let html = '<div class="experiment-section">';
             html += '<div class="experiment-header">';
             html += `<span>${datasetName}</span>`;
             html += `<span class="experiment-tag">${frequency}</span>`;
             html += `<span class="experiment-tag">${segment}</span>`;
             html += '</div>';
             
-            // Show config if checked
-            if (document.getElementById('show-config').checked && config.model_info) {
-                const modelInfo = config.model_info;
-                html += '<div class="model-info">';
-                html += '<div class="params-row">';
-                html += `<div class="info-item"><div class="info-label">Causality</div><div class="info-value">${modelInfo.causality}</div></div>`;
-                html += `<div class="info-item"><div class="info-label">Bit-rate (kbps)</div><div class="info-value">${modelInfo.bitRate}</div></div>`;
-                html += `<div class="info-item"><div class="info-label">Frame Rate (Hz)</div><div class="info-value">${modelInfo.parameters.frameRate}</div></div>`;
-                html += `<div class="info-item"><div class="info-label"># of Quantizer</div><div class="info-value">${modelInfo.parameters.quantizers}</div></div>`;
-                html += `<div class="info-item"><div class="info-label">Codebook Size</div><div class="info-value">${modelInfo.parameters.codebookSize || 'N/A'}</div></div>`;
-                html += '</div>';
-                html += '<table class="training-testing-table">';
-                html += `<tr><td class="label-cell">Training Set</td><td class="value-cell">${modelInfo.trainingSet}</td></tr>`;
-                html += `<tr><td class="label-cell">Testing Set</td><td class="value-cell">${modelInfo.testingSet}</td></tr>`;
-                html += '</table>';
-                html += '</div>';
-            }
-            
-            // Add table
-            html += createDataTable(codecType, frequency, segment, config, datasetType);
-            
+            html += createDataTable(datasetType, codecType, frequency, segment);
             html += '</div>';
             
             return html;
         }
 
-        function createDataTable(codecType, frequency, segment, config, dataset) {
+        function createDataTable(dataset, codecType, frequency, segment) {
             const sampleCount = parseInt(document.getElementById('sample-count').value);
-            const datasetKey = dataset.charAt(0).toUpperCase() + dataset.slice(1);
-            
             const files = ['Total', ...Array.from({length: sampleCount}, (_, i) => `Sample_${i + 1}`), 'Error_Sample_1'];
             
-            let html = '';
-            const showDatasetTitle = document.getElementById('show-dataset').checked;
-            
-            if (showDatasetTitle) {
-                html += `<div class="dataset-title">${dataset === 'librispeech' ? 'LibriSpeech' : 'CommonVoice'}</div>`;
-            }
-            
-            html += '<table><thead><tr>';
+            let html = '<table><thead><tr>';
             html += createTableHeaders(dataset);
             html += '</tr></thead><tbody>';
             
             for (const fileId of files) {
-                const row = createTableRow(dataset, fileId, codecType, frequency, segment, config, datasetKey);
+                const row = createTableRow(dataset, codecType, frequency, segment, fileId);
                 if (row) html += row;
             }
             
@@ -697,7 +668,7 @@
             return headers;
         }
 
-        function createTableRow(dataset, fileId, codecType, frequency, segment, config, datasetKey) {
+        function createTableRow(dataset, codecType, frequency, segment, fileId) {
             const showTotal = document.getElementById('show-total').checked;
             const showSample = document.getElementById('show-sample').checked;
             const showError = document.getElementById('show-error').checked;
@@ -709,21 +680,31 @@
             if (!isTotalRow && !isErrorExample && !showSample) return '';
             if (isErrorExample && !showError) return '';
             
-            const fileData = config[datasetKey] && config[datasetKey][fileId];
-            if (!fileData) return '';
-            
             let rowClass = '';
             if (isTotalRow) rowClass = 'total-row';
             else if (isErrorExample) rowClass = 'error-example';
             
-            const dwer = fileData.dWER || fileData.dCER || 'X';
-            const utmos = fileData.UTMOS || 'X';
-            const pesq = fileData.PESQ || 'X';
-            const stoi = fileData.STOI || 'X';
-            const transcription = isTotalRow ? '-' : (fileData.Transcription || 'X');
-            const origin = isTotalRow ? '-' : (fileData.Origin || 'X');
-            const inference = isTotalRow ? '-' : (fileData.Inference || 'X');
-            const displayFileName = fileData.File_name || fileId;
+            const dwer = getCodecData(dataset, codecType, frequency, segment, fileId, 'dwer') || 'X';
+            const utmos = getCodecData(dataset, codecType, frequency, segment, fileId, 'utmos') || 'X';
+            const pesq = getCodecData(dataset, codecType, frequency, segment, fileId, 'pesq') || 'X';
+            const stoi = getCodecData(dataset, codecType, frequency, segment, fileId, 'stoi') || 'X';
+            
+            let transcription = 'X';
+            let origin = 'X';
+            let inference = 'X';
+            let displayFileName = fileId;
+            
+            if (!isTotalRow) {
+                transcription = getCodecData(dataset, codecType, frequency, segment, fileId, 'transcription') || 'X';
+                origin = getCodecData(dataset, codecType, frequency, segment, fileId, 'origin') || 'X';
+                inference = getCodecData(dataset, codecType, frequency, segment, fileId, 'inference') || 'X';
+                const realFileName = getCodecData(dataset, codecType, frequency, segment, fileId, 'filename');
+                if (realFileName) displayFileName = realFileName;
+            } else {
+                transcription = '-';
+                origin = '-';
+                inference = '-';
+            }
             
             let html = `<tr class="${rowClass}">`;
             html += `<td class="file-id">${displayFileName}</td>`;
@@ -755,7 +736,7 @@
             }
             
             const basePath = `audio_${segment}`;
-            const datasetPath = dataset.includes('librispeech') ? 'LibriSpeech' : 'CommonVoice';
+            const datasetPath = dataset === 'librispeech' ? 'LibriSpeech' : 'CommonVoice';
             const cleanFileName = fileName.replace(/\.(wav|flac|mp3)$/, '');
             
             let audioPath = '';
@@ -799,7 +780,6 @@
             
             if (!audio) return;
             
-            // Stop all other audios
             const allAudios = document.querySelectorAll('audio');
             allAudios.forEach(a => {
                 if (a.id !== audioId && !a.paused) {
@@ -808,7 +788,6 @@
                 }
             });
             
-            // Reset all other buttons
             const allButtons = document.querySelectorAll('.play-button');
             allButtons.forEach(b => {
                 if (b !== button) {
