@@ -1,0 +1,437 @@
+{
+  "model_info": {
+    "modelName": "LSCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "Custom Dataset",
+    "testingSet": "Custom Test Set",
+    "bitRate": "0.45",
+    "parameters": {
+      "frameRate": "50",
+      "quantizers": "4",
+      "codebookSize": "1024",
+      "nParams": "45M"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.7",
+      "PESQ": "1.3",
+      "STOI": "0.39",
+      "dWER": "0.21"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Inference": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "UTMOS": "3.9",
+      "PESQ": "1.4",
+      "STOI": "0.39",
+      "dWER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Inference": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT HOLLAND",
+      "UTMOS": "2.8",
+      "PESQ": "1.2",
+      "STOI": "0.33",
+      "dWER": "0.94"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Inference": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG BELOVED PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SAID POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "UTMOS": "3.6",
+      "PESQ": "1.5",
+      "STOI": "0.22",
+      "dWER": "0.24"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0000",
+      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
+      "Inference": "SATURDAY AUGUST 15TH THE SEA HAD BROKEN ALL ROUND NO LAND IN SIGHT",
+      "UTMOS": "3.9",
+      "PESQ": "1.3",
+      "STOI": "0.38",
+      "dWER": "0.33"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Inference": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "UTMOS": "3.9",
+      "PESQ": "1.4",
+      "STOI": "0.59",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "1188-133604-0017",
+      "Transcription": "THAT A STYLE IS RESTRAINED OR SEVERE DOES NOT MEAN THAT IT IS ALSO ERRONEOUS",
+      "Origin": "THAT A STYLE IS RESTRAINED OR SEVERE DOES NOT MEAN THAT IT IS ALSO ERRONEOUS",
+      "Inference": "SEVERE DOES NOT MEAN THAT IT IS ALSO ERRONEOUS",
+      "UTMOS": "2.3",
+      "PESQ": "1.1",
+      "STOI": "0.31",
+      "dWER": "1.00"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "LibriSpeech_Blank": {
+    "Total": {
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dWER": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "2.8",
+      "PESQ": "1.3",
+      "STOI": "0.54",
+      "dCER": "0.41"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我走向着前面也许会有更好的",
+      "UTMOS": "3.0",
+      "PESQ": "1.4",
+      "STOI": "0.65",
+      "dCER": "0.15"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "听到这消息",
+      "UTMOS": "3.5",
+      "PESQ": "1.5",
+      "STOI": "0.77",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382801",
+      "Transcription": "她心里隐隐觉得不妙",
+      "Origin": "他心裡隱隱覺得不妙",
+      "Inference": "他心里肯定绝对不妙",
+      "UTMOS": "2.3",
+      "PESQ": "1.2",
+      "STOI": "0.66",
+      "dCER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "證明文件應精神查並妥善保存",
+      "Inference": "證明文件已進行查兵吐槍保存",
+      "UTMOS": "3.4",
+      "PESQ": "1.3",
+      "STOI": "0.26",
+      "dCER": "0.15"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他開始想搬回鄉下住",
+      "Inference": "他开始审判驾驻",
+      "UTMOS": "3.4",
+      "PESQ": "1.4",
+      "STOI": "0.67",
+      "dCER": "0.44"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_17397784",
+      "Transcription": "苹果甜又便宜",
+      "Origin": "苹果甜又便宜",
+      "Inference": "本人說聽了一會兒",
+      "UTMOS": "3.0",
+      "PESQ": "1.3",
+      "STOI": "0.57",
+      "dCER": "1.00"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  },
+  "CommonVoice_Blank": {
+    "Total": {
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_2": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_3": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_4": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Sample_5": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    },
+    "Error_Sample_1": {
+      "File_name": "N/A",
+      "Transcription": "N/A",
+      "Origin": "N/A",
+      "Inference": "N/A",
+      "dCER": "N/A",
+      "UTMOS": "N/A",
+      "PESQ": "N/A",
+      "STOI": "N/A"
+    }
+  }
+}

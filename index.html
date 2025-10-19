@@ -317,11 +317,58 @@
             font-size: 12px;
             font-weight: bold;
         }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .nav-button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background: #0056b3;
+        }
+
+        .nav-button.active {
+            background: #28a745;
+        }
+
+        .nav-button.github {
+            background: #24292e;
+        }
+
+        .nav-button.github:hover {
+            background: #1a1e22;
+        }        
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Neural Audio Codec Inference Result Comparison</h1>
+
+        <div class="navigation">
+            <a href="index.html" class="nav-button active">Original Experiments</a>
+            <a href="index_segmented.html" class="nav-button">Segmented Experiments</a>
+            <a href="https://github.com/Jie-shiang/Codec_comparison" target="_blank" class="nav-button github">GitHub Repository</a>
+        </div>
+        
         <div class="status-info" id="status-info">
             Loading codec data...
         </div>

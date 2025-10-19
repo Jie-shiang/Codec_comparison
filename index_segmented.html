@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Audio Codec Segmented Evaluation Results</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .control-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .control-group label {
+            font-weight: bold;
+            color: #555;
+            margin-right: 10px;
+        }
+        
+        .control-group.first-aligned label {
+            min-width: 100px;
+            text-align: left;
+        }
+        
+        .control-subgroup {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        
+        .checkbox-group label {
+            font-weight: normal;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        select {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 70px;
+            font-size: 12px;
+        }
+
+        .codec-freq-select {
+            margin-left: 8px;
+            padding: 3px 6px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: white;
+        }
+        
+        .status-info {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .model-section {
+            margin-bottom: 50px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .model-header {
+            background: #495057;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .model-info {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .params-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .training-testing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .training-testing-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+        
+        .training-testing-table .label-cell {
+            background: #e9ecef;
+            font-weight: bold;
+            width: 150px;
+            text-align: center;
+        }
+        
+        .training-testing-table .value-cell {
+            background: white;
+        }
+        
+        .dataset-section {
+            margin-bottom: 30px;
+        }
+        
+        .dataset-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            padding: 8px 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #495057;
+            font-size: 11px;
+        }
+        
+        .file-id {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: bold;
+            color: #495057;
+            text-align: left;
+            padding-left: 10px;
+            min-width: 120px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .codec-info {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .transcript {
+            max-width: 200px;
+            text-align: left;
+            font-size: 10px;
+            line-height: 1.3;
+            color: #555;
+            padding: 4px;
+        }
+        
+        .play-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+        
+        .play-button:hover {
+            background: #0056b3;
+        }
+        
+        .play-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .total-row {
+            background-color: #e3f2fd !important;
+            font-weight: bold;
+        }
+
+        .error-example {
+            background-color: rgba(255, 193, 193, 0.3) !important;
+        }
+
+        .no-audio {
+            color: #999;
+            font-style: italic;
+            font-size: 11px;
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .segment-highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .nav-button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-button:hover {
+            background: #0056b3;
+        }
+
+        .nav-button.active {
+            background: #28a745;
+        }
+
+        .nav-button.github {
+            background: #24292e;
+        }
+
+        .nav-button.github:hover {
+            background: #1a1e22;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Neural Audio Codec Segmented Evaluation Results</h1>
+        <div class="subtitle">Comparison of codec performance on segmented audio samples</div>
+        
+        <div class="navigation">
+            <a href="index.html" class="nav-button">Original Experiments</a>
+            <a href="index_segmented.html" class="nav-button active">Segmented Experiments</a>
+            <a href="https://github.com/Jie-shiang/Codec_comparison" target="_blank" class="nav-button github">GitHub Repository</a>
+        </div>
+        
+        <div class="controls">
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Segment Length:</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="radio" name="segment" id="seg-0.5s" value="0.5s" onchange="updateDisplay()">
+                            <label for="seg-0.5s">0.5s</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="radio" name="segment" id="seg-1.0s" value="1.0s" checked onchange="updateDisplay()">
+                            <label for="seg-1.0s">1.0s</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="radio" name="segment" id="seg-2.0s" value="2.0s" onchange="updateDisplay()">
+                            <label for="seg-2.0s">2.0s</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Dataset:</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="dataset-librispeech" value="librispeech" checked onchange="updateDisplay()">
+                            <label for="dataset-librispeech">LibriSpeech</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="dataset-commonvoice" value="commonvoice" onchange="updateDisplay()">
+                            <label for="dataset-commonvoice">CommonVoice</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-row">
+                <div class="control-group first-aligned">
+                    <label>Codec Models:</label>
+                    <div class="control-subgroup">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="codec-lscodec" value="lscodec" checked onchange="updateCodecOptions()">
+                            <label for="codec-lscodec">LSCodec</label>
+                            <select id="freq-lscodec" class="codec-freq-select" onchange="updateDisplay()">
+                                <option value="25Hz">25Hz</option>
+                                <option value="50Hz" selected>50Hz</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-info" id="status-info">
+            Loading configurations...
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let allConfigs = {};
+        let currentModel = '';
+        let currentFrequency = '';
+        let currentSegmentLength = '';
+
+        const datasetTitles = {
+            'librispeech': 'LibriSpeech',
+            'commonvoice': 'CommonVoice'
+        };
+
+        async function loadAllConfigs() {
+            const codecs = ['lscodec'];
+            const frequencies = ['25Hz', '50Hz'];
+            const segments = ['0.5s', '1.0s', '2.0s'];
+            
+            for (const codec of codecs) {
+                for (const freq of frequencies) {
+                    for (const seg of segments) {
+                        const configKey = `${codec}_${freq}_${seg}`;
+                        const configPath = `configs_${seg}/${getConfigFileName(codec, freq, seg)}`;
+                        
+                        try {
+                            const response = await fetch(configPath);
+                            if (response.ok) {
+                                allConfigs[configKey] = await response.json();
+                            }
+                        } catch (error) {
+                            console.log(`Config not found: ${configPath}`);
+                        }
+                    }
+                }
+            }
+            
+            updateDisplay();
+        }
+
+        function getConfigFileName(codec, frequency, segment) {
+            const codecName = codec === 'lscodec' ? 'LSCodec' : codec;
+            const segmentClean = segment.replace('s', '');
+            return `${codecName}_${segmentClean}s_clean.json`;
+        }
+
+        function getSelectedSegments() {
+            const segments = [];
+            const radios = document.querySelectorAll('input[name="segment"]:checked');
+            radios.forEach(radio => segments.push(radio.value));
+            return segments;
+        }
+
+        function getSelectedDatasets() {
+            const datasets = [];
+            if (document.getElementById('dataset-librispeech').checked) datasets.push('librispeech');
+            if (document.getElementById('dataset-commonvoice').checked) datasets.push('commonvoice');
+            return datasets;
+        }
+
+        function getSelectedCodecs() {
+            const codecs = [];
+            if (document.getElementById('codec-lscodec').checked) {
+                const freq = document.getElementById('freq-lscodec').value;
+                codecs.push({ name: 'lscodec', frequency: freq });
+            }
+            return codecs;
+        }
+
+        function updateCodecOptions() {
+            // Update display when codec checkbox changes
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const resultsDiv = document.getElementById('results');
+            const statusDiv = document.getElementById('status-info');
+            
+            const selectedSegments = getSelectedSegments();
+            const selectedDatasets = getSelectedDatasets();
+            const selectedCodecs = getSelectedCodecs();
+            
+            if (selectedSegments.length === 0) {
+                statusDiv.innerHTML = '⚠️ Please select a segment length.';
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            if (selectedDatasets.length === 0) {
+                statusDiv.innerHTML = '⚠️ Please select at least one dataset.';
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            if (selectedCodecs.length === 0) {
+                statusDiv.innerHTML = '⚠️ Please select at least one codec.';
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            let configCount = 0;
+
+            for (const segment of selectedSegments) {
+                for (const codecInfo of selectedCodecs) {
+                    const configKey = `${codecInfo.name}_${codecInfo.frequency}_${segment}`;
+                    const config = allConfigs[configKey];
+                    
+                    if (config) {
+                        html += createModelSection(codecInfo.name, codecInfo.frequency, segment, config, selectedDatasets);
+                        configCount++;
+                    }
+                }
+            }
+
+            if (configCount === 0) {
+                statusDiv.innerHTML = '⚠️ No configurations found for the selected options.';
+                resultsDiv.innerHTML = '';
+            } else {
+                statusDiv.innerHTML = `✅ Displaying ${configCount} configuration(s) for segment length: <span class="segment-highlight">${selectedSegments.join(', ')}</span>`;
+                resultsDiv.innerHTML = html;
+            }
+        }
+
+        function createModelSection(codecType, frequency, segmentLength, config, selectedDatasets) {
+            const section = document.createElement('div');
+            section.className = 'model-section';
+            
+            const modelInfo = config.model_info;
+            let configHtml = '';
+            
+            if (modelInfo) {
+                configHtml = `
+                    <div class="model-info">
+                        <div class="params-row">
+                            <div class="info-item">
+                                <div class="info-label">Segment Length</div>
+                                <div class="info-value segment-highlight">${segmentLength}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Causality</div>
+                                <div class="info-value">${modelInfo.causality}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Bit-rate (kbps)</div>
+                                <div class="info-value">${modelInfo.bitRate}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Frame Rate (Hz)</div>
+                                <div class="info-value">${modelInfo.parameters.frameRate}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"># of Quantizer</div>
+                                <div class="info-value">${modelInfo.parameters.quantizers}</div>
+                            </div>
+                        </div>
+                        
+                        <table class="training-testing-table">
+                            <tr>
+                                <td class="label-cell">Training Set</td>
+                                <td class="value-cell">${modelInfo.trainingSet}</td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">Testing Set</td>
+                                <td class="value-cell">${modelInfo.testingSet}</td>
+                            </tr>
+                        </table>
+                    </div>
+                `;
+            }
+
+            section.innerHTML = `
+                <div class="model-header">${codecType.toUpperCase()} - ${frequency} - ${segmentLength}</div>
+                ${configHtml}
+                ${createDatasetTables(codecType, frequency, segmentLength, config, selectedDatasets)}
+            `;
+
+            return section.outerHTML;
+        }
+
+        function createDatasetTables(codecType, frequency, segmentLength, config, selectedDatasets) {
+            currentModel = codecType;
+            currentFrequency = frequency;
+            currentSegmentLength = segmentLength;
+            
+            let tablesHtml = '';
+            
+            const datasets = {
+                'librispeech': {
+                    key: 'LibriSpeech',
+                    files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1']
+                },
+                'commonvoice': {
+                    key: 'CommonVoice',
+                    files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1']
+                }
+            };
+            
+            for (const datasetName of selectedDatasets) {
+                const currentDataset = datasets[datasetName];
+                const datasetData = config[currentDataset.key];
+                
+                if (!datasetData) {
+                    continue;
+                }
+                
+                const rows = currentDataset.files
+                    .map(fileId => createTableRow(datasetName, fileId, datasetData[fileId]))
+                    .filter(row => row !== '')
+                    .join('');
+                
+                if (rows) {
+                    const tableHeaders = createTableHeaders(datasetName);
+                    tablesHtml += `
+                        <div class="dataset-section">
+                            <div class="dataset-title">${datasetTitles[datasetName]}</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        ${tableHeaders}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+            }
+            
+            if (!tablesHtml) {
+                return '<p style="padding: 20px; text-align: center; color: #999;">No data available for selected datasets.</p>';
+            }
+            
+            return tablesHtml;
+        }
+
+        function createTableHeaders(dataset) {
+            const isLibriSpeech = dataset === 'librispeech';
+            const werHeader = isLibriSpeech ? 'dWER (%)' : 'dCER (%)';
+            
+            return `
+                <th>File ID</th>
+                <th>Transcription</th>
+                <th>Original</th>
+                <th>Inference</th>
+                <th>${werHeader}</th>
+                <th>UTMOS</th>
+                <th>PESQ</th>
+                <th>STOI</th>
+            `;
+        }
+
+        function createTableRow(dataset, fileId, fileData) {
+            if (!fileData) return '';
+            
+            const isTotal = fileId === 'Total';
+            const isError = fileId.startsWith('Error_Sample');
+            const rowClass = isTotal ? 'total-row' : (isError ? 'error-example' : '');
+            
+            const isLibriSpeech = dataset === 'librispeech';
+            const werValue = isLibriSpeech ? fileData.dWER : fileData.dCER;
+            
+            if (isTotal) {
+                return `
+                    <tr class="${rowClass}">
+                        <td class="file-id">Total Average</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>${werValue !== 'N/A' ? parseFloat(werValue).toFixed(2) : 'N/A'}</td>
+                        <td>${fileData.UTMOS !== 'N/A' ? parseFloat(fileData.UTMOS).toFixed(3) : 'N/A'}</td>
+                        <td>${fileData.PESQ !== 'N/A' ? parseFloat(fileData.PESQ).toFixed(3) : 'N/A'}</td>
+                        <td>${fileData.STOI !== 'N/A' ? parseFloat(fileData.STOI).toFixed(3) : 'N/A'}</td>
+                    </tr>
+                `;
+            }
+            
+            return `
+                <tr class="${rowClass}">
+                    <td class="file-id">${fileData.File_name || 'N/A'}</td>
+                    <td class="transcript">${fileData.Transcription || 'N/A'}</td>
+                    <td>${createAudioControl(dataset, fileData.File_name, 'original')}</td>
+                    <td>${createAudioControl(dataset, fileData.File_name, currentModel, currentFrequency)}</td>
+                    <td>${werValue !== 'N/A' ? parseFloat(werValue).toFixed(2) : 'N/A'}</td>
+                    <td>${fileData.UTMOS !== 'N/A' ? parseFloat(fileData.UTMOS).toFixed(3) : 'N/A'}</td>
+                    <td>${fileData.PESQ !== 'N/A' ? parseFloat(fileData.PESQ).toFixed(3) : 'N/A'}</td>
+                    <td>${fileData.STOI !== 'N/A' ? parseFloat(fileData.STOI).toFixed(3) : 'N/A'}</td>
+                </tr>
+            `;
+        }
+
+        function getAudioPath(dataset, fileName, codecType, frequency = null) {
+            if (!fileName || fileName === 'N/A') return '';
+            
+            const basePath = `audio_${currentSegmentLength}`;
+            const datasetPath = dataset === 'librispeech' ? 'LibriSpeech' : 'CommonVoice';
+            const actualFileName = fileName.replace(/\.(wav|flac|mp3)$/, '');
+            
+            if (codecType === 'original') {
+                return `${basePath}/${datasetPath}/original/${actualFileName}`;
+            } else {
+                const codecName = codecType === 'lscodec' ? 'LSCodec' : codecType;
+                return `${basePath}/${datasetPath}/${codecName}/${frequency}/${actualFileName}.wav`;
+            }
+        }
+
+        function createAudioControl(dataset, fileName, codecType, frequency = null) {
+            if (!fileName || fileName === 'N/A') {
+                return '<span class="no-audio">-</span>';
+            }
+            
+            const audioPath = getAudioPath(dataset, fileName, codecType, frequency);
+            
+            if (!audioPath) {
+                return '<span class="no-audio">No File</span>';
+            }
+            
+            let sourceTags = '';
+            if (codecType === 'original') {
+                const basePath = audioPath.replace(/\.[^.]+$/, '');
+                sourceTags = `
+                    <source src="${basePath}.flac" type="audio/flac">
+                    <source src="${basePath}.mp3" type="audio/mpeg">
+                    <source src="${basePath}.wav" type="audio/wav">
+                `;
+            } else {
+                sourceTags = `<source src="${audioPath}" type="audio/wav">`;
+            }
+            
+            const audioId = `audio_${dataset}_${fileName}_${codecType}_${currentSegmentLength}`;
+            
+            return `
+                <div class="audio-controls">
+                    <button class="play-button" onclick="toggleAudio('${audioId}', this)">Play</button>
+                    <audio preload="none" id="${audioId}">
+                        ${sourceTags}
+                        Your browser does not support audio playback.
+                    </audio>
+                    ${frequency ? `<div class="codec-info">${frequency}</div>` : ''}
+                </div>
+            `;
+        }
+
+        function toggleAudio(audioId, button) {
+            const audio = document.getElementById(audioId);
+            
+            if (!audio) return;
+            
+            const allAudios = document.querySelectorAll('audio');
+            allAudios.forEach(a => {
+                if (a.id !== audioId && !a.paused) {
+                    a.pause();
+                    a.currentTime = 0;
+                }
+            });
+            
+            const allButtons = document.querySelectorAll('.play-button');
+            allButtons.forEach(b => {
+                if (b !== button) {
+                    b.textContent = 'Play';
+                    b.disabled = false;
+                }
+            });
+            
+            if (audio.paused) {
+                button.textContent = 'Loading...';
+                button.disabled = true;
+                
+                audio.play().then(() => {
+                    button.textContent = 'Pause';
+                    button.disabled = false;
+                }).catch(error => {
+                    console.error('Error playing audio:', error);
+                    button.textContent = 'Error';
+                    setTimeout(() => {
+                        button.textContent = 'Play';
+                        button.disabled = false;
+                    }, 2000);
+                });
+            } else {
+                audio.pause();
+                button.textContent = 'Play';
+            }
+            
+            audio.onended = () => {
+                button.textContent = 'Play';
+                button.disabled = false;
+            };
+        }
+
+        window.onload = function() {
+            loadAllConfigs();
+        };
+    </script>
+</body>
+</html>
