@@ -21,63 +21,63 @@
     },
     "Sample_1": {
       "File_name": "",
-      "Transcription": "我总想著前面也许会有更好的",
-      "Origin": "我总想着前面也许会有更好的",
-      "Inference": "我肯定是要去看病人",
-      "UTMOS": "1.2",
-      "PESQ": "1.1",
-      "STOI": "-0.01",
-      "dCER": "0.85"
+      "Transcription": "-",
+      "Origin": "-",
+      "Inference": "-",
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     },
     "Sample_2": {
       "File_name": "",
-      "Transcription": "听到这消息",
-      "Origin": "听到这消息",
-      "Inference": "啊",
-      "UTMOS": "1.3",
-      "PESQ": "1.1",
-      "STOI": "0.26",
-      "dCER": "1.00"
+      "Transcription": "-",
+      "Origin": "-",
+      "Inference": "-",
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     },
     "Sample_3": {
       "File_name": "",
-      "Transcription": "她心里隐隐觉得不妙",
-      "Origin": "他心裡隱隱覺得不妙",
-      "Inference": "啊",
-      "UTMOS": "1.3",
-      "PESQ": "1.1",
-      "STOI": "-0.02",
-      "dCER": "0.44"
+      "Transcription": "-",
+      "Origin": "-",
+      "Inference": "-",
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     },
     "Sample_4": {
       "File_name": "",
-      "Transcription": "证明文件应经审查并妥善保存",
-      "Origin": "證明文件應精神查並妥善保存",
-      "Inference": "啊",
-      "UTMOS": "1.2",
-      "PESQ": "1.2",
-      "STOI": "0.04",
-      "dCER": "0.62"
+      "Transcription": "-",
+      "Origin": "-",
+      "Inference": "-",
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     },
     "Sample_5": {
       "File_name": "",
-      "Transcription": "她开始想搬回乡下住",
-      "Origin": "他開始想搬回鄉下住",
-      "Inference": "走",
-      "UTMOS": "1.3",
-      "PESQ": "1.2",
-      "STOI": "0.13",
-      "dCER": "0.67"
+      "Transcription": "-",
+      "Origin": "-",
+      "Inference": "-",
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     },
     "Error_Sample_1": {
       "File_name": "",
-      "Transcription": "听到这消息",
-      "Origin": "听到这消息",
-      "Inference": "啊",
-      "UTMOS": "1.3",
-      "PESQ": "1.1",
-      "STOI": "0.26",
-      "dCER": "1.00"
+      "Transcription": "-",
+      "Origin": "-",
+      "Inference": "-",
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     }
   },
   "LibriSpeech": {
