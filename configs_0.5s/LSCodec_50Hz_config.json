@@ -14,13 +14,13 @@
   },
   "CommonVoice": {
     "Total": {
-      "UTMOS": "1.4",
-      "PESQ": "1.1",
-      "STOI": "0.11",
-      "dCER": "0.78"
+      "UTMOS": "-",
+      "PESQ": "-",
+      "STOI": "-",
+      "dCER": "-"
     },
     "Sample_1": {
-      "File_name": "common_voice_zh-TW_17382475",
+      "File_name": "",
       "Transcription": "我总想著前面也许会有更好的",
       "Origin": "我总想着前面也许会有更好的",
       "Inference": "我肯定是要去看病人",
@@ -30,7 +30,7 @@
       "dCER": "0.85"
     },
     "Sample_2": {
-      "File_name": "common_voice_zh-TW_17382798",
+      "File_name": "",
       "Transcription": "听到这消息",
       "Origin": "听到这消息",
       "Inference": "啊",
@@ -40,7 +40,7 @@
       "dCER": "1.00"
     },
     "Sample_3": {
-      "File_name": "common_voice_zh-TW_17382801",
+      "File_name": "",
       "Transcription": "她心里隐隐觉得不妙",
       "Origin": "他心裡隱隱覺得不妙",
       "Inference": "啊",
@@ -50,7 +50,7 @@
       "dCER": "0.44"
     },
     "Sample_4": {
-      "File_name": "common_voice_zh-TW_17382870",
+      "File_name": "",
       "Transcription": "证明文件应经审查并妥善保存",
       "Origin": "證明文件應精神查並妥善保存",
       "Inference": "啊",
@@ -60,7 +60,7 @@
       "dCER": "0.62"
     },
     "Sample_5": {
-      "File_name": "common_voice_zh-TW_17382928",
+      "File_name": "",
       "Transcription": "她开始想搬回乡下住",
       "Origin": "他開始想搬回鄉下住",
       "Inference": "走",
@@ -70,7 +70,7 @@
       "dCER": "0.67"
     },
     "Error_Sample_1": {
-      "File_name": "common_voice_zh-TW_17382798",
+      "File_name": "",
       "Transcription": "听到这消息",
       "Origin": "听到这消息",
       "Inference": "啊",
