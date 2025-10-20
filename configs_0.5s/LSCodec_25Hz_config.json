@@ -4,87 +4,12 @@
     "causality": "Non-Causal",
     "trainingSet": "Custom Dataset",
     "testingSet": "Custom Test Set",
-    "bitRate": "0.45",
+    "bitRate": "0.25",
     "parameters": {
       "frameRate": "25",
       "quantizers": "4",
       "codebookSize": "1024",
       "nParams": "45M"
-    }
-  },
-  "CommonVoice": {
-    "Total": {
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_2": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_3": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_4": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Sample_5": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
-    },
-    "Error_Sample_1": {
-      "File_name": "N/A",
-      "Transcription": "N/A",
-      "Origin": "N/A",
-      "Inference": "N/A",
-      "dWER": "N/A",
-      "dCER": "N/A",
-      "UTMOS": "N/A",
-      "PESQ": "N/A",
-      "STOI": "N/A"
     }
   },
   "LibriSpeech": {
@@ -153,6 +78,74 @@
       "PESQ": "1.0",
       "STOI": "0.17",
       "dWER": "1.00"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "dCER": "0.78"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我肯定是要去看病人",
+      "UTMOS": "1.2",
+      "PESQ": "1.1",
+      "STOI": "-0.01",
+      "dCER": "0.85"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "啊",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.26",
+      "dCER": "1.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382801",
+      "Transcription": "她心里隐隐觉得不妙",
+      "Origin": "他心裡隱隱覺得不妙",
+      "Inference": "啊",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "-0.02",
+      "dCER": "0.44"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "證明文件應精神查並妥善保存",
+      "Inference": "啊",
+      "UTMOS": "1.2",
+      "PESQ": "1.2",
+      "STOI": "0.04",
+      "dCER": "0.62"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他開始想搬回鄉下住",
+      "Inference": "走",
+      "UTMOS": "1.3",
+      "PESQ": "1.2",
+      "STOI": "0.13",
+      "dCER": "0.67"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "啊",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.26",
+      "dCER": "1.00"
     }
   }
 }
