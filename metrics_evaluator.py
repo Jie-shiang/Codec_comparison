@@ -20,6 +20,15 @@ import Levenshtein
 import opencc
 import pandas as pd
 
+# Import cn2an for Chinese number conversion
+try:
+    import cn2an
+    CN2AN_AVAILABLE = True
+except ImportError:
+    CN2AN_AVAILABLE = False
+    print("Warning: cn2an not installed. Arabic to Chinese number conversion will be disabled.")
+    print("Install with: pip install cn2an")
+
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -151,7 +160,20 @@ class AudioMetricsEvaluator:
         return text
 
     def normalize_text(self, text: str) -> str:
-        """Optimized text normalization for WER/CER calculation"""
+        """
+        Optimized text normalization for WER/CER calculation
+        
+        For Chinese: 
+        - Converts Traditional to Simplified
+        - Converts Arabic numerals to Chinese numerals (e.g., "123" -> "一百二十三")
+        - Removes punctuation
+        - Keeps only Chinese characters
+        
+        For English:
+        - Converts to uppercase
+        - Removes punctuation
+        - Normalizes whitespace
+        """
         if not text:
             return ""
             
@@ -159,11 +181,41 @@ class AudioMetricsEvaluator:
             # Step 1: Convert Traditional to Simplified
             text = self.convert_traditional_to_simplified(text)
             
-            # Step 2: Remove all non-Chinese characters and punctuation
-            text = re.sub(r'[^\u4e00-\u9fff\s]', '', text)
-            text = re.sub(r'\s+', '', text)
+            # Step 2: Remove punctuation first
+            # Chinese punctuation: ，。、！？；：「」『』《》〈〉【】〔〕（）
+            # English punctuation: ,.!?;:'"()[]{}
+            punctuation_pattern = r'[，。、！？；：「」『』《》〈〉【】〔〕（）(),.!?;:\'\"\[\]{}~`@#$%^&*_+=|\\/<>-]'
+            text = re.sub(punctuation_pattern, '', text)
+            
+            # Step 3: Convert Arabic numerals to Chinese numerals
+            # This is KEY to correct CER calculation!
+            # Example: "1.5" -> "一點五", "5000" -> "五千"
+            if CN2AN_AVAILABLE:
+                try:
+                    # Use cn2an.transform to automatically detect and convert Arabic numerals
+                    text = cn2an.transform(text, "an2cn")
+                except Exception as e:
+                    # If conversion fails, try manual replacement
+                    def replace_number(match):
+                        num_str = match.group(0)
+                        try:
+                            return cn2an.an2cn(num_str)
+                        except:
+                            # If conversion fails, remove the number
+                            return ''
+                    
+                    text = re.sub(r'\d+\.?\d*', replace_number, text)
+            else:
+                # If cn2an is not available, just remove Arabic numerals
+                # This is the fallback behavior (same as before)
+                text = re.sub(r'\d+\.?\d*', '', text)
+            
+            # Step 4: Keep only Chinese characters (remove any remaining non-Chinese chars)
+            text = re.sub(r'[^\u4e00-\u9fff]', '', text)
+            
             return text.strip()
         else:
+            # English normalization (unchanged)
             # Convert to uppercase first
             text = text.upper()
             # Remove all punctuation including commas, periods, etc.
@@ -184,7 +236,7 @@ class AudioMetricsEvaluator:
         
         distance = Levenshtein.distance(''.join(ref_chars), ''.join(hyp_chars))
         cer = distance / len(ref_chars)
-        return min(cer, 1.0)  # Cap at 1.0
+        return cer  # No cap - can exceed 1.0
     
     def fast_wer(self, reference: str, hypothesis: str) -> float:
         """Fast Word Error Rate calculation using Levenshtein distance"""
@@ -201,7 +253,7 @@ class AudioMetricsEvaluator:
         
         distance = Levenshtein.distance(' '.join(ref_words), ' '.join(hyp_words))
         wer = distance / len(ref_words)
-        return min(wer, 1.0)  # Cap at 1.0
+        return wer  # No cap - can exceed 1.0
     
     def transcribe_audio(self, audio_path: str) -> str:
         """Optimized audio transcription using ASR model"""
@@ -256,9 +308,9 @@ class AudioMetricsEvaluator:
                 dcer = inference_cer - original_cer
                 
                 return {
-                    'original_transcript_raw': original_transcript,  # Whisper 原始輸出（可能繁體）
+                    'original_transcript_raw': original_transcript,  # Whisper åŽŸå§‹è¼¸å‡ºï¼ˆå¯èƒ½ç¹é«”ï¼‰
                     'inference_transcript_raw': inference_transcript,
-                    'original_transcript': original_norm,  # 簡體 + 無標點
+                    'original_transcript': original_norm,  # ç°¡é«” + ç„¡æ¨™é»ž
                     'inference_transcript': inference_norm,
                     'original_cer': original_cer,
                     'inference_cer': inference_cer,
