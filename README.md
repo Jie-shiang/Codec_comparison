@@ -252,6 +252,8 @@ The web interface will automatically include NewCodec in the dropdown menu.
 | Original Audio Root | `/mnt/Internal/ASR` |
 | Inference Output Root | `/mnt/Internal/jieshiang/Inference_Result` |
 | Split Audio Root | `/mnt/Internal/jieshiang/Split_Result` |
+| Spk sim model Root | `At metrics_evaluator.py 216 lines modify "savedir"` |
+
 
 ### **Method 1: Batch Evaluation (Recommended)**
 

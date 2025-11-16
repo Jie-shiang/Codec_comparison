@@ -213,7 +213,8 @@ class AudioMetricsEvaluator:
             
             self.speaker_model = EncoderClassifier.from_hparams(
                 source="speechbrain/spkrec-ecapa-voxceleb",
-                savedir="pretrained_models/spkrec-ecapa-voxceleb",
+                # savedir="pretrained_models/spkrec-ecapa-voxceleb"
+                savedir="/mnt/Internal/jieshiang/Model/pretrained_models/spkrec-ecapa-voxceleb",
                 run_opts={"device": self.device}
             )
             print(f"Speaker embedding model loaded on {self.device}")
