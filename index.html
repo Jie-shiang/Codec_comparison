@@ -560,11 +560,16 @@
             if (!fileId || fileId === 'Total') {
                 return '';
             }
-            
-            const actualFileName = codecLoader.getCodecData(dataset, codecId, config, fileId, 'filename');
-            if (!actualFileName) {
-                console.warn(`No File_name found for ${fileId} in ${dataset}`);
-                return '';
+
+            let actualFileName = fileId;
+
+            if (codecId !== 'original') {
+                const dataFileName = codecLoader.getCodecData(dataset, codecId, config, fileId, 'filename');
+                if (!dataFileName) {
+                    console.warn(`No File_name found for ${fileId} in ${dataset}`);
+                    return '';
+                }
+                actualFileName = dataFileName;
             }
             
             return codecLoader.getAudioPath(dataset, codecId, config, actualFileName);
