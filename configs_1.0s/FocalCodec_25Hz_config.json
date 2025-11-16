@@ -86,5 +86,80 @@
       "Speaker_Sim": "0.55",
       "dWER": "10.41"
     }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "2.9",
+      "PESQ": "1.2",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.42",
+      "dCER": "0.47"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我能像著前面也许会有更好的",
+      "UTMOS": "2.6",
+      "PESQ": "1.2",
+      "STOI": "0.66",
+      "Speaker_Sim": "0.56",
+      "dCER": "0.08"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "听到这消息",
+      "UTMOS": "2.8",
+      "PESQ": "1.2",
+      "STOI": "0.80",
+      "Speaker_Sim": "0.37",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "证明文件应经审查并妥善保存",
+      "Inference": "这名文件因精神差异因妥善抱成",
+      "UTMOS": "3.5",
+      "PESQ": "1.2",
+      "STOI": "0.75",
+      "Speaker_Sim": "0.50",
+      "dCER": "0.77"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他开始想搬回乡下住",
+      "Inference": "他开始想搬回墙下住",
+      "UTMOS": "3.3",
+      "PESQ": "1.3",
+      "STOI": "0.78",
+      "Speaker_Sim": "0.42",
+      "dCER": "0.11"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "经过接近一年的治疗",
+      "Inference": "经过接近一年的治疗",
+      "UTMOS": "3.0",
+      "PESQ": "1.1",
+      "STOI": "0.73",
+      "Speaker_Sim": "0.40",
+      "dCER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_19965894",
+      "Transcription": "击倒语言对我们智慧的蛊惑",
+      "Origin": "及导语言对我们智慧的蛊惑",
+      "Inference": "a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-p-n-a-l-",
+      "UTMOS": "2.0",
+      "PESQ": "1.1",
+      "STOI": "0.73",
+      "Speaker_Sim": "0.39",
+      "dCER": "36.83"
+    }
   }
 }
