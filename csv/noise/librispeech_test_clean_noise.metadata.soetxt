@@ -1,0 +1,38 @@
+============================================================
+✓ Noise dataset preparation completed!
+============================================================
+Total files: 880
+Output dir: /mnt/Internal/jieshiang/Noise_Result/librispeech
+CSV: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/noise/librispeech_test_clean_noise.csv
+Metadata: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/noise/librispeech_test_clean_noise.metadata.json
+
+SNR distribution:
+count    880.000000
+mean       9.942412
+std        2.931589
+min        5.046320
+25%        7.372435
+50%       10.026581
+75%       12.486849
+max       14.997177
+Name: snr_db, dtype: float64
+
+Noise type distribution:
+noise_type
+free-sound     798
+sound-bible     82
+Name: count, dtype: int64
+
+{
+  "source_csv": "/home/jieshiang/Desktop/GitHub/Codec_comparison/csv/librispeech_test_clean_filtered.csv",
+  "original_dir": "/mnt/Internal/ASR",
+  "output_dir": "/mnt/Internal/jieshiang/Noise_Result/librispeech",
+  "musan_dir": "/mnt/External/ASR/musan/noise",
+  "n_per_speaker": 22,
+  "snr_range": [
+    5.0,
+    15.0
+  ],
+  "seed": 42,
+  "total_samples": 880
+}

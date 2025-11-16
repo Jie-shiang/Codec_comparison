@@ -1,0 +1,38 @@
+# Audio Codec Evaluation Pipeline - Optimized Version
+# Requirements file for all dependencies
+
+# Core PyTorch and Audio Processing
+torch>=2.0.0
+torchaudio>=2.0.0
+torchvision>=0.15.0
+
+# Transformers for Whisper ASR
+transformers>=4.30.0
+accelerate>=0.20.0
+
+# Audio Metrics
+pesq>=0.0.4
+pystoi>=0.3.3
+
+# Speaker Embedding
+speechbrain>=0.5.15
+
+# ASR Metrics
+jiwer>=3.0.0
+python-Levenshtein>=0.21.0
+
+# Chinese Text Processing
+opencc-python-reimplemented>=0.1.7
+cn2an>=0.5.22
+
+# Data Processing
+pandas>=1.5.0
+numpy>=1.23.0
+scipy>=1.10.0
+
+# Progress Display
+tqdm>=4.65.0
+
+# Additional Dependencies
+librosa>=0.10.0  # Optional fallback, mainly using torchaudio now
+soundfile>=0.12.0

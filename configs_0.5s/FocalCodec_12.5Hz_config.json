@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.16",
+    "parameters": {
+      "frameRate": "12.5",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "2.1",
+      "PESQ": "1.1",
+      "STOI": "0.20",
+      "Speaker_Sim": "0.15",
+      "dWER": "0.82"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "anakin he was the antichrist a wizard who was banished by a mercur thunder left",
+      "UTMOS": "1.8",
+      "PESQ": "1.1",
+      "STOI": "0.16",
+      "Speaker_Sim": "0.02",
+      "dWER": "0.82"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "so a pub duck and jam heavens where behind the baking he beats a thunder i do not start in a bit fusion",
+      "UTMOS": "1.8",
+      "PESQ": "1.1",
+      "STOI": "0.17",
+      "Speaker_Sim": "0.08",
+      "dWER": "1.12"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "i wish for a day when i can see the moon a lovely plant a pretty little chick a pretty little thing a little little bird a little little garden a little little flower a little little tree a little little fence a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little tree and a little",
+      "UTMOS": "2.1",
+      "PESQ": "1.1",
+      "STOI": "0.20",
+      "Speaker_Sim": "0.17",
+      "dWER": "9.47"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "horizons in extreme distance",
+      "UTMOS": "2.8",
+      "PESQ": "1.1",
+      "STOI": "0.41",
+      "Speaker_Sim": "0.12",
+      "dWER": "1.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the wood stood a nice little firtree",
+      "UTMOS": "2.9",
+      "PESQ": "1.1",
+      "STOI": "0.34",
+      "Speaker_Sim": "0.11",
+      "dWER": "0.30"
+    },
+    "Error_Sample_1": {
+      "File_name": "2830-3980-0011",
+      "Transcription": "PAUL DECLARES THAT THE FALSE APOSTLES WERE CALLED OR SENT NEITHER BY MEN NOR BY MAN",
+      "Origin": "paul declares that the false apostles were called or sent neither by men nor by man",
+      "Inference": "ill look at the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all the f up all",
+      "UTMOS": "2.1",
+      "PESQ": "1.1",
+      "STOI": "0.21",
+      "Speaker_Sim": "0.17",
+      "dWER": "22.12"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "2.1",
+      "PESQ": "1.1",
+      "STOI": "0.24",
+      "Speaker_Sim": "0.16",
+      "dCER": "2.48"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我放下了甜美野狮火药和好的",
+      "UTMOS": "2.3",
+      "PESQ": "1.1",
+      "STOI": "0.16",
+      "Speaker_Sim": "0.24",
+      "dCER": "0.69"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "好再见",
+      "UTMOS": "1.9",
+      "PESQ": "1.1",
+      "STOI": "0.36",
+      "Speaker_Sim": "0.24",
+      "dCER": "1.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "证明文件应精神查并妥善保存",
+      "Inference": "啊,没问题,谢谢,下期见",
+      "UTMOS": "2.2",
+      "PESQ": "1.1",
+      "STOI": "0.09",
+      "Speaker_Sim": "0.26",
+      "dCER": "0.85"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他开始想搬回乡下住",
+      "Inference": "他可细胜本回天之主",
+      "UTMOS": "2.3",
+      "PESQ": "1.1",
+      "STOI": "0.28",
+      "Speaker_Sim": "0.23",
+      "dCER": "0.78"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "经过接近一年的治疗",
+      "Inference": "我学著艺人",
+      "UTMOS": "2.1",
+      "PESQ": "1.0",
+      "STOI": "0.17",
+      "Speaker_Sim": "0.36",
+      "dCER": "1.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_27460052",
+      "Transcription": "主办单位",
+      "Origin": "主办单位",
+      "Inference": "我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...我...",
+      "UTMOS": "2.0",
+      "PESQ": "1.1",
+      "STOI": "0.24",
+      "Speaker_Sim": "0.27",
+      "dCER": "222.00"
+    }
+  }
+}

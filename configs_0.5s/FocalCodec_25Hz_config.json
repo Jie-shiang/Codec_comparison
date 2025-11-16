@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.33",
+    "parameters": {
+      "frameRate": "25",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.23",
+      "Speaker_Sim": "0.13",
+      "dWER": "0.71"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began in the western part of the us as a wizard who had a spanish part in the current novel",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.18",
+      "Speaker_Sim": "0.10",
+      "dWER": "0.88"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular dress which i love making to be suspended but not stopped during the picnic season",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.17",
+      "Speaker_Sim": "0.08",
+      "dWER": "0.12"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would say how good it is to have a lovely fiancee rejoicing the heart of old turins glory who sent pollys first brother of entrance and to marry his good graces for all time",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.22",
+      "Speaker_Sim": "0.07",
+      "dWER": "0.55"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely desert",
+      "UTMOS": "1.9",
+      "PESQ": "1.1",
+      "STOI": "0.39",
+      "Speaker_Sim": "0.04",
+      "dWER": "0.20"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "heaven woods to the ice the truth or tree",
+      "UTMOS": "1.7",
+      "PESQ": "1.1",
+      "STOI": "0.29",
+      "Speaker_Sim": "0.17",
+      "dWER": "0.90"
+    },
+    "Error_Sample_1": {
+      "File_name": "908-31957-0013",
+      "Transcription": "SLOW TO WORLD GREETINGS QUICK WITH ITS O LIST WHEN THE ANGELS SPEAK",
+      "Origin": "slow to world greetings quick with its oh list when the angels speak",
+      "Inference": "the fruit of all greens the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves the fruit of all leaves",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.26",
+      "Speaker_Sim": "0.21",
+      "dWER": "28.31"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.27",
+      "Speaker_Sim": "0.17",
+      "dCER": "2.36"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我都想著什么业务要干好的",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.19",
+      "Speaker_Sim": "0.25",
+      "dCER": "0.54"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "天干了",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.41",
+      "Speaker_Sim": "0.23",
+      "dCER": "1.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "证明文件应精神查并妥善保存",
+      "Inference": "请问你今天要去哪?",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.12",
+      "Speaker_Sim": "0.33",
+      "dCER": "0.85"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他开始想搬回乡下住",
+      "Inference": "他开始在这边被人打死了",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.35",
+      "Speaker_Sim": "0.31",
+      "dCER": "0.89"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "经过接近一年的治疗",
+      "Inference": "过节精灵的治疗",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.20",
+      "Speaker_Sim": "0.21",
+      "dCER": "0.56"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_25343485",
+      "Transcription": "但是持续抽掉数量",
+      "Origin": "但是持续抽掉数量",
+      "Inference": "这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...这是...",
+      "UTMOS": "1.4",
+      "PESQ": "1.0",
+      "STOI": "0.20",
+      "Speaker_Sim": "0.22",
+      "dCER": "138.62"
+    }
+  }
+}

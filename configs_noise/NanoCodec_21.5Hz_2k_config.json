@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "NanoCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "Common Voice 3200 hrs + MLS English 25500 hrs",
+    "testingSet": "MLS test set + DAPS clean dataset",
+    "bitRate": "1.89",
+    "parameters": {
+      "frameRate": "21.5_2k",
+      "quantizers": "8",
+      "codebookSize": "2016",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "UTMOS": "2.7",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.15",
+      "dWER": "0.02"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0003",
+      "Transcription": "HE WAS LIKE UNTO MY FATHER IN A WAY AND YET WAS NOT MY FATHER",
+      "Origin": "he was like unto my father in a way and yet was not my father",
+      "Inference": "he was like unto my father in a way and yet was not my father",
+      "UTMOS": "2.7",
+      "PESQ": "1.0",
+      "STOI": "0.19",
+      "Speaker_Sim": "0.27",
+      "dWER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0003",
+      "Transcription": "HAY FEVER A HEART TROUBLE CAUSED BY FALLING IN LOVE WITH A GRASS WIDOW",
+      "Origin": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "Inference": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "UTMOS": "2.5",
+      "PESQ": "1.0",
+      "STOI": "0.07",
+      "Speaker_Sim": "0.15",
+      "dWER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0001",
+      "Transcription": "EVERY CHANCE SHE COULD STEAL AFTER PRACTICE HOURS WERE OVER AND AFTER THE CLAMOROUS DEMANDS OF THE BOYS UPON HER TIME WERE FULLY SATISFIED WAS SEIZED TO FLY ON THE WINGS OF THE WIND TO THE FLOWERS",
+      "Origin": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "Inference": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "UTMOS": "3.6",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.11",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "2.8",
+      "PESQ": "1.0",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.14",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0003",
+      "Transcription": "BUT THIS WAS WHAT THE TREE COULD NOT BEAR TO HEAR",
+      "Origin": "but this was what the tree could not bear to hear",
+      "Inference": "but this was what the tree could not bear to hear",
+      "UTMOS": "2.8",
+      "PESQ": "1.0",
+      "STOI": "0.13",
+      "Speaker_Sim": "0.25",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "1995-1826-0003",
+      "Transcription": "BETTER GO HE HAD COUNSELLED SENTENTIOUSLY",
+      "Origin": "better go he had counseled sententiously",
+      "Inference": "better go you countess and dont you sleep",
+      "UTMOS": "1.3",
+      "PESQ": "1.0",
+      "STOI": "0.01",
+      "Speaker_Sim": "0.17",
+      "dWER": "0.83"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "UTMOS": "1.9",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.19",
+      "dCER": "0.07"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_19485265",
+      "Transcription": "大家都以为自己才是对的",
+      "Origin": "大家都以为自己才是对的",
+      "Inference": "大家都以为自己才是对的",
+      "UTMOS": "1.6",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.13",
+      "dCER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_19485305",
+      "Transcription": "坚持理念，逐渐站稳脚步",
+      "Origin": "坚持理念逐渐站稳脚步",
+      "Inference": "坚持理念逐渐站稳脚步",
+      "UTMOS": "2.0",
+      "PESQ": "1.0",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.07",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_19485275",
+      "Transcription": "更蕴含极高的商业价值",
+      "Origin": "更蕴含极高的商业价值",
+      "Inference": "更蕴含极高的商业价值",
+      "UTMOS": "1.6",
+      "PESQ": "1.0",
+      "STOI": "0.12",
+      "Speaker_Sim": "0.12",
+      "dCER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_19485323",
+      "Transcription": "看到很废的文章的时候",
+      "Origin": "看到很废的文章的时候",
+      "Inference": "看到很废的文章的时候",
+      "UTMOS": "2.0",
+      "PESQ": "1.0",
+      "STOI": "0.22",
+      "Speaker_Sim": "0.10",
+      "dCER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_19485322",
+      "Transcription": "指定建筑线之现有巷道",
+      "Origin": "指定建筑线之线有相当",
+      "Inference": "指定建筑线只有线有相当",
+      "UTMOS": "2.6",
+      "PESQ": "1.0",
+      "STOI": "0.02",
+      "Speaker_Sim": "0.14",
+      "dCER": "0.20"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_30160727",
+      "Transcription": "南云交流道",
+      "Origin": "南云交流道",
+      "Inference": "拿一瓶交友罩",
+      "UTMOS": "1.7",
+      "PESQ": "1.7",
+      "STOI": "0.06",
+      "Speaker_Sim": "0.34",
+      "dCER": "1.00"
+    }
+  }
+}

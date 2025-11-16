@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec-S",
+    "causality": "Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.80",
+    "parameters": {
+      "frameRate": "50_65k",
+      "quantizers": "1",
+      "codebookSize": "65536",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.9",
+      "PESQ": "1.3",
+      "STOI": "0.83",
+      "Speaker_Sim": "0.68",
+      "dWER": "0.01"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "UTMOS": "4.1",
+      "PESQ": "1.2",
+      "STOI": "0.84",
+      "Speaker_Sim": "0.71",
+      "dWER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "UTMOS": "4.0",
+      "PESQ": "1.2",
+      "STOI": "0.82",
+      "Speaker_Sim": "0.71",
+      "dWER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "UTMOS": "3.6",
+      "PESQ": "1.2",
+      "STOI": "0.84",
+      "Speaker_Sim": "0.75",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "3.3",
+      "PESQ": "1.2",
+      "STOI": "0.83",
+      "Speaker_Sim": "0.51",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice little fir tree",
+      "UTMOS": "4.4",
+      "PESQ": "1.5",
+      "STOI": "0.86",
+      "Speaker_Sim": "0.75",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "4507-16021-0037",
+      "Transcription": "THERE IT CLOTHES ITSELF IN WORD MASKS IN METAPHOR RAGS",
+      "Origin": "there it clothes itself in word masks in metaphor rags",
+      "Inference": "there it clothes itself in wordmasks in metaphorrags",
+      "UTMOS": "4.0",
+      "PESQ": "1.4",
+      "STOI": "0.83",
+      "Speaker_Sim": "0.59",
+      "dWER": "0.40"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "2.9",
+      "PESQ": "1.3",
+      "STOI": "0.58",
+      "Speaker_Sim": "0.72",
+      "dCER": "0.24"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_26659271",
+      "Transcription": "两湖盆地是长江流域的心脏要地",
+      "Origin": "两湖盆地是长江流域的心脏药地",
+      "Inference": "汪湖本地是川江流域的深藏要地",
+      "UTMOS": "3.0",
+      "PESQ": "1.2",
+      "STOI": "0.64",
+      "Speaker_Sim": "0.78",
+      "dCER": "0.29"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_26845552",
+      "Transcription": "选举公报的格式",
+      "Origin": "选举公报的格式",
+      "Inference": "宣誓公报的格式",
+      "UTMOS": "2.7",
+      "PESQ": "1.2",
+      "STOI": "0.64",
+      "Speaker_Sim": "0.79",
+      "dCER": "0.29"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_35101245",
+      "Transcription": "照片会存入云端硬碟",
+      "Origin": "照片会存入云端硬碟",
+      "Inference": "这就是我们的一切",
+      "UTMOS": "2.0",
+      "PESQ": "1.1",
+      "STOI": "0.58",
+      "Speaker_Sim": "0.76",
+      "dCER": "1.00"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_24477678",
+      "Transcription": "冲突升高",
+      "Origin": "冲突升高",
+      "Inference": "冲突生招",
+      "UTMOS": "3.8",
+      "PESQ": "1.5",
+      "STOI": "0.82",
+      "Speaker_Sim": "0.77",
+      "dCER": "0.50"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_27420342",
+      "Transcription": "经过造山运动",
+      "Origin": "经过造山运动",
+      "Inference": "我只好摔了一根刀",
+      "UTMOS": "1.5",
+      "PESQ": "1.1",
+      "STOI": "0.41",
+      "Speaker_Sim": "0.41",
+      "dCER": "1.33"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_19234530",
+      "Transcription": "提升自制节目品质",
+      "Origin": "提升自治节目品质",
+      "Inference": "那都把我丢下了,再写下我可以去哪,就是我",
+      "UTMOS": "1.4",
+      "PESQ": "1.2",
+      "STOI": "0.61",
+      "Speaker_Sim": "0.73",
+      "dCER": "2.38"
+    }
+  }
+}

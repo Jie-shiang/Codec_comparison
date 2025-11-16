@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "LSCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.45",
+    "parameters": {
+      "frameRate": "50",
+      "quantizers": "1",
+      "codebookSize": "300",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "UTMOS": "2.7",
+      "PESQ": "1.1",
+      "STOI": "0.13",
+      "Speaker_Sim": "0.08",
+      "dWER": "0.41"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0003",
+      "Transcription": "HE WAS LIKE UNTO MY FATHER IN A WAY AND YET WAS NOT MY FATHER",
+      "Origin": "he was like unto my father in a way and yet was not my father",
+      "Inference": "you ha had to my father in a way and yet was not hath other",
+      "UTMOS": "3.2",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.18",
+      "dWER": "0.40"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0003",
+      "Transcription": "HAY FEVER A HEART TROUBLE CAUSED BY FALLING IN LOVE WITH A GRASS WIDOW",
+      "Origin": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "Inference": "hey fever a hard trouble will come if i fall in love with the grass i do",
+      "UTMOS": "2.6",
+      "PESQ": "1.0",
+      "STOI": "0.04",
+      "Speaker_Sim": "0.06",
+      "dWER": "0.71"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0001",
+      "Transcription": "EVERY CHANCE SHE COULD STEAL AFTER PRACTICE HOURS WERE OVER AND AFTER THE CLAMOROUS DEMANDS OF THE BOYS UPON HER TIME WERE FULLY SATISFIED WAS SEIZED TO FLY ON THE WINGS OF THE WIND TO THE FLOWERS",
+      "Origin": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "Inference": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "UTMOS": "3.7",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.01",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant and empty",
+      "UTMOS": "3.0",
+      "PESQ": "1.0",
+      "STOI": "0.14",
+      "Speaker_Sim": "0.12",
+      "dWER": "0.40"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0003",
+      "Transcription": "BUT THIS WAS WHAT THE TREE COULD NOT BEAR TO HEAR",
+      "Origin": "but this was what the tree could not bear to hear",
+      "Inference": "but this was what the tree could not bear to hear",
+      "UTMOS": "2.8",
+      "PESQ": "1.0",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.18",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "7021-79740-0011",
+      "Transcription": "SO SAYING SHE LED THE WAY ON TIPTOE FOLLOWED BY THE CHILDREN OUT OF THE ROOM AND ROUND BY A CIRCUITOUS ROUTE TO THE PIAZZA THERE",
+      "Origin": "so saying she led the way on tiptoe followed by the children out of the room and round by a circuitous route to the piazza there",
+      "Inference": "so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so so",
+      "UTMOS": "1.6",
+      "PESQ": "1.0",
+      "STOI": "0.04",
+      "Speaker_Sim": "0.20",
+      "dWER": "8.50"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "UTMOS": "2.1",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.11",
+      "dCER": "1.07"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_19485265",
+      "Transcription": "大家都以为自己才是对的",
+      "Origin": "大家都以为自己才是对的",
+      "Inference": "大家都以为让警察是累的",
+      "UTMOS": "1.5",
+      "PESQ": "1.0",
+      "STOI": "0.12",
+      "Speaker_Sim": "0.03",
+      "dCER": "0.36"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_19485305",
+      "Transcription": "坚持理念，逐渐站稳脚步",
+      "Origin": "坚持理念逐渐站稳脚步",
+      "Inference": "金池里面变赵云脚踝",
+      "UTMOS": "1.7",
+      "PESQ": "1.0",
+      "STOI": "0.13",
+      "Speaker_Sim": "-0.04",
+      "dCER": "0.90"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_19485275",
+      "Transcription": "更蕴含极高的商业价值",
+      "Origin": "更蕴含极高的商业价值",
+      "Inference": "各院行刀者三元恰恰",
+      "UTMOS": "1.5",
+      "PESQ": "1.0",
+      "STOI": "0.13",
+      "Speaker_Sim": "-0.02",
+      "dCER": "1.00"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_19485323",
+      "Transcription": "看到很废的文章的时候",
+      "Origin": "看到很废的文章的时候",
+      "Inference": "看到跟飞虎一样的时候",
+      "UTMOS": "1.7",
+      "PESQ": "1.0",
+      "STOI": "0.14",
+      "Speaker_Sim": "0.09",
+      "dCER": "0.50"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_19485322",
+      "Transcription": "指定建筑线之现有巷道",
+      "Origin": "指定建筑线之线有相当",
+      "Inference": "是金金祖先知写的上了",
+      "UTMOS": "2.3",
+      "PESQ": "1.0",
+      "STOI": "0.01",
+      "Speaker_Sim": "0.06",
+      "dCER": "0.70"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_18797103",
+      "Transcription": "官方及非官方",
+      "Origin": "官方及非官方",
+      "Inference": "1.3.4.5.6.7.8.9.10.11.12.13.14.15.16.17.18.19.20.22.23.24.25.26.27.28.29.30.30.31.32.33.34.35.36.37.38.39.40.40.41.42.43.44.44.45.46.47.48.49.49.50.50.50.51.52.53.53.54.56.57.58.59.59.61.52.53.56.57.59.61.52.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.57.59.61.56.59.61.56.59.61.56.59.61.56.59.61.56.59.61.56.59.61.56.59.61.56.59.61.56.59.61.56.59.61.6.59.61.6.29.16.20.21.26.20.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.26.21.21.26.21.26.21.26.21.26.21.26.21.21.26.21.26.21.21.26.21.26.21.21.26.",
+      "UTMOS": "1.4",
+      "PESQ": "1.0",
+      "STOI": "0.09",
+      "Speaker_Sim": "0.05",
+      "dCER": "109.33"
+    }
+  }
+}

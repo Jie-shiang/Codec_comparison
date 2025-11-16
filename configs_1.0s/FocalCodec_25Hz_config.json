@@ -1,0 +1,90 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.33",
+    "parameters": {
+      "frameRate": "25",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.5",
+      "PESQ": "1.1",
+      "STOI": "0.77",
+      "Speaker_Sim": "0.52",
+      "dWER": "0.05"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the wizard who had finished behind the curtain on the left",
+      "UTMOS": "3.4",
+      "PESQ": "1.2",
+      "STOI": "0.78",
+      "Speaker_Sim": "0.51",
+      "dWER": "0.06"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular contrivance where i love making the hippie suspended but not stopped during the picnic season",
+      "UTMOS": "3.1",
+      "PESQ": "1.1",
+      "STOI": "0.75",
+      "Speaker_Sim": "0.51",
+      "dWER": "0.12"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would stay comfort and sooth among the lovely plants and rich exotics rejoicing the heartable turnet gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "UTMOS": "3.5",
+      "PESQ": "1.1",
+      "STOI": "0.76",
+      "Speaker_Sim": "0.64",
+      "dWER": "0.18"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "4.2",
+      "PESQ": "1.1",
+      "STOI": "0.81",
+      "Speaker_Sim": "0.43",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice little fir tree",
+      "UTMOS": "3.6",
+      "PESQ": "1.2",
+      "STOI": "0.75",
+      "Speaker_Sim": "0.57",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "1284-1180-0015",
+      "Transcription": "WE ARE TRAVELING REPLIED OJO AND WE STOPPED AT YOUR HOUSE JUST TO REST AND REFRESH OURSELVES",
+      "Origin": "we are travelling replied ojo and we stopped at your house just to rest and refresh ourselves",
+      "Inference": "were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste were chaste",
+      "UTMOS": "3.5",
+      "PESQ": "1.1",
+      "STOI": "0.74",
+      "Speaker_Sim": "0.55",
+      "dWER": "10.41"
+    }
+  }
+}

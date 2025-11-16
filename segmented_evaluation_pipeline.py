@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Segmented Audio Evaluation Pipeline
+Segmented Audio Evaluation Pipeline - Fast Batch Version
 
-Evaluate neural audio codecs on segmented audio files by merging segments
-with smart overlap handling before computing metrics.
+Evaluate neural audio codecs on segmented audio files with batch processing,
+GPU acceleration, and smart segment merging.
+Inherits from FastCodecEvaluationPipeline for optimized batch processing.
 """
 
 import os
@@ -15,77 +16,86 @@ from pathlib import Path
 from tqdm import tqdm
 from datetime import datetime
 import shutil
+from typing import Tuple, Optional
+import time
+import multiprocessing as mp
 
-from enhanced_evaluation_pipeline import EnhancedCodecEvaluationPipeline
-from segment_utils import (
+from fast_evaluation_pipeline import FastCodecEvaluationPipeline
+from metrics_evaluator import AudioMetricsEvaluator
+from utils.split.segment_utils import (
     find_segment_files,
     merge_audio_segments,
     validate_segment_integrity
 )
 
 
-class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
-    """Evaluation pipeline for segmented audio files with smart merge"""
+class SegmentedEvaluationPipeline(FastCodecEvaluationPipeline):
+    """Evaluation pipeline for segmented audio files with fast batch processing"""
     
     def __init__(self,
                  segment_csv_file: str,
                  segment_length: float,
                  split_output_dir: str = None,
                  keep_merged_files: bool = True,
+                 num_workers: int = 8,
+                 asr_batch_size: int = 16,
                  **kwargs):
         """
         Initialize segmented evaluation pipeline.
         
         Args:
-            segment_csv_file: CSV file with segment metadata (e.g., xxx_1.0s.csv)
+            segment_csv_file: CSV file with segment metadata
             segment_length: Segment length in seconds
-            split_output_dir: Directory where split segments are stored (auto-detected from metadata if not provided)
-            keep_merged_files: Whether to keep merged files for debugging
-            **kwargs: All other arguments for EnhancedCodecEvaluationPipeline
+            split_output_dir: Directory with split segments (auto-detected if None)
+            keep_merged_files: Whether to keep merged files
+            num_workers: Number of CPU workers for PESQ/STOI
+            asr_batch_size: Batch size for ASR processing
+            **kwargs: Arguments for FastCodecEvaluationPipeline
         """
         
-        # Remove csv_file from kwargs if present to avoid duplicate
         kwargs.pop('csv_file', None)
-        
-        # Initialize parent class with segment CSV
-        super().__init__(csv_file=segment_csv_file, **kwargs)
+        super().__init__(
+            csv_file=segment_csv_file,
+            num_workers=num_workers,
+            asr_batch_size=asr_batch_size,
+            **kwargs
+        )
         
         self.segment_length = segment_length
         self.segment_str = f"{segment_length:.1f}s"
         self.keep_merged_files = keep_merged_files
         
-        # Try to load split_output_dir from metadata file if not provided
+        # Load split directory from metadata if not provided
         if split_output_dir is None:
             split_output_dir = self.load_split_output_dir_from_metadata()
         
-        # Set split output directory
         if split_output_dir:
             self.split_output_dir = Path(split_output_dir)
         else:
-            # Fallback: use original_dir
             self.split_output_dir = self.original_dir if self.original_dir else None
         
-        # Directory for merged files - under inference_dir/merged
+        # Directory for merged files
         self.merged_dir = self.inference_dir / "merged"
         self.merged_dir.mkdir(parents=True, exist_ok=True)
         
-        # Override audio and config directories to include segment length
-        # This prevents mixing with non-segmented evaluations
+        # Override directories to include segment length
+        self.result_dir = self.project_dir / f"result_{self.segment_str}"
         self.audio_dir = self.project_dir / f"audio_{self.segment_str}"
         self.config_dir = self.project_dir / f"configs_{self.segment_str}"
+        self.result_dir.mkdir(parents=True, exist_ok=True)
         self.audio_dir.mkdir(parents=True, exist_ok=True)
         self.config_dir.mkdir(parents=True, exist_ok=True)
         
-        print(f"Segmented evaluation initialized with smart merge:")
+        print(f"\nSegmented evaluation initialized:")
         print(f"  Segment length: {self.segment_str}")
-        print(f"  Split output directory: {self.split_output_dir}")
+        print(f"  Split directory: {self.split_output_dir}")
         print(f"  Keep merged files: {self.keep_merged_files}")
-        print(f"  Merged files directory: {self.merged_dir}")
-        print(f"  Audio output directory: {self.audio_dir}")
-        print(f"  Config output directory: {self.config_dir}")
-        print(f"  Smart overlap handling: enabled")
+        print(f"  Merged directory: {self.merged_dir}")
+        print(f"  Result output: {self.result_dir}")
+        print(f"  Audio output: {self.audio_dir}")
+        print(f"  Config output: {self.config_dir}")
     
-    def load_split_output_dir_from_metadata(self) -> str:
+    def load_split_output_dir_from_metadata(self) -> Optional[str]:
         """Load split_output_dir from metadata file"""
         metadata_file = self.csv_file.with_suffix('.metadata.txt')
         
@@ -105,17 +115,8 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         return None
     
     def resolve_segment_path(self, csv_path: str) -> Path:
-        """
-        Resolve full path to segment file.
-        
-        Args:
-            csv_path: Path from CSV (relative to split_output_dir)
-            
-        Returns:
-            Full path to segment file
-        """
+        """Resolve full path to segment file"""
         if self.split_output_dir is None:
-            # Fallback to original behavior
             clean_path = csv_path.lstrip('./')
             return self.original_dir / clean_path if self.original_dir else Path(csv_path)
         
@@ -129,7 +130,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             print(f"Successfully loaded segment CSV: {self.csv_file}")
             print(f"Total segments: {len(df)}")
             
-            # Verify CSV has required columns for smart merge
+            # Verify required columns
             required_cols = ['start_time', 'end_time', 'overlap_with_previous', 'use_duration_for_merge']
             missing_cols = [col for col in required_cols if col not in df.columns]
             if missing_cols:
@@ -141,7 +142,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             grouped = df.groupby('original_file_name')
             print(f"Unique original files: {len(grouped)}")
             
-            # Count files with overlapping segments
+            # Count overlapping segments
             overlapping_files = df[df['overlap_with_previous'] > 0]['original_file_name'].nunique()
             if overlapping_files > 0:
                 print(f"Files with overlapping segments: {overlapping_files}")
@@ -152,7 +153,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             else:
                 self.base_dataset_name = 'LibriSpeech'
             
-            # Set dataset name based on type
+            # Set dataset name
             if self.dataset_type == "clean":
                 self.dataset_name = self.base_dataset_name
             elif self.dataset_type == "noise":
@@ -160,16 +161,15 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             elif self.dataset_type == "blank":
                 self.dataset_name = f"{self.base_dataset_name}_Blank"
             
-            # Update result CSV path to include segment length
+            # Update result CSV path
             dataset_suffix = self.base_dataset_name.lower()
             self.result_csv_path = (
                 self.result_dir / 
-                f"detailed_results_{self.model_name}_{self.segment_str}_{self.dataset_type}_{dataset_suffix}.csv"
+                f"detailed_results_{self.model_name}_{self.segment_str}_{self.frequency}_{self.bit_rate}_{self.dataset_type}_{dataset_suffix}.csv"
             )
             
             print(f"Dataset: {self.dataset_name}")
             print(f"Result CSV: {self.result_csv_path}")
-            print(f"Metrics to compute: {', '.join(self.metrics_to_compute)}")
                 
             return df, grouped
             
@@ -179,256 +179,328 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
     
     def find_and_merge_segments(self,
                                 original_file_name: str,
-                                segment_df: pd.DataFrame) -> tuple:
+                                segment_df: pd.DataFrame) -> Tuple[Optional[Path], Optional[Path], bool]:
         """
         Find and merge all segments for an original file with smart overlap handling.
         
         Returns:
             (merged_original_path, merged_inference_path, success)
         """
-        
-        base_name = Path(original_file_name).stem
-        
-        # Get segment information from DataFrame
-        file_segments = segment_df[
-            segment_df['original_file_name'] == original_file_name
-        ].sort_values('segment_index')
-        
-        if len(file_segments) == 0:
-            print(f"No segments found for {original_file_name}")
+        try:
+            # Sort segments by segment_index
+            segment_df = segment_df.sort_values('segment_index').reset_index(drop=True)
+            
+            # Find all segment files
+            original_segments = []
+            inference_segments = []
+            overlap_info = []
+            
+            for idx, row in segment_df.iterrows():
+                try:
+                    # Get segment path
+                    segment_path = self.resolve_segment_path(row['segment_file_path'])
+                    
+                    if not segment_path.exists():
+                        print(f"Warning: Original segment not found: {segment_path}")
+                        return None, None, False
+                    
+                    # Find inference segment - use segment_file_name (not file_name)
+                    segment_file_name = row['segment_file_name']
+                    # Remove extension to get base name
+                    base_name = Path(segment_file_name).stem
+                    inference_segment_path = self.find_inference_audio(base_name)
+                    
+                    if not inference_segment_path or not inference_segment_path.exists():
+                        print(f"Warning: Inference segment not found: {base_name}")
+                        print(f"  Looking in: {self.inference_dir}")
+                        print(f"  Segment file name: {segment_file_name}")
+                        return None, None, False
+                    
+                    # Append to lists
+                    original_segments.append(str(segment_path))
+                    inference_segments.append(str(inference_segment_path))
+                    overlap_info.append({
+                        'overlap_with_previous': row.get('overlap_with_previous', 0.0),
+                        'use_duration_for_merge': row.get('use_duration_for_merge', row['end_time'] - row['start_time'])
+                    })
+                    
+                except KeyError as ke:
+                    print(f"Error: Missing required column in segment CSV: {ke}")
+                    print(f"Available columns: {list(row.index)}")
+                    print(f"Row data: {row.to_dict()}")
+                    return None, None, False
+                except Exception as e:
+                    print(f"Error processing segment {idx} for {original_file_name}: {e}")
+                    import traceback
+                    traceback.print_exc()
+                    return None, None, False
+            
+            # Check if we have any segments
+            if len(original_segments) == 0:
+                print(f"Error: No segments found for {original_file_name}")
+                return None, None, False
+            
+            # Validate segment integrity
+            is_valid, error_msg = validate_segment_integrity(original_segments, inference_segments)
+            if not is_valid:
+                print(f"Warning: Segment integrity check failed for {original_file_name}: {error_msg}")
+                return None, None, False
+            
+            # Merge segments
+            base_name = Path(original_file_name).stem
+            merged_original_path = self.merged_dir / f"{base_name}_original_merged.wav"
+            merged_inference_path = self.merged_dir / f"{base_name}_inference_merged.wav"
+            
+            # Merge original segments
+            merge_success = merge_audio_segments(
+                original_segments,      # segment_paths: List[str]
+                overlap_info,           # segment_info: List[Dict]
+                str(merged_original_path)  # output_path: str
+            )
+            
+            if not merge_success:
+                print(f"Error: Failed to merge original segments for {original_file_name}")
+                return None, None, False
+            
+            # Merge inference segments
+            merge_success = merge_audio_segments(
+                inference_segments,     # segment_paths: List[str]
+                overlap_info,           # segment_info: List[Dict]
+                str(merged_inference_path)  # output_path: str
+            )
+            
+            if not merge_success:
+                print(f"Error: Failed to merge inference segments for {original_file_name}")
+                if merged_original_path.exists():
+                    merged_original_path.unlink()
+                return None, None, False
+            
+            return merged_original_path, merged_inference_path, True
+            
+        except Exception as e:
+            print(f"Error merging segments for {original_file_name}: {e}")
+            import traceback
+            traceback.print_exc()
             return None, None, False
-        
-        # Paths for merged files
-        merged_original_path = self.merged_dir / "original" / f"{base_name}_merged.wav"
-        merged_inference_path = self.merged_dir / "inference" / f"{base_name}_merged_inference.wav"
-        
-        merged_original_path.parent.mkdir(parents=True, exist_ok=True)
-        merged_inference_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Find inference segments in inference directory
-        inference_segment_dir = self.inference_dir / self.segment_str
-        
-        if not inference_segment_dir.exists():
-            # Try without segment subfolder
-            inference_segment_dir = self.inference_dir
-        
-        inference_segments = find_segment_files(
-            base_name=base_name,
-            search_dir=str(inference_segment_dir),
-            suffix="_inference",
-            extension="wav"
-        )
-        
-        # Find original segments using the split_output_dir
-        original_segments = []
-        for _, seg_row in file_segments.iterrows():
-            seg_path = self.resolve_segment_path(seg_row['segment_file_path'])
-            if seg_path.exists():
-                original_segments.append(str(seg_path))
-            else:
-                print(f"  Warning: Segment not found: {seg_path}")
-        
-        # Validate segments
-        is_valid, error_msg = validate_segment_integrity(original_segments, inference_segments)
-        
-        if not is_valid:
-            print(f"  Validation failed for {original_file_name}: {error_msg}")
-            return None, None, False
-        
-        # Prepare segment info for smart merging
-        segment_info = []
-        for _, seg_row in file_segments.iterrows():
-            info = {
-                'segment_path': '',  # Will be filled during merge
-                'segment_index': int(seg_row['segment_index']),
-                'segment_duration': seg_row['segment_duration'],
-                'start_time': seg_row['start_time'],
-                'end_time': seg_row['end_time'],
-                'overlap_with_previous': seg_row['overlap_with_previous'],
-                'use_duration_for_merge': seg_row['use_duration_for_merge']
-            }
-            segment_info.append(info)
-        
-        # Merge original segments with smart overlap handling
-        success_original = merge_audio_segments(
-            segment_paths=original_segments,
-            segment_info=segment_info,
-            output_path=str(merged_original_path),
-            sample_rate=16000
-        )
-        
-        if not success_original:
-            print(f"  Failed to merge original segments for {original_file_name}")
-            return None, None, False
-        
-        # Merge inference segments with smart overlap handling
-        success_inference = merge_audio_segments(
-            segment_paths=inference_segments,
-            segment_info=segment_info,
-            output_path=str(merged_inference_path),
-            sample_rate=16000
-        )
-        
-        if not success_inference:
-            print(f"  Failed to merge inference segments for {original_file_name}")
-            return None, None, False
-        
-        return merged_original_path, merged_inference_path, True
     
-    def cleanup_merged_files(self):
-        """Clean up merged files if not keeping them"""
-        if not self.keep_merged_files and self.merged_dir.exists():
-            try:
-                shutil.rmtree(self.merged_dir)
-                print(f"Cleaned up merged files directory: {self.merged_dir}")
-            except Exception as e:
-                print(f"Warning: Could not clean up merged files: {e}")
-    
-    def run_evaluation(self):
-        """Run evaluation on segmented audio files"""
+    def run_evaluation(self) -> pd.DataFrame:
+        """Run complete evaluation pipeline for segmented audio with fast batch processing"""
+        print("\n" + "=" * 60)
+        print("Starting Segmented Audio Codec Evaluation (Fast Batch)")
+        print("=" * 60 + "\n")
         
-        self.start_time = datetime.now().timestamp()
+        self.start_time = time.time()
         
-        print("=" * 70)
-        print("STARTING SEGMENTED AUDIO EVALUATION (SMART MERGE)")
-        print("=" * 70)
-        
-        # Load segment CSV and group by original file
-        segment_df, grouped = self.load_csv_data()
-        
-        # Load existing results if any
-        existing_results = self.load_existing_results()
+        # Load segment data
+        df, grouped = self.load_csv_data()
         
         # Initialize evaluator
-        from metrics_evaluator import AudioMetricsEvaluator
         evaluator = AudioMetricsEvaluator(
             language=self.language,
             use_gpu=self.use_gpu,
             gpu_id=self.gpu_id
         )
         
+        # Load models if needed
         need_asr = ('dcer' in self.metrics_to_compute) or ('dwer' in self.metrics_to_compute)
         need_utmos = 'utmos' in self.metrics_to_compute
         
         if need_asr or need_utmos:
             evaluator.load_models()
         
-        # Create empty results DataFrame
-        if existing_results is None:
-            results_df = self.create_empty_result_dataframe_for_segments(grouped)
-        else:
-            results_df = existing_results.copy()
-        
-        new_results = []
-        processed_count = 0
-        skipped_count = 0
+        # Build task list: merge all segments first
+        print("\n" + "=" * 60)
+        print("Phase 1: Merging Segments")
+        print("=" * 60)
+        tasks = []
         failed_count = 0
         
-        print(f"\nEvaluating {len(grouped)} original files...")
-        print(f"Computing metrics: {', '.join(self.metrics_to_compute)}")
-        
-        evaluation_start = datetime.now().timestamp()
-        
-        # Process each original file
-        for original_file_name, file_segments in tqdm(grouped, desc="Evaluation Progress"):
-            
-            # Get ground truth from first segment (same for all segments)
+        for original_file_name, file_segments in tqdm(grouped, desc="Merging segments"):
             ground_truth = file_segments.iloc[0]['transcription']
             
-            # Check if already processed
-            should_process = True
-            skip_reason = ""
-            
-            if existing_results is not None:
-                existing_row = existing_results[
-                    existing_results['file_name'] == original_file_name
-                ]
-                if not existing_row.empty:
-                    should_process, skip_reason = self.should_process_file(
-                        existing_row.iloc[0],
-                        original_file_name
-                    )
-            
-            if not should_process:
-                skipped_count += 1
-                if skipped_count <= 5:
-                    print(f"  Skipping {original_file_name}: {skip_reason}")
-                continue
-            
-            # Find and merge segments with smart overlap handling
-            merged_original, merged_inference, success = self.find_and_merge_segments(
-                original_file_name, file_segments
+            # Merge segments
+            merged_original, merged_inference, merge_success = self.find_and_merge_segments(
+                original_file_name,
+                file_segments
             )
             
-            if not success:
+            if not merge_success:
                 failed_count += 1
-                if failed_count <= 5:
-                    print(f"  Failed to merge segments: {original_file_name}")
                 continue
             
-            try:
-                # Evaluate merged files
-                metrics_result = self.evaluate_metrics_selectively(
-                    evaluator,
-                    str(merged_original),
-                    str(merged_inference),
-                    ground_truth
+            tasks.append({
+                'file_name': original_file_name,
+                'ground_truth': ground_truth,
+                'original_path': str(merged_original),
+                'inference_path': str(merged_inference),
+                'num_segments': len(file_segments)
+            })
+        
+        print(f"\nSuccessfully merged {len(tasks)} original files from segments")
+        print(f"Failed to merge: {failed_count} files")
+        
+        if not tasks:
+            print("No valid tasks found. Exiting.")
+            return None
+        
+        # Build results dictionary
+        results_dict = {t['file_name']: t.copy() for t in tasks}
+        
+        # --- Phase 2: Batch Evaluation (同 FastCodecEvaluationPipeline) ---
+        print("\n" + "=" * 60)
+        print("Phase 2: Batch Metric Calculation")
+        print("=" * 60)
+        
+        # 2a. PESQ/STOI (CPU parallel)
+        if 'pesq' in self.metrics_to_compute or 'stoi' in self.metrics_to_compute:
+            print(f"\nStarting PESQ/STOI calculation with {self.num_workers} workers...")
+            pesq_stoi_tasks = [(t['original_path'], t['inference_path']) for t in tasks]
+            
+            step_start = time.time()
+            pesq_results, stoi_results = evaluator.calculate_pesq_stoi_batch(
+                pesq_stoi_tasks, 
+                num_workers=self.num_workers
+            )
+            print(f"PESQ/STOI batch calculation finished in {time.time() - step_start:.2f} seconds")
+            
+            for i, task in enumerate(tasks):
+                file_name = task['file_name']
+                if 'pesq' in self.metrics_to_compute:
+                    results_dict[file_name]['pesq'] = pesq_results[i]
+                if 'stoi' in self.metrics_to_compute:
+                    results_dict[file_name]['stoi'] = stoi_results[i]
+        
+        # 2b. ASR (dWER/dCER) (GPU batch)
+        if need_asr:
+            print(f"\nStarting ASR batch transcription (Batch Size: {self.asr_batch_size})...")
+            step_start = time.time()
+            
+            # Collect all unique audio paths
+            original_paths = sorted(list(set([t['original_path'] for t in tasks])))
+            inference_paths = sorted(list(set([t['inference_path'] for t in tasks])))
+            
+            # Batch transcription
+            orig_transcripts_map = self._batch_transcribe_fast(
+                evaluator, original_paths, "Transcribing Original Audio"
+            )
+            inf_transcripts_map = self._batch_transcribe_fast(
+                evaluator, inference_paths, "Transcribing Inference Audio"
+            )
+            
+            print(f"ASR batch transcription finished in {time.time() - step_start:.2f} seconds")
+            
+            # Calculate dWER/dCER
+            print("Calculating dWER/dCER metrics...")
+            for task in tqdm(tasks, desc="Calculating ASR Metrics"):
+                file_name = task['file_name']
+                
+                original_transcript = orig_transcripts_map.get(task['original_path'], "")
+                inference_transcript = inf_transcripts_map.get(task['inference_path'], "")
+                ground_truth = task['ground_truth']
+                
+                results_dict[file_name]['original_transcript_raw'] = original_transcript
+                results_dict[file_name]['inference_transcript_raw'] = inference_transcript
+                
+                # Text normalization
+                if self.language == 'zh':
+                    original_transcript_simplified = evaluator.convert_traditional_to_simplified(original_transcript)
+                    inference_transcript_simplified = evaluator.convert_traditional_to_simplified(inference_transcript)
+                    ground_truth_simplified = evaluator.convert_traditional_to_simplified(ground_truth)
+                else:
+                    original_transcript_simplified = original_transcript
+                    inference_transcript_simplified = inference_transcript
+                    ground_truth_simplified = ground_truth
+                
+                ground_truth_norm = evaluator.normalize_text(ground_truth_simplified)
+                original_norm = evaluator.normalize_text(original_transcript_simplified)
+                inference_norm = evaluator.normalize_text(inference_transcript_simplified)
+                
+                results_dict[file_name]['original_transcript'] = original_norm
+                results_dict[file_name]['inference_transcript'] = inference_norm
+                
+                if self.language == 'zh' and 'dcer' in self.metrics_to_compute:
+                    original_cer = evaluator.fast_cer(ground_truth_norm, original_norm)
+                    inference_cer = evaluator.fast_cer(ground_truth_norm, inference_norm)
+                    results_dict[file_name]['original_cer'] = original_cer
+                    results_dict[file_name]['inference_cer'] = inference_cer
+                    results_dict[file_name]['dcer'] = inference_cer - original_cer
+                    
+                elif self.language == 'en' and 'dwer' in self.metrics_to_compute:
+                    original_wer = evaluator.fast_wer(ground_truth_norm, original_norm)
+                    inference_wer = evaluator.fast_wer(ground_truth_norm, inference_norm)
+                    results_dict[file_name]['original_wer'] = original_wer
+                    results_dict[file_name]['inference_wer'] = inference_wer
+                    results_dict[file_name]['dwer'] = inference_wer - original_wer
+            print("dWER/dCER calculation complete.")
+        
+        # 2c. UTMOS (GPU sequential)
+        if 'utmos' in self.metrics_to_compute:
+            print("\nStarting UTMOS calculation...")
+            step_start = time.time()
+            for task in tqdm(tasks, desc="Calculating UTMOS"):
+                score = evaluator.calculate_utmos(task['inference_path'])
+                results_dict[task['file_name']]['utmos'] = score
+            print(f"UTMOS calculation finished in {time.time() - step_start:.2f} seconds")
+        
+        # 2d. Speaker Similarity (GPU sequential)
+        if 'speaker_similarity' in self.metrics_to_compute:
+            print("\nStarting Speaker Similarity calculation...")
+            step_start = time.time()
+            for task in tqdm(tasks, desc="Calculating Speaker Similarity"):
+                score = evaluator.calculate_speaker_similarity(
+                    task['original_path'], 
+                    task['inference_path']
                 )
-                
-                if metrics_result:
-                    result_data = {
-                        'file_name': original_file_name,
-                        'segment_length': self.segment_str,
-                        'num_segments': len(file_segments)
-                    }
-                    result_data.update(metrics_result)
-                    new_results.append(result_data)
-                    processed_count += 1
-                
-            except Exception as e:
-                print(f"Error evaluating {original_file_name}: {e}")
-                failed_count += 1
-                continue
+                results_dict[task['file_name']]['speaker_similarity'] = score
+            print(f"Speaker Similarity calculation finished in {time.time() - step_start:.2f} seconds")
         
-        evaluation_time = datetime.now().timestamp() - evaluation_start
+        # --- Phase 3: Convert results to DataFrame ---
+        print("\n" + "=" * 60)
+        print("Phase 3: Saving Results")
+        print("=" * 60)
         
-        print(f"\nEvaluation completed in: {evaluation_time:.2f} seconds")
-        print(f"Processed: {processed_count} files")
-        print(f"Skipped: {skipped_count} files (metrics already exist)")
-        print(f"Failed: {failed_count} files")
+        results_list = []
+        for file_name, result in results_dict.items():
+            result['segment_length'] = self.segment_str
+            results_list.append(result)
         
-        # Merge results
-        if new_results:
-            results_df = self.merge_results(existing_results, new_results)
+        results_df = pd.DataFrame(results_list)
         
         # Save results
         self.save_results(results_df)
         
         # Generate config and copy files
-        if processed_count > 0 or len(results_df) > 0:
+        if len(results_df) > 0:
             self.generate_config_and_copy_files(results_df)
         
-        # Cleanup if requested
+        # Cleanup merged files if not keeping them
         if not self.keep_merged_files:
-            self.cleanup_merged_files()
+            print("\nCleaning up merged files...")
+            for task in tasks:
+                merged_original = Path(task['original_path'])
+                merged_inference = Path(task['inference_path'])
+                if merged_original.exists():
+                    merged_original.unlink()
+                if merged_inference.exists():
+                    merged_inference.unlink()
         
-        self.end_time = datetime.now().timestamp()
+        # Cleanup GPU memory
+        evaluator.cleanup_gpu_memory()
+        
+        self.end_time = time.time()
         total_time = self.end_time - self.start_time
         
-        print("\n" + "="*70)
-        print("SEGMENTED EVALUATION COMPLETED!")
-        print("="*70)
-        print(f"Total execution time: {total_time:.2f} seconds ({total_time/60:.1f} minutes)")
-        if processed_count > 0:
-            print(f"Average per file: {evaluation_time/processed_count:.2f} seconds")
-        print(f"Processed: {processed_count} files")
-        print(f"Skipped: {skipped_count} files")
-        print(f"Failed: {failed_count} files")
+        print("\n" + "=" * 60)
+        print("Segmented Evaluation Completed!")
+        print("=" * 60)
+        print(f"Total time: {total_time:.2f}s ({total_time/60:.1f}min)")
+        print(f"Processed: {len(tasks)} files")
+        print(f"Failed to merge: {failed_count} files")
         print(f"Result file: {self.result_csv_path}")
-        print(f"Audio files copied to: {self.audio_dir}")
-        print(f"Config files saved to: {self.config_dir}")
+        print(f"Audio files: {self.audio_dir}")
+        print(f"Config files: {self.config_dir}")
         if self.keep_merged_files:
-            print(f"Merged files saved in: {self.merged_dir}")
+            print(f"Merged files: {self.merged_dir}")
         
         return results_df
     
@@ -440,7 +512,7 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             'original_path', 'inference_path', 'ground_truth',
             'original_transcript_raw', 'inference_transcript_raw',
             'original_transcript', 'inference_transcript',
-            'utmos', 'pesq', 'stoi'
+            'utmos', 'pesq', 'stoi', 'speaker_similarity'
         ]
         
         if 'dwer' in self.metrics_to_compute:
@@ -453,19 +525,19 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         for col in columns:
             result_df[col] = np.nan
         
-        # Fill in file names
-        original_file_names = [name for name, _ in grouped]
-        result_df['file_name'] = original_file_names
-        
-        # Fill in ground truth from first segment of each group
+        # Fill in file names and ground truth
+        original_file_names = []
         ground_truths = []
-        for name, file_segments in grouped:
-            ground_truths.append(file_segments.iloc[0]['transcription'])
-        result_df['ground_truth'] = ground_truths
+        num_segments = []
         
-        # Fill in segment info
+        for name, file_segments in grouped:
+            original_file_names.append(name)
+            ground_truths.append(file_segments.iloc[0]['transcription'])
+            num_segments.append(len(file_segments))
+        
+        result_df['file_name'] = original_file_names
+        result_df['ground_truth'] = ground_truths
         result_df['segment_length'] = self.segment_str
-        num_segments = [len(file_segments) for _, file_segments in grouped]
         result_df['num_segments'] = num_segments
         
         return result_df
@@ -473,16 +545,16 @@ class SegmentedEvaluationPipeline(EnhancedCodecEvaluationPipeline):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Segmented Audio Codec Evaluation Pipeline with Smart Merge",
+        description="Segmented Audio Codec Evaluation Pipeline (Optimized)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Evaluate with custom split directory
+  # With custom split directory
   python segmented_evaluation_pipeline.py \\
-      --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon \\
-      --segment_csv_file librispeech_test_clean_filtered_1.0s.csv \\
+      --inference_dir /path/to/inference \\
+      --segment_csv_file librispeech_test_1.0s.csv \\
       --segment_length 1.0 \\
-      --split_output_dir /mnt/Internal/jieshiang/Split_Result \\
+      --split_output_dir /path/to/split \\
       --model_name "LSCodec" \\
       --frequency "50Hz" \\
       --causality "Non-Causal" \\
@@ -490,10 +562,10 @@ Examples:
       --metrics dwer utmos pesq stoi \\
       --use_gpu --gpu_id 0
   
-  # Auto-detect split directory from metadata
+  # Auto-detect split directory
   python segmented_evaluation_pipeline.py \\
-      --inference_dir /mnt/Internal/jieshiang/Inference_Result/LSCodec/50Hz/librispeech_recon \\
-      --segment_csv_file librispeech_test_clean_filtered_1.0s.csv \\
+      --inference_dir /path/to/inference \\
+      --segment_csv_file librispeech_test_1.0s.csv \\
       --segment_length 1.0 \\
       --model_name "LSCodec" \\
       --frequency "50Hz" \\
@@ -506,13 +578,13 @@ Examples:
     
     # Segment-specific arguments
     parser.add_argument("--segment_csv_file", required=True, type=str,
-                       help="Segment CSV filename (e.g., xxx_1.0s.csv in ./csv/ directory)")
+                       help="Segment CSV filename (in ./csv/ directory)")
     parser.add_argument("--segment_length", required=True, type=float,
-                       help="Segment length in seconds (must match CSV)")
+                       help="Segment length in seconds")
     parser.add_argument("--split_output_dir", type=str, default=None,
-                       help="Directory where split segments are stored (auto-detected if not provided)")
+                       help="Directory with split segments (auto-detected if not provided)")
     parser.add_argument("--keep_merged_files", action="store_true",
-                       help="Keep merged audio files for debugging (default: True)")
+                       help="Keep merged audio files")
     parser.add_argument("--no_keep_merged_files", action="store_true",
                        help="Delete merged audio files after evaluation")
     
@@ -520,7 +592,7 @@ Examples:
     parser.add_argument("--inference_dir", required=True, type=str,
                        help="Directory containing inference audio segments")
     parser.add_argument("--model_name", required=True, type=str,
-                       help="Name of codec model")
+                       help="Codec model name")
     parser.add_argument("--frequency", required=True, type=str,
                        help="Frame rate (e.g., 50Hz)")
     parser.add_argument("--causality", required=True, type=str,
@@ -531,10 +603,10 @@ Examples:
     
     parser.add_argument("--dataset_type", type=str,
                        choices=["clean", "noise", "blank"], default="clean",
-                       help="Dataset type (clean/noise/blank)")
+                       help="Dataset type")
     parser.add_argument("--project_dir", type=str,
                        default="/home/jieshiang/Desktop/GitHub/Codec_comparison",
-                       help="Project root directory path")
+                       help="Project root directory")
     parser.add_argument("--quantizers", type=str, default="4",
                        help="Number of quantizers")
     parser.add_argument("--codebook_size", type=str, default="1024",
@@ -542,13 +614,13 @@ Examples:
     parser.add_argument("--n_params", type=str, default="45M",
                        help="Number of model parameters")
     parser.add_argument("--training_set", type=str, default="Custom Dataset",
-                       help="Training dataset description")
+                       help="Training dataset")
     parser.add_argument("--testing_set", type=str, default="Custom Test Set",
-                       help="Testing dataset description")
+                       help="Testing dataset")
     
     parser.add_argument("--metrics", type=str, nargs='+',
-                       choices=["dwer", "dcer", "utmos", "pesq", "stoi"],
-                       default=["dwer", "dcer", "utmos", "pesq", "stoi"],
+                       choices=["dwer", "dcer", "utmos", "pesq", "stoi", "speaker_similarity"],
+                       default=["dwer", "dcer", "utmos", "pesq", "stoi", "speaker_similarity"],
                        help="Metrics to compute")
     
     parser.add_argument("--use_gpu", action="store_true", default=True,
@@ -558,9 +630,15 @@ Examples:
     parser.add_argument("--cpu_only", action="store_true",
                        help="Force CPU-only computation")
     parser.add_argument("--original_dir", type=str,
-                       help="Root directory path for original audio files")
+                       help="Root directory for original audio files")
     parser.add_argument("--language", type=str, choices=["en", "zh"],
-                       help="Language for ASR evaluation (auto-detected if not specified)")
+                       help="Language for ASR (auto-detected if not specified)")
+    
+    # Batch processing arguments
+    parser.add_argument("--num_workers", type=int, default=8,
+                       help="Number of CPU workers for PESQ/STOI calculation")
+    parser.add_argument("--asr_batch_size", type=int, default=16,
+                       help="Batch size for ASR transcription")
     
     args = parser.parse_args()
     
@@ -572,6 +650,8 @@ Examples:
         segment_length=args.segment_length,
         split_output_dir=args.split_output_dir,
         keep_merged_files=keep_merged,
+        num_workers=args.num_workers,
+        asr_batch_size=args.asr_batch_size,
         inference_dir=args.inference_dir,
         model_name=args.model_name,
         frequency=args.frequency,

@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec-S",
+    "causality": "Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.80",
+    "parameters": {
+      "frameRate": "50_65k",
+      "quantizers": "1",
+      "codebookSize": "65536",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "UTMOS": "2.9",
+      "PESQ": "1.2",
+      "STOI": "0.72",
+      "Speaker_Sim": "0.62",
+      "dWER": "0.06"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0003",
+      "Transcription": "HE WAS LIKE UNTO MY FATHER IN A WAY AND YET WAS NOT MY FATHER",
+      "Origin": "he was like unto my father in a way and yet was not my father",
+      "Inference": "he was perfect to my father in a way and yet was not my father",
+      "UTMOS": "2.9",
+      "PESQ": "1.0",
+      "STOI": "0.76",
+      "Speaker_Sim": "0.60",
+      "dWER": "0.13"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0003",
+      "Transcription": "HAY FEVER A HEART TROUBLE CAUSED BY FALLING IN LOVE WITH A GRASS WIDOW",
+      "Origin": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "Inference": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "UTMOS": "2.6",
+      "PESQ": "1.2",
+      "STOI": "0.78",
+      "Speaker_Sim": "0.59",
+      "dWER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0001",
+      "Transcription": "EVERY CHANCE SHE COULD STEAL AFTER PRACTICE HOURS WERE OVER AND AFTER THE CLAMOROUS DEMANDS OF THE BOYS UPON HER TIME WERE FULLY SATISFIED WAS SEIZED TO FLY ON THE WINGS OF THE WIND TO THE FLOWERS",
+      "Origin": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "Inference": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "UTMOS": "3.2",
+      "PESQ": "1.2",
+      "STOI": "0.78",
+      "Speaker_Sim": "0.68",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "2.8",
+      "PESQ": "1.1",
+      "STOI": "0.65",
+      "Speaker_Sim": "0.40",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0003",
+      "Transcription": "BUT THIS WAS WHAT THE TREE COULD NOT BEAR TO HEAR",
+      "Origin": "but this was what the tree could not bear to hear",
+      "Inference": "but this was what the tree could not bear to hear",
+      "UTMOS": "3.0",
+      "PESQ": "1.2",
+      "STOI": "0.77",
+      "Speaker_Sim": "0.68",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "7176-92135-0039",
+      "Transcription": "TEA PLEASE MATTHEWS BUTLER IMPASSIVELY",
+      "Origin": "tea please matthews butcher impassively",
+      "Inference": "please matthews ill call her i pass the blue",
+      "UTMOS": "2.3",
+      "PESQ": "1.1",
+      "STOI": "0.60",
+      "Speaker_Sim": "0.60",
+      "dWER": "1.40"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "UTMOS": "2.2",
+      "PESQ": "1.2",
+      "STOI": "0.60",
+      "Speaker_Sim": "0.53",
+      "dCER": "0.62"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_19485265",
+      "Transcription": "大家都以为自己才是对的",
+      "Origin": "大家都以为自己才是对的",
+      "Inference": "家里人都以为自己才是对的",
+      "UTMOS": "1.7",
+      "PESQ": "1.1",
+      "STOI": "0.71",
+      "Speaker_Sim": "0.38",
+      "dCER": "0.27"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_19485305",
+      "Transcription": "坚持理念，逐渐站稳脚步",
+      "Origin": "坚持理念逐渐站稳脚步",
+      "Inference": "这十几年人逐渐站稳小部分了",
+      "UTMOS": "2.0",
+      "PESQ": "1.1",
+      "STOI": "0.65",
+      "Speaker_Sim": "0.44",
+      "dCER": "0.90"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_19485275",
+      "Transcription": "更蕴含极高的商业价值",
+      "Origin": "更蕴含极高的商业价值",
+      "Inference": "跟人家一起倒得算了",
+      "UTMOS": "2.6",
+      "PESQ": "1.1",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.52",
+      "dCER": "1.00"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_19485323",
+      "Transcription": "看到很废的文章的时候",
+      "Origin": "看到很废的文章的时候",
+      "Inference": "看到很配的稳妆的时候",
+      "UTMOS": "1.9",
+      "PESQ": "1.1",
+      "STOI": "0.69",
+      "Speaker_Sim": "0.45",
+      "dCER": "0.30"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_19485322",
+      "Transcription": "指定建筑线之现有巷道",
+      "Origin": "指定建筑线之线有相当",
+      "Inference": "时间建筑线是线有向的",
+      "UTMOS": "2.8",
+      "PESQ": "1.1",
+      "STOI": "0.63",
+      "Speaker_Sim": "0.71",
+      "dCER": "0.30"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_18882634",
+      "Transcription": "有责任先决定目标",
+      "Origin": "有责任先决定目标",
+      "Inference": "你有任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任何任",
+      "UTMOS": "1.6",
+      "PESQ": "1.1",
+      "STOI": "0.52",
+      "Speaker_Sim": "0.55",
+      "dCER": "55.38"
+    }
+  }
+}

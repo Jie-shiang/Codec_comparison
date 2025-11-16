@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.16",
+    "parameters": {
+      "frameRate": "12.5",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.9",
+      "PESQ": "1.1",
+      "STOI": "0.73",
+      "Speaker_Sim": "0.40",
+      "dWER": "0.11"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the lizard who had vanished behind the curtain on the left",
+      "UTMOS": "3.7",
+      "PESQ": "1.1",
+      "STOI": "0.74",
+      "Speaker_Sim": "0.37",
+      "dWER": "0.06"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular contrivance whereby lovemaking be suspended but not stopped during the picnic season",
+      "UTMOS": "3.5",
+      "PESQ": "1.1",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.48",
+      "dWER": "0.06"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would stay comforted and soothed among the lovely plants at ixodix rejoicing on the height of old turner the gardener whose pollys first rapturous entrance had taken her into his good graces for all time",
+      "UTMOS": "4.0",
+      "PESQ": "1.1",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.53",
+      "dWER": "0.18"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "4.1",
+      "PESQ": "1.1",
+      "STOI": "0.76",
+      "Speaker_Sim": "0.27",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice little fir tree",
+      "UTMOS": "3.7",
+      "PESQ": "1.2",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.40",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "8463-294828-0016",
+      "Transcription": "DID MASTER SUMMON ME HE SAID ENTERING",
+      "Origin": "did master summon me he said entering",
+      "Inference": "degna asked your son and me he said enter in",
+      "UTMOS": "4.0",
+      "PESQ": "1.1",
+      "STOI": "0.77",
+      "Speaker_Sim": "0.30",
+      "dWER": "1.00"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "3.4",
+      "PESQ": "1.1",
+      "STOI": "0.65",
+      "Speaker_Sim": "0.30",
+      "dCER": "0.73"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我造像的天命也许会有更好的",
+      "UTMOS": "3.2",
+      "PESQ": "1.1",
+      "STOI": "0.63",
+      "Speaker_Sim": "0.26",
+      "dCER": "0.31"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "被听到这消息",
+      "UTMOS": "3.4",
+      "PESQ": "1.2",
+      "STOI": "0.75",
+      "Speaker_Sim": "0.19",
+      "dCER": "0.20"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "证明文件应经审查并妥善保存",
+      "Inference": "真名文件一",
+      "UTMOS": "3.2",
+      "PESQ": "1.2",
+      "STOI": "0.72",
+      "Speaker_Sim": "0.39",
+      "dCER": "0.85"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他开始想搬回乡下住",
+      "Inference": "他开始上班为姓夏祖",
+      "UTMOS": "3.6",
+      "PESQ": "1.2",
+      "STOI": "0.71",
+      "Speaker_Sim": "0.22",
+      "dCER": "0.67"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "经过接近一年的治疗",
+      "Inference": "经过接近一年的治疗",
+      "UTMOS": "3.5",
+      "PESQ": "1.2",
+      "STOI": "0.72",
+      "Speaker_Sim": "0.43",
+      "dCER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_30336360",
+      "Transcription": "高屏地区的省道快速公路",
+      "Origin": "高屏地区的省道快速公路",
+      "Inference": "高屏b区德山高山高屏b区德山高山高屏b区德山高山高屏b区德山高山高屏b区德山高山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高屏b区德山高�",
+      "UTMOS": "4.0",
+      "PESQ": "1.3",
+      "STOI": "0.71",
+      "Speaker_Sim": "0.38",
+      "dCER": "30.27"
+    }
+  }
+}

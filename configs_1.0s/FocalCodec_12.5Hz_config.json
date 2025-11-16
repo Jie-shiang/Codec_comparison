@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.16",
+    "parameters": {
+      "frameRate": "12.5",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.4",
+      "PESQ": "1.1",
+      "STOI": "0.69",
+      "Speaker_Sim": "0.35",
+      "dWER": "0.20"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "UTMOS": "3.2",
+      "PESQ": "1.1",
+      "STOI": "0.68",
+      "Speaker_Sim": "0.34",
+      "dWER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also where the popular contra events where i love making be suspended but not stopped during the picnic season",
+      "UTMOS": "3.1",
+      "PESQ": "1.1",
+      "STOI": "0.64",
+      "Speaker_Sim": "0.28",
+      "dWER": "0.29"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here he would stay comforted and soothed among lovely plants and pretty thoughticks rejoicing maha at the bold turn of the gardener who was in pollys first rapturous entrance had taken her into his good graces for all time",
+      "UTMOS": "3.7",
+      "PESQ": "1.1",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.58",
+      "dWER": "0.32"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "4.0",
+      "PESQ": "1.1",
+      "STOI": "0.73",
+      "Speaker_Sim": "0.16",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice whittler tree",
+      "UTMOS": "3.4",
+      "PESQ": "1.2",
+      "STOI": "0.65",
+      "Speaker_Sim": "0.39",
+      "dWER": "0.20"
+    },
+    "Error_Sample_1": {
+      "File_name": "4507-16021-0035",
+      "Transcription": "TRUE HISTORY BEING A MIXTURE OF ALL THINGS THE TRUE HISTORIAN MINGLES IN EVERYTHING",
+      "Origin": "true history being a mixture of all things the true historian mingles in everything",
+      "Inference": "kuhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
+      "UTMOS": "3.2",
+      "PESQ": "1.1",
+      "STOI": "0.62",
+      "Speaker_Sim": "0.30",
+      "dWER": "1.00"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "3.0",
+      "PESQ": "1.1",
+      "STOI": "0.62",
+      "Speaker_Sim": "0.26",
+      "dCER": "1.38"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我方小的提名也去会有的哈佛",
+      "UTMOS": "2.9",
+      "PESQ": "1.1",
+      "STOI": "0.52",
+      "Speaker_Sim": "0.24",
+      "dCER": "0.62"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "听到这消息",
+      "UTMOS": "3.5",
+      "PESQ": "1.1",
+      "STOI": "0.76",
+      "Speaker_Sim": "0.18",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "证明文件应经审查并妥善保存",
+      "Inference": "但,这未闻见音,心声差,并拖三包吋",
+      "UTMOS": "3.1",
+      "PESQ": "1.1",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.32",
+      "dCER": "1.23"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他开始想搬回乡下住",
+      "Inference": "takra心生般愧丹沙图",
+      "UTMOS": "3.3",
+      "PESQ": "1.1",
+      "STOI": "0.72",
+      "Speaker_Sim": "0.28",
+      "dCER": "1.22"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "经过接近一年的治疗",
+      "Inference": "过节期一年的治疗",
+      "UTMOS": "2.8",
+      "PESQ": "1.1",
+      "STOI": "0.64",
+      "Speaker_Sim": "0.31",
+      "dCER": "0.33"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_21960794",
+      "Transcription": "现身喜滋滋",
+      "Origin": "现身喜滋滋",
+      "Inference": "神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神神",
+      "UTMOS": "2.9",
+      "PESQ": "1.2",
+      "STOI": "0.70",
+      "Speaker_Sim": "0.21",
+      "dCER": "88.80"
+    }
+  }
+}

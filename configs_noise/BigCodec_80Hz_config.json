@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "BigCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "LibriSpeech",
+    "testingSet": "LibriSpeech + test-clean + MLS",
+    "bitRate": "1.04",
+    "parameters": {
+      "frameRate": "80",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "159M"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "UTMOS": "2.6",
+      "PESQ": "1.8",
+      "STOI": "0.84",
+      "Speaker_Sim": "0.73",
+      "dWER": "0.10"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0003",
+      "Transcription": "HE WAS LIKE UNTO MY FATHER IN A WAY AND YET WAS NOT MY FATHER",
+      "Origin": "he was like unto my father in a way and yet was not my father",
+      "Inference": "he was like that to my father in a way and yet was not my father",
+      "UTMOS": "2.4",
+      "PESQ": "1.6",
+      "STOI": "0.90",
+      "Speaker_Sim": "0.82",
+      "dWER": "0.13"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0003",
+      "Transcription": "HAY FEVER A HEART TROUBLE CAUSED BY FALLING IN LOVE WITH A GRASS WIDOW",
+      "Origin": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "Inference": "hey fever a heart trouble will cause you to fall in love with a grass widow",
+      "UTMOS": "2.7",
+      "PESQ": "2.5",
+      "STOI": "0.93",
+      "Speaker_Sim": "0.84",
+      "dWER": "0.43"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0001",
+      "Transcription": "EVERY CHANCE SHE COULD STEAL AFTER PRACTICE HOURS WERE OVER AND AFTER THE CLAMOROUS DEMANDS OF THE BOYS UPON HER TIME WERE FULLY SATISFIED WAS SEIZED TO FLY ON THE WINGS OF THE WIND TO THE FLOWERS",
+      "Origin": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "Inference": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "UTMOS": "3.8",
+      "PESQ": "1.9",
+      "STOI": "0.89",
+      "Speaker_Sim": "0.80",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "2.9",
+      "PESQ": "1.6",
+      "STOI": "0.85",
+      "Speaker_Sim": "0.61",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0003",
+      "Transcription": "BUT THIS WAS WHAT THE TREE COULD NOT BEAR TO HEAR",
+      "Origin": "but this was what the tree could not bear to hear",
+      "Inference": "but this was what the tree could not bear to hear",
+      "UTMOS": "2.7",
+      "PESQ": "1.5",
+      "STOI": "0.90",
+      "Speaker_Sim": "0.76",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "8555-292519-0000",
+      "Transcription": "BRIGHTER THAN EARLY DAWN'S MOST BRILLIANT DYE ARE BLOWN CLEAR BANDS OF COLOR THROUGH THE SKY THAT SWIRL AND SWEEP AND MEET TO BREAK AND FOAM LIKE RAINBOW VEILS UPON A BUBBLE'S DOME",
+      "Origin": "brighter than early dawns most brilliant day are growing clear bands of color through the sky that slow and sweet and meet to break and foam like rainbow bells upon a brothers dome",
+      "Inference": "one of the big ones makes more of a big bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger bigger",
+      "UTMOS": "1.2",
+      "PESQ": "1.5",
+      "STOI": "0.64",
+      "Speaker_Sim": "0.62",
+      "dWER": "6.70"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "UTMOS": "1.9",
+      "PESQ": "1.5",
+      "STOI": "0.75",
+      "Speaker_Sim": "0.65",
+      "dCER": "0.33"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_19485265",
+      "Transcription": "大家都以为自己才是对的",
+      "Origin": "大家都以为自己才是对的",
+      "Inference": "大家都以为那种才是对的",
+      "UTMOS": "1.6",
+      "PESQ": "1.5",
+      "STOI": "0.85",
+      "Speaker_Sim": "0.67",
+      "dCER": "0.18"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_19485305",
+      "Transcription": "坚持理念，逐渐站稳脚步",
+      "Origin": "坚持理念逐渐站稳脚步",
+      "Inference": "金石里面逐渐站稳脚步",
+      "UTMOS": "1.8",
+      "PESQ": "1.3",
+      "STOI": "0.84",
+      "Speaker_Sim": "0.62",
+      "dCER": "0.40"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_19485275",
+      "Transcription": "更蕴含极高的商业价值",
+      "Origin": "更蕴含极高的商业价值",
+      "Inference": "对运行很高的商业价值",
+      "UTMOS": "1.7",
+      "PESQ": "1.3",
+      "STOI": "0.82",
+      "Speaker_Sim": "0.61",
+      "dCER": "0.40"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_19485323",
+      "Transcription": "看到很废的文章的时候",
+      "Origin": "看到很废的文章的时候",
+      "Inference": "看到很废的文章的时候",
+      "UTMOS": "2.1",
+      "PESQ": "1.4",
+      "STOI": "0.88",
+      "Speaker_Sim": "0.73",
+      "dCER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_19485322",
+      "Transcription": "指定建筑线之现有巷道",
+      "Origin": "指定建筑线之线有相当",
+      "Inference": "时间金属限制现有效率",
+      "UTMOS": "2.3",
+      "PESQ": "1.3",
+      "STOI": "0.68",
+      "Speaker_Sim": "0.74",
+      "dCER": "0.50"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_17636490",
+      "Transcription": "而承包厂商倒闭",
+      "Origin": "而承包厂商倒闭",
+      "Inference": "girlshandballshardsong",
+      "UTMOS": "1.3",
+      "PESQ": "1.5",
+      "STOI": "0.83",
+      "Speaker_Sim": "0.39",
+      "dCER": "3.14"
+    }
+  }
+}

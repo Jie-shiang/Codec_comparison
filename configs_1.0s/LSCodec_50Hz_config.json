@@ -2,150 +2,164 @@
   "model_info": {
     "modelName": "LSCodec",
     "causality": "Non-Causal",
-    "trainingSet": "Custom Dataset",
-    "testingSet": "Custom Test Set",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
     "bitRate": "0.45",
     "parameters": {
       "frameRate": "50",
-      "quantizers": "4",
-      "codebookSize": "1024",
-      "nParams": "45M"
-    }
-  },
-  "CommonVoice": {
-    "Total": {
-      "UTMOS": "2.0",
-      "PESQ": "1.2",
-      "STOI": "0.24",
-      "dCER": "0.46"
-    },
-    "Sample_1": {
-      "File_name": "common_voice_zh-TW_17382475",
-      "Transcription": "我总想著前面也许会有更好的",
-      "Origin": "我总想着前面也许会有更好的",
-      "Inference": "我想在前面也許會有更好的",
-      "UTMOS": "2.0",
-      "PESQ": "1.2",
-      "STOI": "0.17",
-      "dCER": "0.23"
-    },
-    "Sample_2": {
-      "File_name": "common_voice_zh-TW_17382798",
-      "Transcription": "听到这消息",
-      "Origin": "听到这消息",
-      "Inference": "聽到這消息",
-      "UTMOS": "1.3",
-      "PESQ": "1.4",
-      "STOI": "0.41",
-      "dCER": "0.40"
-    },
-    "Sample_3": {
-      "File_name": "common_voice_zh-TW_17382801",
-      "Transcription": "她心里隐隐觉得不妙",
-      "Origin": "他心裡隱隱覺得不妙",
-      "Inference": "哈欠比奥克兰奇特普比",
-      "UTMOS": "1.2",
-      "PESQ": "1.1",
-      "STOI": "0.23",
-      "dCER": "0.44"
-    },
-    "Sample_4": {
-      "File_name": "common_voice_zh-TW_17382870",
-      "Transcription": "证明文件应经审查并妥善保存",
-      "Origin": "證明文件應精神查並妥善保存",
-      "Inference": "證明文件已經審查並妥善保證",
-      "UTMOS": "1.3",
-      "PESQ": "1.2",
-      "STOI": "0.16",
-      "dCER": "0.08"
-    },
-    "Sample_5": {
-      "File_name": "common_voice_zh-TW_17382928",
-      "Transcription": "她开始想搬回乡下住",
-      "Origin": "他開始想搬回鄉下住",
-      "Inference": "他開始想把我給整架住",
-      "UTMOS": "1.3",
-      "PESQ": "1.2",
-      "STOI": "0.25",
-      "dCER": "0.44"
-    },
-    "Error_Sample_1": {
-      "File_name": "common_voice_zh-TW_17389904",
-      "Transcription": "四个小孩外出买东西",
-      "Origin": "四个小孩外出买东西",
-      "Inference": "肯定是有很多人想要你",
-      "UTMOS": "1.3",
-      "PESQ": "1.1",
-      "STOI": "0.25",
-      "dCER": "1.00"
+      "quantizers": "1",
+      "codebookSize": "300",
+      "nParams": "N/A"
     }
   },
   "LibriSpeech": {
     "Total": {
-      "UTMOS": "3.3",
-      "PESQ": "1.3",
+      "UTMOS": "3.2",
+      "PESQ": "1.2",
       "STOI": "0.21",
-      "dWER": "0.27"
+      "Speaker_Sim": "0.51",
+      "dWER": "0.10"
     },
     "Sample_1": {
       "File_name": "61-70968-0000",
       "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Inference": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
       "UTMOS": "3.5",
-      "PESQ": "1.3",
+      "PESQ": "1.2",
       "STOI": "0.12",
+      "Speaker_Sim": "0.59",
       "dWER": "0.00"
     },
     "Sample_2": {
       "File_name": "121-121726-0000",
       "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Inference": "ALSO A POPULAR CONTROL EVENTS WHERE I LOVE MAKING ME BE SUSPENDED BUT NOT ALL IN THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular control events where i love making me be suspended but not all in the picnic season",
       "UTMOS": "2.3",
       "PESQ": "1.2",
       "STOI": "0.20",
-      "dWER": "0.94"
+      "Speaker_Sim": "0.64",
+      "dWER": "0.29"
     },
     "Sample_3": {
       "File_name": "237-126133-0000",
       "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Inference": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNETH GARDENER WHO SAID POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turneth gardener who said pollys first rapturous entrance had taken her into his good graces for all time",
       "UTMOS": "3.3",
       "PESQ": "1.3",
       "STOI": "0.18",
-      "dWER": "0.18"
+      "Speaker_Sim": "0.60",
+      "dWER": "0.08"
     },
     "Sample_4": {
-      "File_name": "260-123286-0000",
-      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Inference": "SATURDAY AUGUST 15TH THE SEA HAD BROKEN ALL ROUND NO LAND IN SIGHT",
-      "UTMOS": "3.3",
-      "PESQ": "1.3",
-      "STOI": "0.26",
-      "dWER": "0.33"
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "3.5",
+      "PESQ": "1.2",
+      "STOI": "0.34",
+      "Speaker_Sim": "0.53",
+      "dWER": "0.00"
     },
     "Sample_5": {
       "File_name": "672-122797-0000",
       "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Inference": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice little fir tree",
       "UTMOS": "3.3",
-      "PESQ": "1.2",
+      "PESQ": "1.3",
       "STOI": "0.33",
+      "Speaker_Sim": "0.63",
       "dWER": "0.00"
     },
     "Error_Sample_1": {
-      "File_name": "1188-133604-0017",
-      "Transcription": "THAT A STYLE IS RESTRAINED OR SEVERE DOES NOT MEAN THAT IT IS ALSO ERRONEOUS",
-      "Origin": "THAT A STYLE IS RESTRAINED OR SEVERE DOES NOT MEAN THAT IT IS ALSO ERRONEOUS",
-      "Inference": "BUT A STUFFY SEVERE DOES NOT MEAN THAT IT IS ALSO ERRONEOUS",
-      "UTMOS": "2.3",
+      "File_name": "672-122797-0031",
+      "Transcription": "IT BLAZED UP FAMOUSLY HELP HELP",
+      "Origin": "it blazed up famously help help",
+      "Inference": "and playing top famous way now it hype",
+      "UTMOS": "3.1",
       "PESQ": "1.1",
-      "STOI": "0.21",
-      "dWER": "1.00"
+      "STOI": "0.34",
+      "Speaker_Sim": "0.31",
+      "dWER": "1.33"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "2.1",
+      "PESQ": "1.2",
+      "STOI": "0.24",
+      "Speaker_Sim": "0.32",
+      "dCER": "0.86"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "",
+      "Inference": "我总想在前面也许会有更好的",
+      "UTMOS": "2.1",
+      "PESQ": "1.2",
+      "STOI": "0.17",
+      "Speaker_Sim": "0.41",
+      "dCER": "-0.92"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "",
+      "Inference": "听到这消息",
+      "UTMOS": "1.3",
+      "PESQ": "1.4",
+      "STOI": "0.41",
+      "Speaker_Sim": "0.22",
+      "dCER": "-1.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "",
+      "Inference": "证明文件已经审查并妥善保证",
+      "UTMOS": "1.3",
+      "PESQ": "1.2",
+      "STOI": "0.16",
+      "Speaker_Sim": "0.36",
+      "dCER": "-0.85"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "",
+      "Inference": "他开始想把我给整架住",
+      "UTMOS": "1.3",
+      "PESQ": "1.2",
+      "STOI": "0.25",
+      "Speaker_Sim": "0.40",
+      "dCER": "-0.33"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "",
+      "Inference": "经过接近一年的治疗",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.19",
+      "Speaker_Sim": "0.29",
+      "dCER": "-1.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_30735309",
+      "Transcription": "正常人的社会组织",
+      "Origin": "正常人的社会组织",
+      "Inference": "就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就这样就刚刚就大家就在人用用",
+      "UTMOS": "1.3",
+      "PESQ": "1.2",
+      "STOI": "0.18",
+      "Speaker_Sim": "0.23",
+      "dCER": "82.00"
     }
   }
 }

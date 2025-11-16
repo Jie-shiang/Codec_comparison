@@ -31,6 +31,16 @@
             margin-bottom: 30px;
         }
         
+        .status-info {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        
         .controls {
             margin-bottom: 30px;
             padding: 20px;
@@ -98,102 +108,66 @@
             font-size: 14px;
         }
         
-        .checkbox-group .compact {
-            margin-left: 2px;
-        }
-        
-        select {
+        .checkbox-group select {
             padding: 4px 8px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            min-width: 70px;
-            font-size: 12px;
-        }
-        
-        select.compact {
-            padding: 2px 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            min-width: 40px;
-            font-size: 12px;
-            margin-left: 2px;
-        }
-        
-        .bitrate-select {
-            display: none;
-            margin-left: 5px;
-        }
-        
-        .bitrate-select.visible {
-            display: inline-block;
-        }
-        
-        .status-info {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 14px;
+            border-radius: 3px;
+            font-size: 13px;
+            background: white;
         }
         
         .model-section {
-            margin-bottom: 50px;
-            border: 1px solid #ddd;
+            margin-bottom: 40px;
+            border: 2px solid #dee2e6;
             border-radius: 8px;
             overflow: hidden;
         }
         
         .model-header {
-            background: #495057;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 15px 20px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
+            text-align: center;
         }
         
         .model-info {
+            padding: 20px;
             background: #f8f9fa;
-            padding: 15px 20px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #dee2e6;
         }
         
         .params-row {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
             margin-bottom: 15px;
         }
         
         .info-item {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
         }
         
         .info-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
+            margin-bottom: 5px;
             font-weight: bold;
-            margin-bottom: 2px;
         }
         
         .info-value {
             font-size: 14px;
             color: #333;
+            font-weight: bold;
         }
         
         .training-testing-table {
             width: 100%;
-            border-collapse: collapse;
             margin-top: 10px;
-        }
-        
-        .training-testing-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            vertical-align: top;
         }
         
         .training-testing-table .label-cell {
@@ -366,6 +340,7 @@
         <div class="navigation">
             <a href="index.html" class="nav-button active">Original Experiments</a>
             <a href="index_segmented.html" class="nav-button">Segmented Experiments</a>
+            <a href="index_noise.html" class="nav-button">Noise Experiments</a>
             <a href="https://github.com/Jie-shiang/Codec_comparison" target="_blank" class="nav-button github">GitHub Repository</a>
         </div>
         
@@ -377,74 +352,45 @@
             <div class="control-row">
                 <div class="control-group first-aligned">
                     <label>NACs</label>
-                    <div class="control-subgroup">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-lscodec" checked>
-                            <label for="show-lscodec">LSCodec</label>
-                            <select id="lscodec-freq">
-                                <option value="25Hz">25Hz</option>
-                                <option value="50Hz">50Hz</option>
-                            </select>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-focalcodec" checked>
-                            <label for="show-focalcodec">FocalCodec</label>
-                            <select id="focalcodec-freq">
-                                <option value="12.5Hz">12.5Hz</option>
-                                <option value="25Hz">25Hz</option>
-                                <option value="50Hz">50Hz</option>
-                            </select>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-bigcodec" checked>
-                            <label for="show-bigcodec">BigCodec</label>
-                            <select id="bigcodec-freq">
-                                <option value="80Hz">80Hz</option>
-                            </select>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-secousticodec" checked>
-                            <label for="show-secousticodec">SecoustiCodec</label>
-                            <select id="secousticodec-freq">
-                                <option value="20Hz">20Hz</option>
-                                <option value="80Hz">80Hz</option>
-                            </select>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-mimicodec" checked>
-                            <label for="show-mimicodec">MimiCodec</label>
-                            <select id="mimicodec-freq">
-                                <option value="12.5Hz">12.5Hz</option>
-                            </select>
-                        </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-nanocodec" checked>
-                            <label for="show-nanocodec">NanoCodec</label>
-                            <select id="nanocodec-freq">
-                                <option value="12.5Hz">12.5Hz</option>
-                                <option value="21.5Hz">21.5Hz</option>
-                            </select>
-                            <select id="nanocodec-bitrate" class="bitrate-select">
-                                <option value="0.6">0.6</option>
-                                <option value="1.78">1.78</option>
-                            </select>
-                        </div>
+                    <div class="control-subgroup" id="codec-controls">
+                        <!-- 動態生成 -->
                     </div>
                 </div>
             </div>
             
             <div class="control-row">
                 <div class="control-group first-aligned">
-                    <label>Result</label>
+                    <label>Display</label>
                     <div class="control-subgroup">
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-config" checked>
                             <label for="show-config">Config</label>
                         </div>
                         <div class="checkbox-group">
+                            <input type="checkbox" id="show-dataset" checked>
+                            <label for="show-dataset">Dataset</label>
+                        </div>
+                        <div class="checkbox-group">
                             <input type="checkbox" id="show-original" checked>
                             <label for="show-original">Original</label>
                         </div>
+                    </div>
+                </div>
+                
+                <div class="control-group first-aligned">
+                    <label>Data</label>
+                    <div class="control-subgroup">
+                        <select id="dataset-type">
+                            <option value="both">Both</option>
+                            <option value="librispeech">LibriSpeech</option>
+                            <option value="commonvoice">Common Voice</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="control-group first-aligned">
+                    <label>Samples</label>
+                    <div class="control-subgroup">
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-total" checked>
                             <label for="show-total">Total</label>
@@ -452,7 +398,7 @@
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-sample" checked>
                             <label for="show-sample">Sample</label>
-                            <select id="sample-count" class="compact">
+                            <select id="sample-count">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -462,30 +408,7 @@
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-error" checked>
-                            <label for="show-error">Error Sample</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="control-row">
-                <div class="control-group first-aligned">
-                    <label>Dataset</label>
-                    <div class="control-subgroup">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="show-dataset" checked>
-                            <label for="show-dataset">Dataset</label>
-                            <select id="dataset-type">
-                                <option value="librispeech">LibriSpeech</option>
-                                <option value="commonvoice">Common Voice</option>
-                                <option value="both" selected>LibriSpeech + Common Voice</option>
-                            </select>
-                            <select id="dataset-variant">
-                                <option value="clean" selected>Clean</option>
-                                <option value="clean-noise">Clean+Noise</option>
-                                <option value="clean-blank">Clean+Blank</option>
-                                <option value="all">Clean+Noise+Blank</option>
-                            </select>
+                            <label for="show-error">Error</label>
                         </div>
                     </div>
                 </div>
@@ -510,6 +433,10 @@
                         <div class="checkbox-group">
                             <input type="checkbox" id="show-stoi" checked>
                             <label for="show-stoi">STOI</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="show-speaker-sim" checked>
+                            <label for="show-speaker-sim">Speaker Sim</label>
                         </div>
                     </div>
                 </div>
@@ -539,238 +466,124 @@
         <div id="model-sections"></div>
     </div>
 
+    <script src="docs/codec_loader.js"></script>
     <script>
-        const datasets = {
-            librispeech: {
-                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
-                errorExamples: ['Error_Sample_1'],
-                codecData: {}
-            },
-            'librispeech-noise': {
-                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
-                errorExamples: ['Error_Sample_1'],
-                codecData: {}
-            },
-            'librispeech-blank': {
-                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
-                errorExamples: ['Error_Sample_1'],
-                codecData: {}
-            },
-            commonvoice: {
-                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
-                errorExamples: ['Error_Sample_1'],
-                codecData: {}
-            },
-            'commonvoice-noise': {
-                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
-                errorExamples: ['Error_Sample_1'],
-                codecData: {}
-            },
-            'commonvoice-blank': {
-                files: ['Total', 'Sample_1', 'Sample_2', 'Sample_3', 'Sample_4', 'Sample_5', 'Error_Sample_1'],
-                errorExamples: ['Error_Sample_1'],
-                codecData: {}
-            }
-        };
+        // Initialize CodecLoader
+        const codecLoader = new CodecLoader(
+            'docs/codecs_config.json',
+            'audio',
+            'configs'
+        );
+        
+        let codecsConfig = null;
+        let currentModel = null;
+        let currentFrequency = null;
 
-        let currentModel = 'LSCodec';
-        let currentFrequency = '50Hz';
-        let currentBitrate = null;
-
-        // Toggle bitrate selector visibility for NanoCodec
-        function toggleNanoCodecBitrate() {
-            const nanocodecFreq = document.getElementById('nanocodec-freq').value;
-            const bitrateSelect = document.getElementById('nanocodec-bitrate');
-            
-            if (nanocodecFreq === '12.5Hz') {
-                bitrateSelect.classList.add('visible');
-            } else {
-                bitrateSelect.classList.remove('visible');
-            }
-        }
-
-        async function loadCodecData(dataset, codecType, frequency, bitrate = null) {
-            const basePath = `configs`;
-            let jsonPath;
-            
-            if (codecType === 'NanoCodec' && frequency === '12.5Hz' && bitrate) {
-                jsonPath = `${basePath}/${codecType}_${frequency}_${bitrate}_config.json`;
-            } else {
-                jsonPath = `${basePath}/${codecType}_${frequency}_config.json`;
-            }
-            
-            try {
-                const response = await fetch(jsonPath);
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (!datasets[dataset].codecData[codecType]) {
-                        datasets[dataset].codecData[codecType] = {};
-                    }
-                    
-                    const key = bitrate ? `${frequency}_${bitrate}` : frequency;
-                    datasets[dataset].codecData[codecType][key] = data;
-                    
-                    return data;
-                } else {
-                    console.warn(`Failed to load ${jsonPath}: ${response.status}`);
-                    return null;
-                }
-            } catch (error) {
-                console.error(`Error loading ${jsonPath}:`, error);
-                return null;
-            }
-        }
-
+        // Load all codec configurations and data
         async function loadAllCodecData() {
             const statusInfo = document.getElementById('status-info');
-            const loadPromises = [];
             
-            const datasetNames = Object.keys(datasets);
-            
-            for (const datasetName of datasetNames) {
-                statusInfo.textContent = `Loading ${datasetName} data...`;
-                loadPromises.push(loadCodecData(datasetName, 'LSCodec', '25Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'LSCodec', '50Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '12.5Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '25Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'FocalCodec', '50Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'BigCodec', '80Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'SecoustiCodec', '20Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'SecoustiCodec', '80Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'MimiCodec', '12.5Hz'));
-                loadPromises.push(loadCodecData(datasetName, 'NanoCodec', '12.5Hz', '0.6'));
-                loadPromises.push(loadCodecData(datasetName, 'NanoCodec', '12.5Hz', '1.78'));
-                loadPromises.push(loadCodecData(datasetName, 'NanoCodec', '21.5Hz'));
-            }
-            
-            await Promise.all(loadPromises);
-            
-            statusInfo.textContent = 'All codec data loaded successfully!';
-            setTimeout(() => {
-                statusInfo.style.display = 'none';
-            }, 2000);
-            
-            toggleNanoCodecBitrate();
-            renderModelSections();
-        }
-
-        function getCodecData(dataset, codecType, frequency, fileId, dataType) {
             try {
-                const codecData = datasets[dataset].codecData[codecType]?.[frequency];
-                if (!codecData) return null;
+                // Load codecs configuration
+                codecsConfig = await codecLoader.loadCodecsConfig();
                 
-                const datasetKey = getDatasetKey(dataset);
-                const fileData = codecData[datasetKey]?.[fileId];
-                
-                if (!fileData) return null;
-                
-                switch (dataType) {
-                    case 'transcription':
-                        return fileData.Transcription || null;
-                    case 'origin':
-                        return fileData.Origin || null;
-                    case 'inference':
-                        return fileData.Inference || null;
-                    case 'utmos':
-                        return fileData.UTMOS || null;
-                    case 'dwer':
-                        return fileData.dWER || fileData.dCER || null;
-                    case 'dwer_type':
-                        if (fileData.dWER !== undefined) return 'dWER';
-                        if (fileData.dCER !== undefined) return 'dCER';
-                        return null;
-                    case 'pesq':
-                        return fileData.PESQ || null;
-                    case 'stoi':
-                        return fileData.STOI || null;
-                    case 'filename':
-                        return fileData.File_name || null;
-                    default:
-                        return null;
+                if (!codecsConfig) {
+                    statusInfo.textContent = 'Failed to load codec configuration';
+                    statusInfo.style.background = '#ffebee';
+                    statusInfo.style.color = '#c62828';
+                    return;
                 }
+                
+                // Dynamically generate codec controls
+                renderCodecControls();
+                
+                // Load all codec data
+                statusInfo.textContent = 'Loading codec data...';
+                await codecLoader.loadAllCodecData(codecsConfig);
+                
+                statusInfo.textContent = 'All codec data loaded successfully!';
+                setTimeout(() => {
+                    statusInfo.style.display = 'none';
+                }, 2000);
+                
+                // Render model sections
+                renderModelSections();
+                
             } catch (error) {
-                console.error('Error getting codec data:', error);
-                return null;
+                console.error('Error loading codec data:', error);
+                statusInfo.textContent = 'Error loading codec data';
+                statusInfo.style.background = '#ffebee';
+                statusInfo.style.color = '#c62828';
             }
         }
 
-        function getDatasetKey(dataset) {
-            switch(dataset) {
-                case 'librispeech':
-                    return 'LibriSpeech';
-                case 'librispeech-noise':
-                    return 'LibriSpeech_Noise';
-                case 'librispeech-blank':
-                    return 'LibriSpeech_Blank';
-                case 'commonvoice':
-                    return 'CommonVoice';
-                case 'commonvoice-noise':
-                    return 'CommonVoice_Noise';
-                case 'commonvoice-blank':
-                    return 'CommonVoice_Blank';
-                default:
-                    return 'LibriSpeech';
-            }
-        }
-
-        function getAudioPath(dataset, fileId, codecType, frequency = null) {
-            const basePath = `audio`;
-            const datasetPath = getDatasetKey(dataset).replace('_', '/');
+        // Dynamically generate codec controls
+        function renderCodecControls() {
+            const controlsContainer = document.getElementById('codec-controls');
+            controlsContainer.innerHTML = '';
             
-            if (fileId === 'Total') {
+            Object.entries(codecsConfig).forEach(([codecId, codecInfo], index) => {
+                const checkboxGroup = document.createElement('div');
+                checkboxGroup.className = 'checkbox-group';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `show-${codecId.toLowerCase()}`;
+                checkbox.checked = index === 0; // Check first codec by default
+                checkbox.addEventListener('change', renderModelSections);
+                
+                const label = document.createElement('label');
+                label.htmlFor = `show-${codecId.toLowerCase()}`;
+                label.textContent = codecInfo.displayName;
+                
+                const select = document.createElement('select');
+                select.id = `${codecId.toLowerCase()}-freq`;
+                select.addEventListener('change', renderModelSections);
+                
+                codecInfo.configurations.forEach((config, idx) => {
+                    const option = document.createElement('option');
+                    option.value = config;
+                    option.textContent = config;
+                    option.selected = (idx === 0); // Select first option by default
+                    select.appendChild(option);
+                });
+                
+                checkboxGroup.appendChild(checkbox);
+                checkboxGroup.appendChild(label);
+                checkboxGroup.appendChild(select);
+                controlsContainer.appendChild(checkboxGroup);
+            });
+        }
+
+        // Get audio file path
+        function getAudioPath(dataset, fileId, codecId, config) {
+            if (!fileId || fileId === 'Total') {
                 return '';
             }
             
-            const actualFileName = getCodecData(dataset, currentModel, currentFrequency, fileId, 'filename');
+            const actualFileName = codecLoader.getCodecData(dataset, codecId, config, fileId, 'filename');
             if (!actualFileName) {
                 console.warn(`No File_name found for ${fileId} in ${dataset}`);
                 return '';
             }
             
-            switch(codecType) {
-                case 'original':
-                    return `${basePath}/${datasetPath}/original/${actualFileName}.flac`;
-                case 'lscodec':
-                    return `${basePath}/${datasetPath}/LSCodec/${frequency}/${actualFileName}.wav`;
-                case 'focalcodec':
-                    return `${basePath}/${datasetPath}/FocalCodec/${frequency}/${actualFileName}.wav`;
-                case 'bigcodec':
-                    return `${basePath}/${datasetPath}/BigCodec/${frequency}/${actualFileName}.wav`;
-                case 'secousticodec':
-                    return `${basePath}/${datasetPath}/SecoustiCodec/${frequency}/${actualFileName}.wav`;
-                case 'mimicodec':
-                    return `${basePath}/${datasetPath}/MimiCodec/${frequency}/${actualFileName}.wav`;
-                case 'nanocodec':
-                    // Handle NanoCodec special path structure
-                    if (frequency.includes('_')) {
-                        // Format: 12.5Hz_0.6 or 12.5Hz_1.78
-                        const parts = frequency.split('_');
-                        const freq = parts[0]; // 12.5Hz
-                        const bitrate = parts[1]; // 0.6 or 1.78
-                        return `${basePath}/${datasetPath}/NanoCodec/${freq}/${bitrate}/${actualFileName}.wav`;
-                    } else {
-                        // Format: 21.5Hz
-                        return `${basePath}/${datasetPath}/NanoCodec/${frequency}/${actualFileName}.wav`;
-                    }
-                default:
-                    return '';
-            }
+            return codecLoader.getAudioPath(dataset, codecId, config, actualFileName);
         }
 
-        function createAudioControl(dataset, fileId, codecType, frequency = null) {
+        // Create audio control element
+        function createAudioControl(dataset, fileId, codecId, config) {
             if (fileId === 'Total') {
                 return '<span class="no-audio">-</span>';
             }
             
-            const audioPath = getAudioPath(dataset, fileId, codecType, frequency);
+            const audioPath = getAudioPath(dataset, fileId, codecId, config);
             
             if (!audioPath) {
                 return '<span class="no-audio">No File</span>';
             }
             
             let sourceTags = '';
-            if (codecType === 'original') {
+            if (codecId === 'original') {
                 const basePath = audioPath.replace(/\.[^.]+$/, '');
                 sourceTags = `
                     <source src="${basePath}.flac" type="audio/flac">
@@ -785,16 +598,17 @@
             
             return `
                 <div class="audio-controls">
-                    <button class="play-button" onclick="toggleAudio('audio_${dataset}_${fileId}_${codecType}', this)">Play</button>
-                    <audio preload="none" id="audio_${dataset}_${fileId}_${codecType}">
+                    <button class="play-button" onclick="toggleAudio('audio_${dataset}_${fileId}_${codecId}', this)">Play</button>
+                    <audio preload="none" id="audio_${dataset}_${fileId}_${codecId}">
                         ${sourceTags}
                         Your browser does not support audio playback.
                     </audio>
-                    ${frequency ? `<div class="codec-info">${frequency}</div>` : ''}
+                    ${config ? `<div class="codec-info">${config}</div>` : ''}
                 </div>
             `;
         }
         
+        // Audio playback control
         function toggleAudio(audioId, button) {
             document.querySelectorAll('audio').forEach(audio => {
                 if (audio.id !== audioId) {
@@ -843,16 +657,18 @@
             }
         }
 
-        function getModelInfo(codecType, frequency) {
+        // Get model information
+        function getModelInfo(codecId, config) {
+            const datasets = codecLoader.getDatasets();
             const datasetName = Object.keys(datasets)[0];
-            const data = datasets[datasetName].codecData[codecType]?.[frequency];
+            const data = datasets[datasetName].codecData[codecId]?.[config];
             
             if (data && data.model_info) {
                 return data.model_info;
             }
             
             return {
-                modelName: codecType,
+                modelName: codecId,
                 causality: 'N/A',
                 trainingSet: 'N/A',
                 testingSet: 'N/A',
@@ -866,10 +682,9 @@
             };
         }
 
-        function createTableRow(dataset, fileId) {
-            const codecType = currentModel;
-            const frequency = currentFrequency;
-            
+        // Create table row
+        function createTableRow(dataset, fileId, codecId, config) {
+            const datasets = codecLoader.getDatasets();
             const isErrorExample = datasets[dataset].errorExamples?.includes(fileId);
             const isTotalRow = fileId === 'Total';
             
@@ -896,19 +711,20 @@
                 rowClass = 'error-example';
             }
             
-            const dwer = getCodecData(dataset, codecType, frequency, fileId, 'dwer') || 'X';
-            const utmos = getCodecData(dataset, codecType, frequency, fileId, 'utmos') || 'X';
-            const pesq = getCodecData(dataset, codecType, frequency, fileId, 'pesq') || 'X';
-            const stoi = getCodecData(dataset, codecType, frequency, fileId, 'stoi') || 'X';
+            const dwer = codecLoader.getCodecData(dataset, codecId, config, fileId, 'dwer') || 'X';
+            const utmos = codecLoader.getCodecData(dataset, codecId, config, fileId, 'utmos') || 'X';
+            const pesq = codecLoader.getCodecData(dataset, codecId, config, fileId, 'pesq') || 'X';
+            const stoi = codecLoader.getCodecData(dataset, codecId, config, fileId, 'stoi') || 'X';
+            const speakerSim = codecLoader.getCodecData(dataset, codecId, config, fileId, 'speaker_sim') || 'X';
             
             let transcription = 'X';
             let origin = 'X';
             let inference = 'X';
             
             if (!isTotalRow) {
-                transcription = getCodecData(dataset, codecType, frequency, fileId, 'transcription') || 'X';
-                origin = getCodecData(dataset, codecType, frequency, fileId, 'origin') || 'X';
-                inference = getCodecData(dataset, codecType, frequency, fileId, 'inference') || 'X';
+                transcription = codecLoader.getCodecData(dataset, codecId, config, fileId, 'transcription') || 'X';
+                origin = codecLoader.getCodecData(dataset, codecId, config, fileId, 'origin') || 'X';
+                inference = codecLoader.getCodecData(dataset, codecId, config, fileId, 'inference') || 'X';
             } else {
                 transcription = '-';
                 origin = '-';
@@ -917,7 +733,7 @@
             
             let displayFileName = fileId;
             if (!isTotalRow) {
-                const realFileName = getCodecData(dataset, codecType, frequency, fileId, 'filename');
+                const realFileName = codecLoader.getCodecData(dataset, codecId, config, fileId, 'filename');
                 if (realFileName) {
                     displayFileName = realFileName;
                 }
@@ -927,27 +743,18 @@
             let inferenceCell = '';
             
             if (document.getElementById('show-original').checked) {
-                originalCell = `<td class="original-cell">${createAudioControl(dataset, fileId, 'original')}</td>`;
+                originalCell = `<td class="original-cell">${createAudioControl(dataset, fileId, 'original', null)}</td>`;
             }
             
-            if (codecType === 'LSCodec' && document.getElementById('show-lscodec').checked) {
-                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'lscodec', frequency)}</td>`;
-            } else if (codecType === 'FocalCodec' && document.getElementById('show-focalcodec').checked) {
-                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'focalcodec', frequency)}</td>`;
-            } else if (codecType === 'BigCodec' && document.getElementById('show-bigcodec').checked) {
-                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'bigcodec', frequency)}</td>`;
-            } else if (codecType === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked) {
-                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'secousticodec', frequency)}</td>`;
-            } else if (codecType === 'MimiCodec' && document.getElementById('show-mimicodec').checked) {
-                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'mimicodec', frequency)}</td>`;
-            } else if (codecType === 'NanoCodec' && document.getElementById('show-nanocodec').checked) {
-                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, 'nanocodec', frequency)}</td>`;
+            if (document.getElementById(`show-${codecId.toLowerCase()}`).checked) {
+                inferenceCell = `<td class="inference-cell">${createAudioControl(dataset, fileId, codecId, config)}</td>`;
             }
             
             const dwerCell = document.getElementById('show-dwer').checked ? `<td class="metric-cell">${dwer}</td>` : '';
             const utmosCell = document.getElementById('show-utmos').checked ? `<td class="metric-cell">${utmos}</td>` : '';
             const pesqCell = document.getElementById('show-pesq').checked ? `<td class="metric-cell">${pesq}</td>` : '';
             const stoiCell = document.getElementById('show-stoi').checked ? `<td class="metric-cell">${stoi}</td>` : '';
+            const speakerSimCell = document.getElementById('show-speaker-sim').checked ? `<td class="metric-cell">${speakerSim}</td>` : '';
             const transcriptionCell = document.getElementById('show-transcription').checked ? `<td class="transcript">${transcription}</td>` : '';
             const originCell = document.getElementById('show-origin').checked ? `<td class="transcript">${origin}</td>` : '';
             const inferenceTextCell = document.getElementById('show-inference').checked ? `<td class="transcript">${inference}</td>` : '';
@@ -961,6 +768,7 @@
                     ${utmosCell}
                     ${pesqCell}
                     ${stoiCell}
+                    ${speakerSimCell}
                     ${transcriptionCell}
                     ${originCell}
                     ${inferenceTextCell}
@@ -968,19 +776,15 @@
             `;
         }
 
-        function createTableHeaders(dataset) {
+        // Create table headers
+        function createTableHeaders(dataset, codecId) {
             let headers = '<th style="width: 120px;">File ID</th>';
             
             if (document.getElementById('show-original').checked) {
                 headers += '<th class="original-header" style="width: 190px;">Original</th>';
             }
             
-            if ((currentModel === 'LSCodec' && document.getElementById('show-lscodec').checked) ||
-                (currentModel === 'FocalCodec' && document.getElementById('show-focalcodec').checked) ||
-                (currentModel === 'BigCodec' && document.getElementById('show-bigcodec').checked) ||
-                (currentModel === 'SecoustiCodec' && document.getElementById('show-secousticodec').checked) ||
-                (currentModel === 'MimiCodec' && document.getElementById('show-mimicodec').checked) ||
-                (currentModel === 'NanoCodec' && document.getElementById('show-nanocodec').checked)) {
+            if (document.getElementById(`show-${codecId.toLowerCase()}`).checked) {
                 headers += '<th class="inference-header" style="width: 190px;">Inference</th>';
             }
             
@@ -997,6 +801,9 @@
             if (document.getElementById('show-stoi').checked) {
                 headers += '<th style="width: 90px;">STOI</th>';
             }
+            if (document.getElementById('show-speaker-sim').checked) {
+                headers += '<th style="width: 90px;">Speaker Sim</th>';
+            }
             if (document.getElementById('show-transcription').checked) {
                 headers += '<th style="width: 200px;">Transcription</th>';
             }
@@ -1010,65 +817,31 @@
             return headers;
         }
 
+        // Render model sections
         function renderModelSections() {
+            if (!codecsConfig) return;
+            
             const container = document.getElementById('model-sections');
             container.innerHTML = '';
             
-            const showLSCodec = document.getElementById('show-lscodec').checked;
-            const showFocalCodec = document.getElementById('show-focalcodec').checked;
-            const showBigCodec = document.getElementById('show-bigcodec').checked;
-            const showSecoustiCodec = document.getElementById('show-secousticodec').checked;
-            const showMimiCodec = document.getElementById('show-mimicodec').checked;
-            const showNanoCodec = document.getElementById('show-nanocodec').checked;
-            
-            if (showLSCodec) {
-                currentModel = 'LSCodec';
-                currentFrequency = document.getElementById('lscodec-freq').value;
-                container.appendChild(createModelSection('LSCodec', currentFrequency));
-            }
-            
-            if (showFocalCodec) {
-                currentModel = 'FocalCodec';
-                currentFrequency = document.getElementById('focalcodec-freq').value;
-                container.appendChild(createModelSection('FocalCodec', currentFrequency));
-            }
-            
-            if (showBigCodec) {
-                currentModel = 'BigCodec';
-                currentFrequency = document.getElementById('bigcodec-freq').value;
-                container.appendChild(createModelSection('BigCodec', currentFrequency));
-            }
-            
-            if (showSecoustiCodec) {
-                currentModel = 'SecoustiCodec';
-                currentFrequency = document.getElementById('secousticodec-freq').value;
-                container.appendChild(createModelSection('SecoustiCodec', currentFrequency));
-            }
-            
-            if (showMimiCodec) {
-                currentModel = 'MimiCodec';
-                currentFrequency = document.getElementById('mimicodec-freq').value;
-                container.appendChild(createModelSection('MimiCodec', currentFrequency));
-            }
-            
-            if (showNanoCodec) {
-                currentModel = 'NanoCodec';
-                const freq = document.getElementById('nanocodec-freq').value;
-                if (freq === '12.5Hz') {
-                    const bitrate = document.getElementById('nanocodec-bitrate').value;
-                    currentFrequency = `${freq}_${bitrate}`;
-                } else {
-                    currentFrequency = freq;
+            Object.entries(codecsConfig).forEach(([codecId, codecInfo]) => {
+                const checkboxId = `show-${codecId.toLowerCase()}`;
+                const selectId = `${codecId.toLowerCase()}-freq`;
+                
+                if (document.getElementById(checkboxId).checked) {
+                    currentModel = codecId;
+                    currentFrequency = document.getElementById(selectId).value;
+                    container.appendChild(createModelSection(codecId, currentFrequency));
                 }
-                container.appendChild(createModelSection('NanoCodec', currentFrequency));
-            }
+            });
         }
 
-        function createModelSection(codecType, frequency) {
+        // Create model section
+        function createModelSection(codecId, config) {
             const section = document.createElement('div');
             section.className = 'model-section';
 
-            const modelInfo = getModelInfo(codecType, frequency);
+            const modelInfo = getModelInfo(codecId, config);
             const showConfig = document.getElementById('show-config').checked;
 
             let configHtml = '';
@@ -1113,99 +886,51 @@
             }
 
             section.innerHTML = `
-                <div class="model-header">${codecType}</div>
+                <div class="model-header">${codecId}</div>
                 ${configHtml}
-                ${createDatasetTables(codecType, frequency)}
+                ${createDatasetTables(codecId, config)}
             `;
 
             return section;
         }
 
-        function createDatasetTables(codecType, frequency) {
-            currentModel = codecType;
-            currentFrequency = frequency;
-            
+        // Create dataset tables
+        function createDatasetTables(codecId, config) {
             let tablesHtml = '';
             const showDataset = document.getElementById('show-dataset').checked;
-            const datasetType = document.getElementById('dataset-type').value;
-            const datasetVariant = document.getElementById('dataset-variant').value;
             
             if (!showDataset) {
                 return '';
             }
             
+            const datasets = codecLoader.getDatasets();
+            const datasetType = document.getElementById('dataset-type').value;
+            
             const datasetTitles = {
                 'librispeech': 'LibriSpeech',
-                'librispeech-noise': 'LibriSpeech (Noise)', 
-                'librispeech-blank': 'LibriSpeech (Blank)',
-                'commonvoice': 'Common Voice',
-                'commonvoice-noise': 'Common Voice (Noise)', 
-                'commonvoice-blank': 'Common Voice (Blank)'
+                'commonvoice': 'Common Voice'
             };
             
             let datasetsToShow = [];
             
             if (datasetType === 'both') {
-                if (datasetVariant === 'clean') {
-                    datasetsToShow = [
-                        ['librispeech', datasetTitles['librispeech']],
-                        ['commonvoice', datasetTitles['commonvoice']]
-                    ];
-                } else if (datasetVariant === 'clean-noise') {
-                    datasetsToShow = [
-                        ['librispeech', datasetTitles['librispeech']],
-                        ['librispeech-noise', datasetTitles['librispeech-noise']],
-                        ['commonvoice', datasetTitles['commonvoice']],
-                        ['commonvoice-noise', datasetTitles['commonvoice-noise']]
-                    ];
-                } else if (datasetVariant === 'clean-blank') {
-                    datasetsToShow = [
-                        ['librispeech', datasetTitles['librispeech']],
-                        ['librispeech-blank', datasetTitles['librispeech-blank']],
-                        ['commonvoice', datasetTitles['commonvoice']],
-                        ['commonvoice-blank', datasetTitles['commonvoice-blank']]
-                    ];
-                } else if (datasetVariant === 'all') {
-                    datasetsToShow = [
-                        ['librispeech', datasetTitles['librispeech']],
-                        ['librispeech-noise', datasetTitles['librispeech-noise']],
-                        ['librispeech-blank', datasetTitles['librispeech-blank']],
-                        ['commonvoice', datasetTitles['commonvoice']],
-                        ['commonvoice-noise', datasetTitles['commonvoice-noise']],
-                        ['commonvoice-blank', datasetTitles['commonvoice-blank']]
-                    ];
-                }
+                datasetsToShow = [
+                    ['librispeech', datasetTitles['librispeech']],
+                    ['commonvoice', datasetTitles['commonvoice']]
+                ];
             } else {
-                if (datasetVariant === 'clean') {
-                    datasetsToShow = [[datasetType, datasetTitles[datasetType]]];
-                } else if (datasetVariant === 'clean-noise') {
-                    datasetsToShow = [
-                        [datasetType, datasetTitles[datasetType]],
-                        [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]]
-                    ];
-                } else if (datasetVariant === 'clean-blank') {
-                    datasetsToShow = [
-                        [datasetType, datasetTitles[datasetType]],
-                        [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
-                    ];
-                } else if (datasetVariant === 'all') {
-                    datasetsToShow = [
-                        [datasetType, datasetTitles[datasetType]],
-                        [`${datasetType}-noise`, datasetTitles[`${datasetType}-noise`]],
-                        [`${datasetType}-blank`, datasetTitles[`${datasetType}-blank`]]
-                    ];
-                }
+                datasetsToShow = [[datasetType, datasetTitles[datasetType]]];
             }
             
             for (const [dataset, title] of datasetsToShow) {
                 if (datasets[dataset]) {
                     const rows = datasets[dataset].files
-                        .map(fileId => createTableRow(dataset, fileId))
+                        .map(fileId => createTableRow(dataset, fileId, codecId, config))
                         .filter(row => row !== '')
                         .join('');
                     
                     if (rows) {
-                        const tableHeaders = createTableHeaders(dataset);
+                        const tableHeaders = createTableHeaders(dataset, codecId);
                         tablesHtml += `
                             <div class="dataset-section">
                                 <div class="dataset-title">${title}</div>
@@ -1229,30 +954,18 @@
         }
         
         // Event listeners
-        document.getElementById('lscodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('focalcodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('bigcodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('secousticodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('mimicodec-freq').addEventListener('change', renderModelSections);
-        document.getElementById('nanocodec-freq').addEventListener('change', function() {
-            toggleNanoCodecBitrate();
-            renderModelSections();
-        });
-        document.getElementById('nanocodec-bitrate').addEventListener('change', renderModelSections);
         document.getElementById('dataset-type').addEventListener('change', renderModelSections);
-        document.getElementById('dataset-variant').addEventListener('change', renderModelSections);
         document.getElementById('sample-count').addEventListener('change', renderModelSections);
         
         [
-            'show-lscodec', 'show-focalcodec', 'show-bigcodec', 'show-secousticodec', 
-            'show-mimicodec', 'show-nanocodec',
             'show-original', 'show-total', 'show-sample', 'show-error', 'show-config', 'show-dataset',
-            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 
+            'show-dwer', 'show-utmos', 'show-pesq', 'show-stoi', 'show-speaker-sim',
             'show-transcription', 'show-origin', 'show-inference'
         ].forEach(id => {
             document.getElementById(id).addEventListener('change', renderModelSections);
         });
         
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadAllCodecData();
         });

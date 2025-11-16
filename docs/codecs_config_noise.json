@@ -1,0 +1,34 @@
+{
+  "codecs": {
+    "LSCodec": {
+      "name": "LSCodec",
+      "displayName": "LSCodec",
+      "configurations": ["25Hz", "50Hz"],
+      "defaultConfig": "25Hz"
+    },
+    "FocalCodec": {
+      "name": "FocalCodec",
+      "displayName": "FocalCodec",
+      "configurations": ["12.5Hz", "25Hz", "50Hz"],
+      "defaultConfig": "12.5Hz"
+    },
+    "FocalCodec-S": {
+      "name": "FocalCodec-S",
+      "displayName": "FocalCodec-S",
+      "configurations": ["50Hz_2k", "50Hz_4k", "50Hz_65k"],
+      "defaultConfig": "50Hz_2k"
+    },
+    "BigCodec": {
+      "name": "BigCodec",
+      "displayName": "BigCodec",
+      "configurations": ["80Hz"],
+      "defaultConfig": "80Hz"
+    },
+    "NanoCodec": {
+      "name": "NanoCodec",
+      "displayName": "NanoCodec",
+      "configurations": ["12.5Hz_2k", "12.5Hz_4k", "21.5Hz_2k"],
+      "defaultConfig": "12.5Hz_2k"
+    }
+  }
+}

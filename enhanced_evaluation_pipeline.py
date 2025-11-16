@@ -56,7 +56,7 @@ class EnhancedCodecEvaluationPipeline:
         self.training_set = training_set
         self.testing_set = testing_set
         
-        self.metrics_to_compute = metrics_to_compute or ['dwer', 'dcer', 'utmos', 'pesq', 'stoi']
+        self.metrics_to_compute = metrics_to_compute or ['dwer', 'dcer', 'utmos', 'pesq', 'stoi', 'speaker_similarity']
         self.use_gpu = use_gpu
         self.gpu_id = gpu_id
         self.original_dir = Path(original_dir) if original_dir else None
@@ -123,7 +123,7 @@ class EnhancedCodecEvaluationPipeline:
                 raise ValueError(f"Unsupported dataset type: {self.dataset_type}")
             
             dataset_suffix = self.base_dataset_name.lower()
-            self.result_csv_path = self.result_dir / f"detailed_results_{self.model_name}_{self.dataset_type}_{dataset_suffix}.csv"
+            self.result_csv_path = self.result_dir / f"detailed_results_{self.model_name}_{self.frequency}_{self.dataset_type}_{dataset_suffix}.csv"
             
             print(f"Dataset name: {self.dataset_name}")
             print(f"Result CSV will be saved as: {self.result_csv_path}")
@@ -153,7 +153,7 @@ class EnhancedCodecEvaluationPipeline:
             'file_name', 'original_path', 'inference_path', 'ground_truth',
             'original_transcript_raw', 'inference_transcript_raw',
             'original_transcript', 'inference_transcript',
-            'utmos', 'pesq', 'stoi'
+            'utmos', 'pesq', 'stoi', 'speaker_similarity'
         ]
         
         if 'dwer' in self.metrics_to_compute:
@@ -205,7 +205,8 @@ class EnhancedCodecEvaluationPipeline:
             'dwer': 'dwer',
             'utmos': 'utmos',
             'pesq': 'pesq',
-            'stoi': 'stoi'
+            'stoi': 'stoi',
+            'speaker_similarity': 'speaker_similarity'
         }
         
         missing_metrics = []
@@ -293,15 +294,35 @@ class EnhancedCodecEvaluationPipeline:
         if 'stoi' in self.metrics_to_compute:
             results['stoi'] = evaluator.calculate_stoi(original_path, inference_path)
         
+        if 'speaker_similarity' in self.metrics_to_compute:
+            results['speaker_similarity'] = evaluator.calculate_speaker_similarity(original_path, inference_path)
+        
         return results
     
     def save_results(self, results_df: pd.DataFrame) -> None:
+        # 1. å®šç¾©æ‚¨è¦æ±‚çš„æ¬„ä½é †åº
+        desired_order = [
+            'file_name', 'original_path', 'inference_path', 'ground_truth',
+            'original_transcript_raw', 'inference_transcript_raw',
+            'original_transcript', 'inference_transcript',
+            'original_wer', 'inference_wer', 'dwer', 
+            'utmos', 'pesq', 'stoi', 'speaker_similarity'
+        ]
+
+        # 2. éŽæ¿¾å‡º DataFrame ä¸­å¯¦éš›å­˜åœ¨çš„æ¬„ä½ï¼Œä¸¦ç¢ºä¿é †åº
+        existing_cols = results_df.columns.tolist()
+        final_order = [col for col in desired_order if col in existing_cols]
+
+        # 3. é‡æ–°ç´¢å¼• DataFrame ä»¥ç¢ºä¿æ¬„ä½é †åº
+        results_df = results_df.reindex(columns=final_order)
+
+        # 4. å„²å­˜è©³ç´°çµæžœ
         detailed_csv_path = self.result_csv_path
         results_df.to_csv(detailed_csv_path, index=False, encoding='utf-8')
         print(f"Detailed results saved: {detailed_csv_path}")
         
         dataset_suffix = self.base_dataset_name.lower()
-        summary_csv_path = self.result_dir / f"summary_results_{self.model_name}_{self.dataset_type}_{dataset_suffix}.csv"
+        summary_csv_path = self.result_dir / f"summary_results_{self.model_name}_{self.frequency}_{self.dataset_type}_{dataset_suffix}.csv"
         summary_data = self.create_summary_statistics(results_df)
         
         if summary_data:
@@ -346,6 +367,8 @@ class EnhancedCodecEvaluationPipeline:
             metric_columns.append('pesq')
         if 'stoi' in self.metrics_to_compute:
             metric_columns.append('stoi')
+        if 'speaker_similarity' in self.metrics_to_compute:
+            metric_columns.append('speaker_similarity')
         
         for metric in metric_columns:
             if metric in results_df.columns:
@@ -418,6 +441,8 @@ class EnhancedCodecEvaluationPipeline:
             metrics_order.append('PESQ')
         if 'STOI_Count' in summary_data:
             metrics_order.append('STOI')
+        if 'SPEAKER_SIMILARITY_Count' in summary_data:
+            metrics_order.append('SPEAKER_SIMILARITY')
         
         for metric in metrics_order:
             count_key = f'{metric}_Count'
@@ -526,6 +551,12 @@ class EnhancedCodecEvaluationPipeline:
             'STOI': f"{valid_results['stoi'].mean():.2f}"
         }
         
+        # Add speaker_similarity to total stats if available
+        if 'speaker_similarity' in valid_results.columns:
+            speaker_sim_numeric = pd.to_numeric(valid_results['speaker_similarity'], errors='coerce')
+            if speaker_sim_numeric.notna().any():
+                total_stats['Speaker_Sim'] = f"{speaker_sim_numeric.mean():.2f}"
+        
         # Add computed metrics to total stats
         if 'dwer' in valid_results.columns:
             dwer_numeric = pd.to_numeric(valid_results['dwer'], errors='coerce')
@@ -552,6 +583,12 @@ class EnhancedCodecEvaluationPipeline:
                     'STOI': f"{row['stoi']:.2f}"
                 }
                 
+                # Add speaker_similarity to samples if available
+                if 'speaker_similarity' in row.index:
+                    speaker_sim_val = pd.to_numeric(row['speaker_similarity'], errors='coerce')
+                    if pd.notna(speaker_sim_val):
+                        sample_data['Speaker_Sim'] = f"{speaker_sim_val:.2f}"
+                
                 # Add computed metrics to samples
                 if 'dwer' in row.index:
                     dwer_val = pd.to_numeric(row['dwer'], errors='coerce')
@@ -577,6 +614,12 @@ class EnhancedCodecEvaluationPipeline:
                     'PESQ': f"{row['pesq']:.1f}",
                     'STOI': f"{row['stoi']:.2f}"
                 }
+                
+                # Add speaker_similarity to error sample if available
+                if 'speaker_similarity' in row.index:
+                    speaker_sim_val = pd.to_numeric(row['speaker_similarity'], errors='coerce')
+                    if pd.notna(speaker_sim_val):
+                        error_sample_data['Speaker_Sim'] = f"{speaker_sim_val:.2f}"
                 
                 # Add computed metrics to error sample
                 if 'dwer' in row.index:
@@ -915,9 +958,9 @@ def main():
                        help="Testing dataset description")
     
     parser.add_argument("--metrics", type=str, nargs='+', 
-                       choices=["dwer", "dcer", "utmos", "pesq", "stoi"],
-                       default=["dwer", "dcer", "utmos", "pesq", "stoi"],
-                       help="Metrics to compute")
+                       choices=["dwer", "dcer", "utmos", "pesq", "stoi", "speaker_similarity"],
+                       default=["dwer", "dcer", "utmos", "pesq", "stoi", "speaker_similarity"],
+                       help="Metrics to compute (dwer/dcer for ASR, utmos/pesq/stoi for quality, speaker_similarity for identity preservation)")
     
     parser.add_argument("--use_gpu", action="store_true", default=True,
                        help="Enable GPU acceleration")

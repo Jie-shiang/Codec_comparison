@@ -12,140 +12,154 @@
       "nParams": "159M"
     }
   },
-  "CommonVoice": {
-    "Total": {
-      "UTMOS": "2.8",
-      "PESQ": "2.2",
-      "STOI": "0.87",
-      "dCER": "0.10"
-    },
-    "Sample_1": {
-      "File_name": "common_voice_zh-TW_30162459",
-      "Transcription": "高雄市公车五甲干线",
-      "Origin": "高雄市公车五甲干线",
-      "Inference": "高雄市风车与脚踏线",
-      "UTMOS": "2.9",
-      "PESQ": "2.3",
-      "STOI": "0.89",
-      "dCER": "0.44"
-    },
-    "Sample_2": {
-      "File_name": "common_voice_zh-TW_24477793",
-      "Transcription": "肉！很多肉！",
-      "Origin": "肉很多肉",
-      "Inference": "肉很多肉",
-      "UTMOS": "2.3",
-      "PESQ": "2.6",
-      "STOI": "0.94",
-      "dCER": "0.00"
-    },
-    "Sample_3": {
-      "File_name": "common_voice_zh-TW_24478020",
-      "Transcription": "大家爱转传",
-      "Origin": "大家爱转传",
-      "Inference": "大家爱转传",
-      "UTMOS": "3.4",
-      "PESQ": "2.6",
-      "STOI": "0.94",
-      "dCER": "0.00"
-    },
-    "Sample_4": {
-      "File_name": "common_voice_zh-TW_25342071",
-      "Transcription": "结果很平和",
-      "Origin": "结果很平和",
-      "Inference": "結果很平和",
-      "UTMOS": "3.2",
-      "PESQ": "1.8",
-      "STOI": "0.55",
-      "dCER": "0.20"
-    },
-    "Sample_5": {
-      "File_name": "common_voice_zh-TW_20748925",
-      "Transcription": "英文数字请尽量转为中文",
-      "Origin": "英文数字请尽量转为中文",
-      "Inference": "英文数字请尽量转为中文",
-      "UTMOS": "3.2",
-      "PESQ": "2.3",
-      "STOI": "0.88",
-      "dCER": "0.00"
-    },
-    "Error_Sample_1": {
-      "File_name": "common_voice_zh-TW_26783758",
-      "Transcription": "位置接近",
-      "Origin": "位置接近",
-      "Inference": "为君皆济",
-      "UTMOS": "3.3",
-      "PESQ": "2.1",
-      "STOI": "0.87",
-      "dCER": "1.00"
-    }
-  },
   "LibriSpeech": {
     "Total": {
       "UTMOS": "4.1",
       "PESQ": "2.7",
       "STOI": "0.94",
-      "dWER": "0.02"
+      "Speaker_Sim": "0.84",
+      "dWER": "0.01"
     },
     "Sample_1": {
       "File_name": "61-70968-0000",
       "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Origin": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "Inference": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
-      "UTMOS": "4.0",
-      "PESQ": "2.1",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "UTMOS": "4.1",
+      "PESQ": "2.2",
       "STOI": "0.94",
+      "Speaker_Sim": "0.81",
       "dWER": "0.00"
     },
     "Sample_2": {
       "File_name": "121-121726-0000",
       "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Origin": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
-      "Inference": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVEMAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
       "UTMOS": "4.2",
       "PESQ": "2.7",
       "STOI": "0.95",
+      "Speaker_Sim": "0.87",
       "dWER": "0.00"
     },
     "Sample_3": {
       "File_name": "237-126133-0000",
       "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Origin": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
-      "Inference": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLYS FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
       "UTMOS": "4.4",
-      "PESQ": "3.0",
+      "PESQ": "2.9",
       "STOI": "0.96",
+      "Speaker_Sim": "0.94",
       "dWER": "0.00"
     },
     "Sample_4": {
-      "File_name": "260-123286-0000",
-      "Transcription": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Origin": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "Inference": "SATURDAY AUGUST 15TH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-      "UTMOS": "4.3",
-      "PESQ": "2.6",
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "4.2",
+      "PESQ": "2.4",
       "STOI": "0.94",
+      "Speaker_Sim": "0.78",
       "dWER": "0.00"
     },
     "Sample_5": {
       "File_name": "672-122797-0000",
       "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Origin": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
-      "Inference": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice little fir tree",
       "UTMOS": "4.4",
       "PESQ": "2.7",
       "STOI": "0.94",
+      "Speaker_Sim": "0.84",
       "dWER": "0.00"
     },
     "Error_Sample_1": {
-      "File_name": "121-121726-0011",
-      "Transcription": "HUSBAND THE NEXT THING TO A WIFE",
-      "Origin": "HUSBAND THE NEXT THING TO A WIFE",
-      "Inference": "THE NEXT THING TO A WIFE",
-      "UTMOS": "4.4",
-      "PESQ": "3.5",
-      "STOI": "0.97",
-      "dWER": "1.00"
+      "File_name": "237-134500-0011",
+      "Transcription": "AREN'T YOU SPLASHED LOOK AT THE SPIDER WEBS ALL OVER THE GRASS",
+      "Origin": "arent you splashed look at the spider webs all over the grass",
+      "Inference": "arent you splashed looked up at spiderwebs all over the grass",
+      "UTMOS": "3.6",
+      "PESQ": "2.2",
+      "STOI": "0.91",
+      "Speaker_Sim": "0.84",
+      "dWER": "0.42"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "2.8",
+      "PESQ": "1.3",
+      "STOI": "0.12",
+      "Speaker_Sim": "0.07",
+      "dCER": "0.09"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_26659271",
+      "Transcription": "两湖盆地是长江流域的心脏要地",
+      "Origin": "两湖盆地是长江流域的心脏药地",
+      "Inference": "两湖垦地是长江流域的心脏药地",
+      "UTMOS": "2.7",
+      "PESQ": "1.1",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.10",
+      "dCER": "0.07"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_26845552",
+      "Transcription": "选举公报的格式",
+      "Origin": "选举公报的格式",
+      "Inference": "选举官报的歌词",
+      "UTMOS": "2.9",
+      "PESQ": "1.2",
+      "STOI": "0.13",
+      "Speaker_Sim": "0.10",
+      "dCER": "0.43"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_35101245",
+      "Transcription": "照片会存入云端硬碟",
+      "Origin": "照片会存入云端硬碟",
+      "Inference": "方便和纯度云端静点",
+      "UTMOS": "1.6",
+      "PESQ": "2.6",
+      "STOI": "0.20",
+      "Speaker_Sim": "0.19",
+      "dCER": "0.78"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_24477678",
+      "Transcription": "冲突升高",
+      "Origin": "冲突升高",
+      "Inference": "冲突升高",
+      "UTMOS": "3.1",
+      "PESQ": "1.1",
+      "STOI": "0.36",
+      "Speaker_Sim": "0.08",
+      "dCER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_27420342",
+      "Transcription": "经过造山运动",
+      "Origin": "经过造山运动",
+      "Inference": "经过造山运动",
+      "UTMOS": "1.5",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.11",
+      "dCER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_27965977",
+      "Transcription": "二十四至三十日之间",
+      "Origin": "二十四至三十一期间",
+      "Inference": "hashishatshashnshiriyashirin",
+      "UTMOS": "2.1",
+      "PESQ": "1.4",
+      "STOI": "0.22",
+      "Speaker_Sim": "-0.00",
+      "dCER": "2.89"
     }
   }
 }

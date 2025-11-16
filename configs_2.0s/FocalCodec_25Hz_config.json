@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "FocalCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "N/A",
+    "testingSet": "N/A",
+    "bitRate": "0.33",
+    "parameters": {
+      "frameRate": "25",
+      "quantizers": "1",
+      "codebookSize": "8192",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech": {
+    "Total": {
+      "UTMOS": "3.9",
+      "PESQ": "1.2",
+      "STOI": "0.81",
+      "Speaker_Sim": "0.56",
+      "dWER": "0.02"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0000",
+      "Transcription": "HE BEGAN A CONFUSED COMPLAINT AGAINST THE WIZARD WHO HAD VANISHED BEHIND THE CURTAIN ON THE LEFT",
+      "Origin": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "Inference": "he began a confused complaint against the wizard who had vanished behind the curtain on the left",
+      "UTMOS": "4.2",
+      "PESQ": "1.1",
+      "STOI": "0.81",
+      "Speaker_Sim": "0.55",
+      "dWER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0000",
+      "Transcription": "ALSO A POPULAR CONTRIVANCE WHEREBY LOVE MAKING MAY BE SUSPENDED BUT NOT STOPPED DURING THE PICNIC SEASON",
+      "Origin": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "Inference": "also a popular contrivance whereby lovemaking may be suspended but not stopped during the picnic season",
+      "UTMOS": "3.5",
+      "PESQ": "1.1",
+      "STOI": "0.77",
+      "Speaker_Sim": "0.62",
+      "dWER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0000",
+      "Transcription": "HERE SHE WOULD STAY COMFORTED AND SOOTHED AMONG THE LOVELY PLANTS AND RICH EXOTICS REJOICING THE HEART OF OLD TURNER THE GARDENER WHO SINCE POLLY'S FIRST RAPTUROUS ENTRANCE HAD TAKEN HER INTO HIS GOOD GRACES FOR ALL TIME",
+      "Origin": "here she would stay comforted and soothed among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "Inference": "here she would stay comfort and soothe among the lovely plants and rich exotics rejoicing the heart of old turner the gardener who since pollys first rapturous entrance had taken her into his good graces for all time",
+      "UTMOS": "3.8",
+      "PESQ": "1.1",
+      "STOI": "0.79",
+      "Speaker_Sim": "0.71",
+      "dWER": "0.05"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "4.2",
+      "PESQ": "1.2",
+      "STOI": "0.83",
+      "Speaker_Sim": "0.48",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0000",
+      "Transcription": "OUT IN THE WOODS STOOD A NICE LITTLE FIR TREE",
+      "Origin": "out in the woods stood a nice little fir tree",
+      "Inference": "out in the woods stood a nice little fir tree",
+      "UTMOS": "3.8",
+      "PESQ": "1.4",
+      "STOI": "0.83",
+      "Speaker_Sim": "0.67",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "6930-76324-0025",
+      "Transcription": "WHY IT'S GOLIATH AS USUAL THEY BOTH CRIED PEERING IN",
+      "Origin": "why its goliath as usual they both cried peering in",
+      "Inference": "why its goliath i see it was you all that both cried tearing in",
+      "UTMOS": "2.8",
+      "PESQ": "1.1",
+      "STOI": "0.74",
+      "Speaker_Sim": "0.45",
+      "dWER": "0.80"
+    }
+  },
+  "CommonVoice": {
+    "Total": {
+      "UTMOS": "3.2",
+      "PESQ": "1.2",
+      "STOI": "0.73",
+      "Speaker_Sim": "0.48",
+      "dCER": "0.25"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_17382475",
+      "Transcription": "我总想著前面也许会有更好的",
+      "Origin": "我总想着前面也许会有更好的",
+      "Inference": "我总想着前面也许会有更好的",
+      "UTMOS": "3.1",
+      "PESQ": "1.1",
+      "STOI": "0.68",
+      "Speaker_Sim": "0.43",
+      "dCER": "0.00"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_17382798",
+      "Transcription": "听到这消息",
+      "Origin": "听到这消息",
+      "Inference": "听到这消息",
+      "UTMOS": "3.4",
+      "PESQ": "1.1",
+      "STOI": "0.78",
+      "Speaker_Sim": "0.34",
+      "dCER": "0.00"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_17382870",
+      "Transcription": "证明文件应经审查并妥善保存",
+      "Origin": "证明文件应经审查并妥善保存",
+      "Inference": "证明文件因精神查病妥善保存",
+      "UTMOS": "3.8",
+      "PESQ": "1.2",
+      "STOI": "0.80",
+      "Speaker_Sim": "0.58",
+      "dCER": "0.31"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_17382928",
+      "Transcription": "她开始想搬回乡下住",
+      "Origin": "他开始想搬回乡下住",
+      "Inference": "他开始想搬回乡下住",
+      "UTMOS": "3.5",
+      "PESQ": "1.5",
+      "STOI": "0.80",
+      "Speaker_Sim": "0.46",
+      "dCER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_17383201",
+      "Transcription": "经过接近一年的治疗",
+      "Origin": "经过接近一年的治疗",
+      "Inference": "经过接近一年的治疗",
+      "UTMOS": "3.6",
+      "PESQ": "1.2",
+      "STOI": "0.78",
+      "Speaker_Sim": "0.39",
+      "dCER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_19313781",
+      "Transcription": "现在要达到如何程度",
+      "Origin": "现在要达到如何程度",
+      "Inference": "我今天是在澳大利亚访问的我今天是在澳大利亚访问的",
+      "UTMOS": "1.3",
+      "PESQ": "1.1",
+      "STOI": "0.48",
+      "Speaker_Sim": "0.25",
+      "dCER": "2.56"
+    }
+  }
+}

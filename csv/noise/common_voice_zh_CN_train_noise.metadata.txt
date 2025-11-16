@@ -1,0 +1,38 @@
+============================================================
+✓ Noise dataset preparation completed!
+============================================================
+Total files: 904
+Output dir: /mnt/Internal/jieshiang/Noise_Result/commonvoice
+CSV: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/noise/common_voice_zh_CN_train_noise.csv
+Metadata: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/noise/common_voice_zh_CN_train_noise.metadata.json
+
+SNR distribution:
+count    904.000000
+mean       9.913013
+std        2.937939
+min        5.046320
+25%        7.287593
+50%        9.999792
+75%       12.475055
+max       14.997177
+Name: snr_db, dtype: float64
+
+Noise type distribution:
+noise_type
+free-sound     815
+sound-bible     89
+Name: count, dtype: int64
+
+{
+  "source_csv": "/home/jieshiang/Desktop/GitHub/Codec_comparison/csv/common_voice_zh_CN_train_filtered.csv",
+  "original_dir": "/mnt/Internal/ASR",
+  "output_dir": "/mnt/Internal/jieshiang/Noise_Result/commonvoice",
+  "musan_dir": "/mnt/External/ASR/musan/noise",
+  "n_per_speaker": 7,
+  "snr_range": [
+    5.0,
+    15.0
+  ],
+  "seed": 42,
+  "total_samples": 904
+}

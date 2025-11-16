@@ -1,0 +1,165 @@
+{
+  "model_info": {
+    "modelName": "NanoCodec",
+    "causality": "Non-Causal",
+    "trainingSet": "Common Voice 3200 hrs + MLS English 25500 hrs",
+    "testingSet": "MLS test set + DAPS clean dataset",
+    "bitRate": "1.78",
+    "parameters": {
+      "frameRate": "12.5_4k",
+      "quantizers": "13",
+      "codebookSize": "2016",
+      "nParams": "N/A"
+    }
+  },
+  "LibriSpeech_Noise": {
+    "Total": {
+      "UTMOS": "2.8",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.13",
+      "dWER": "0.20"
+    },
+    "Sample_1": {
+      "File_name": "61-70968-0003",
+      "Transcription": "HE WAS LIKE UNTO MY FATHER IN A WAY AND YET WAS NOT MY FATHER",
+      "Origin": "he was like unto my father in a way and yet was not my father",
+      "Inference": "he was not my father in a way and yet was not her father",
+      "UTMOS": "2.9",
+      "PESQ": "1.0",
+      "STOI": "0.17",
+      "Speaker_Sim": "0.21",
+      "dWER": "0.20"
+    },
+    "Sample_2": {
+      "File_name": "121-121726-0003",
+      "Transcription": "HAY FEVER A HEART TROUBLE CAUSED BY FALLING IN LOVE WITH A GRASS WIDOW",
+      "Origin": "hay fever a heart trouble caused by falling in love with a grass widow",
+      "Inference": "hay fever a hard trouble call how i call any love with a grass and a dew",
+      "UTMOS": "2.8",
+      "PESQ": "1.0",
+      "STOI": "0.06",
+      "Speaker_Sim": "0.13",
+      "dWER": "0.64"
+    },
+    "Sample_3": {
+      "File_name": "237-126133-0001",
+      "Transcription": "EVERY CHANCE SHE COULD STEAL AFTER PRACTICE HOURS WERE OVER AND AFTER THE CLAMOROUS DEMANDS OF THE BOYS UPON HER TIME WERE FULLY SATISFIED WAS SEIZED TO FLY ON THE WINGS OF THE WIND TO THE FLOWERS",
+      "Origin": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "Inference": "every chance she could steal after practice hours were over and after the clamorous demands of the boys upon her time were fully satisfied was seized to fly on the wings of the wind to the flowers",
+      "UTMOS": "3.6",
+      "PESQ": "1.0",
+      "STOI": "0.12",
+      "Speaker_Sim": "0.07",
+      "dWER": "0.00"
+    },
+    "Sample_4": {
+      "File_name": "260-123286-0001",
+      "Transcription": "THE HORIZON SEEMS EXTREMELY DISTANT",
+      "Origin": "the horizon seems extremely distant",
+      "Inference": "the horizon seems extremely distant",
+      "UTMOS": "3.0",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.17",
+      "dWER": "0.00"
+    },
+    "Sample_5": {
+      "File_name": "672-122797-0003",
+      "Transcription": "BUT THIS WAS WHAT THE TREE COULD NOT BEAR TO HEAR",
+      "Origin": "but this was what the tree could not bear to hear",
+      "Inference": "but this was what the tree could not bear to hear",
+      "UTMOS": "2.8",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.20",
+      "dWER": "0.00"
+    },
+    "Error_Sample_1": {
+      "File_name": "4992-23283-0009",
+      "Transcription": "OH MY LORD CRIED MISS WOODLEY WITH A MOST FORCIBLE ACCENT YOU ARE THE LAST PERSON ON EARTH SHE WOULD PARDON ME FOR ENTRUSTING",
+      "Origin": "oh my lord cried miss woodley with a most forcible accent you are the last person on earth she would pardon me for entrusting",
+      "Inference": "oh my lord i understand that the movement always a pollution of life isnt it and you are the last curtain on earth to do it hard and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and and",
+      "UTMOS": "2.4",
+      "PESQ": "1.0",
+      "STOI": "0.16",
+      "Speaker_Sim": "0.16",
+      "dWER": "18.04"
+    }
+  },
+  "CommonVoice_Noise": {
+    "Total": {
+      "UTMOS": "2.1",
+      "PESQ": "1.0",
+      "STOI": "0.10",
+      "Speaker_Sim": "0.16",
+      "dCER": "0.54"
+    },
+    "Sample_1": {
+      "File_name": "common_voice_zh-TW_19485265",
+      "Transcription": "大家都以为自己才是对的",
+      "Origin": "大家都以为自己才是对的",
+      "Inference": "大家都以为矿井才是对的",
+      "UTMOS": "2.0",
+      "PESQ": "1.0",
+      "STOI": "0.07",
+      "Speaker_Sim": "0.06",
+      "dCER": "0.18"
+    },
+    "Sample_2": {
+      "File_name": "common_voice_zh-TW_19485305",
+      "Transcription": "坚持理念，逐渐站稳脚步",
+      "Origin": "坚持理念逐渐站稳脚步",
+      "Inference": "这些理念如今站稳脚步了",
+      "UTMOS": "2.4",
+      "PESQ": "1.0",
+      "STOI": "0.08",
+      "Speaker_Sim": "0.07",
+      "dCER": "0.50"
+    },
+    "Sample_3": {
+      "File_name": "common_voice_zh-TW_19485275",
+      "Transcription": "更蕴含极高的商业价值",
+      "Origin": "更蕴含极高的商业价值",
+      "Inference": "更运善极高的商业战",
+      "UTMOS": "1.4",
+      "PESQ": "1.1",
+      "STOI": "0.11",
+      "Speaker_Sim": "0.15",
+      "dCER": "0.40"
+    },
+    "Sample_4": {
+      "File_name": "common_voice_zh-TW_19485323",
+      "Transcription": "看到很废的文章的时候",
+      "Origin": "看到很废的文章的时候",
+      "Inference": "看到很累的文章的时候",
+      "UTMOS": "2.3",
+      "PESQ": "1.0",
+      "STOI": "0.22",
+      "Speaker_Sim": "0.09",
+      "dCER": "0.10"
+    },
+    "Sample_5": {
+      "File_name": "common_voice_zh-TW_19485322",
+      "Transcription": "指定建筑线之现有巷道",
+      "Origin": "指定建筑线之线有相当",
+      "Inference": "指定建筑线之线也很像了",
+      "UTMOS": "2.8",
+      "PESQ": "1.0",
+      "STOI": "0.01",
+      "Speaker_Sim": "0.14",
+      "dCER": "0.20"
+    },
+    "Error_Sample_1": {
+      "File_name": "common_voice_zh-TW_17587437",
+      "Transcription": "一杯才台币六十五",
+      "Origin": "一杯彩台币65",
+      "Inference": "可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以可以而且",
+      "UTMOS": "2.3",
+      "PESQ": "1.0",
+      "STOI": "0.17",
+      "Speaker_Sim": "0.12",
+      "dCER": "86.50"
+    }
+  }
+}
