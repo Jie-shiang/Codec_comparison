@@ -563,13 +563,26 @@
             if (!fileId || fileId === 'Total') {
                 return '';
             }
-            
-            const actualFileName = codecLoader.getCodecData(dataset, codecId, config, fileId, 'filename');
-            if (!actualFileName) {
-                console.warn(`No File_name found for ${fileId} in ${dataset}`);
-                return '';
+
+            let actualFileName = fileId;
+
+            let dataFileName = codecLoader.getCodecData(dataset, codecId, config, fileId, 'filename');
+
+            if (!dataFileName) {
+                const firstCodecId = Object.keys(codecsConfig).find(id => document.getElementById(`show-${id.toLowerCase()}`)?.checked);
+                
+                if (firstCodecId) {
+                    const firstConfig = document.getElementById(`${firstCodecId.toLowerCase()}-freq`)?.value;
+                    dataFileName = codecLoader.getCodecData(dataset, firstCodecId, firstConfig, fileId, 'filename');
+                }
             }
-            
+
+            if (dataFileName) {
+                actualFileName = dataFileName;
+            } else {
+                console.warn(`No File_name found for ${fileId} in ${dataset} using any loaded codec data.`);
+                return ''; 
+            }
             return codecLoader.getAudioPath(dataset, codecId, config, actualFileName);
         }
 
