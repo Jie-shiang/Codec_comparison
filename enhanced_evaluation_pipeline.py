@@ -305,7 +305,8 @@ class EnhancedCodecEvaluationPipeline:
             'file_name', 'original_path', 'inference_path', 'ground_truth',
             'original_transcript_raw', 'inference_transcript_raw',
             'original_transcript', 'inference_transcript',
-            'original_wer', 'inference_wer', 'dwer', 
+            'original_wer', 'inference_wer', 'dwer',
+            'original_cer', 'inference_cer', 'dcer',
             'utmos', 'pesq', 'stoi', 'speaker_similarity'
         ]
 

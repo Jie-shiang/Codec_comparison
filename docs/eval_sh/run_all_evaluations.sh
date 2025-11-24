@@ -372,4 +372,48 @@ python fast_evaluation_pipeline.py \
     --num_workers 32  \
     --asr_batch_size 64
 
+# 17. BigCodec 80Hz - LibriSpeech
+echo "Running 16/16: FocalCodec-S 50Hz_65k - Common Voice"
+python fast_evaluation_pipeline.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/BigCodec/80Hz/librispeech \
+    --csv_file librispeech_test_clean_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "BigCodec" \
+    --frequency "80Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.04" \
+    --quantizers "1" \
+    --codebook_size "8192" \
+    --n_params "159M" \
+    --training_set "LibriSpeech" \
+    --testing_set "LibriSpeech + test-clean + MLS" \
+    --metrics dwer utmos pesq stoi speaker_similarity \
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 2 \
+    --num_workers 32  \
+    --asr_batch_size 64
+
+# 18. BigCodec 80Hz - Common Voice
+echo "Running 16/16: FocalCodec-S 50Hz_65k - Common Voice"
+python fast_evaluation_pipeline.py \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/BigCodec/80Hz/commonvoice_test \
+    --csv_file common_voice_zh_CN_train_filtered.csv \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "BigCodec" \
+    --frequency "80Hz" \
+    --causality "Non-Causal" \
+    --bit_rate "1.04" \
+    --quantizers "1" \
+    --codebook_size "8192" \
+    --n_params "159M" \
+    --training_set "LibriSpeech" \
+    --testing_set "LibriSpeech + test-clean + MLS" \
+    --metrics dcer utmos pesq stoi speaker_similarity \
+    --dataset_type "clean" \
+    --use_gpu \
+    --gpu_id 2 \
+    --num_workers 32  \
+    --asr_batch_size 64
+
 echo "All 16 evaluation commands completed."
