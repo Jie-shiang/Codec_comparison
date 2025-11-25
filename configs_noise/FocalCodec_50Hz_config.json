@@ -161,5 +161,10 @@
       "Speaker_Sim": "0.53",
       "dCER": "1.62"
     }
+  },
+  "CommonVoice": {
+    "Total": {
+      "dCER": "0.17"
+    }
   }
 }

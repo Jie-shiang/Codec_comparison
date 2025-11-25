@@ -291,13 +291,11 @@ class AudioMetricsEvaluator:
             return 1.0
 
     def fast_cer(self, reference: str, hypothesis: str) -> float:
-        """Fast CER calculation using Levenshtein distance"""
+        """Fast CER calculation using jiwer"""
         try:
             if not reference or not hypothesis:
                 return 1.0
-            
-            distance = Levenshtein.distance(reference, hypothesis)
-            return distance / max(len(reference), 1)
+            return jiwer.cer(reference, hypothesis)
         except Exception as e:
             print(f"Error calculating CER: {e}")
             return 1.0

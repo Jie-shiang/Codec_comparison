@@ -93,7 +93,7 @@
       "PESQ": "1.1",
       "STOI": "0.13",
       "Speaker_Sim": "0.29",
-      "dCER": "1.14"
+      "dCER": "1.13"
     },
     "Sample_1": {
       "File_name": "common_voice_zh-TW_17382475",
