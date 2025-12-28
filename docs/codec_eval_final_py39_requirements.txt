@@ -1,0 +1,33 @@
+# 此列表涵蓋了所有 Python 腳本中導入的核心套件，包括 nisqa 和 wespeaker。
+# PyTorch/Torchaudio/Torchvision 應優先通過 Conda 搭配 CUDA 安裝。
+
+# --- ASR & Transformers ---
+transformers>=4.30.0
+accelerate>=0.20.0
+
+# --- 語音/音訊品質評估模型 (V1 & V2) ---
+nisqa                    # 來自 metrics_evaluator_v2.py (要求 Python >= 3.9)
+wespeaker @ git+https://github.com/wenet-e2e/wespeaker.git@master
+speechbrain>=0.5.15      # 來自 metrics_evaluator.py (用於 V1 語者相似度)
+modelscope               # 來自 metrics_evaluator_v2.py (用於 Paraformer, CAM++, RAMP)
+
+# --- 訊號品質與處理 ---
+pesq>=0.0.4
+pystoi>=0.3.3
+librosa>=0.10.0
+soundfile>=0.12.0
+
+# --- ASR Metrics ---
+jiwer>=3.0.0
+python-Levenshtein>=0.21.0
+
+# --- 中文文本處理 ---
+opencc-python-reimplemented>=0.1.7
+cn2an>=0.5.22
+
+# --- 資料科學核心庫 ---
+pandas>=1.5.0
+numpy>=1.23.0
+scipy>=1.10.0
+tqdm>=4.65.0
+PyYAML                   # 許多底層模型配置的間接依賴

@@ -1,0 +1,51 @@
+======================================================================
+Speaker Similarity Baseline Report V2 - COMMONVOICE
+======================================================================
+
+Dataset: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/common_voice_zh_CN_train_filtered.csv
+Language: zh
+Model: CAM++ (FunASR)
+Number of speakers: 141
+Max positive pairs per speaker: 20
+Negative speakers sampled per speaker: 5
+
+----------------------------------------------------------------------
+POSITIVE SAMPLES (Same Speaker - Intra-speaker)
+----------------------------------------------------------------------
+  Count: 2,381 pairs
+  Mean: 0.6529 ± 0.1411
+  Median: 0.6865
+  Range: [0.0542, 0.9026]
+
+  Percentiles:
+    5th:  0.3531
+    25th: 0.5813
+    75th: 0.7562
+    95th: 0.8217
+
+----------------------------------------------------------------------
+NEGATIVE SAMPLES (Different Speakers - Inter-speaker)
+----------------------------------------------------------------------
+  Count: 705 pairs
+  Mean: 0.1486 ± 0.1139
+  Median: 0.1417
+  Range: [-0.1830, 0.5482]
+
+  Percentiles:
+    5th:  -0.0264
+    25th: 0.0679
+    75th: 0.2276
+    95th: 0.3390
+
+======================================================================
+SUGGESTED THRESHOLDS FOR CODEC EVALUATION
+======================================================================
+  Conservative (Pos mean - 1*std): 0.5118
+  Moderate (Pos mean - 2*std):     0.3707
+  Percentile-based (Pos 5th):      0.3531
+
+Interpretation:
+  - Codec similarity should ideally be > Conservative threshold
+  - Values below Moderate threshold indicate significant degradation
+  - Compare codec mean similarity against these thresholds
+======================================================================

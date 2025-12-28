@@ -1,0 +1,51 @@
+======================================================================
+Speaker Similarity Baseline Report V2 - LIBRISPEECH
+======================================================================
+
+Dataset: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/librispeech_test_clean_filtered.csv
+Language: en
+Model: ResNet3 (WeSpeaker)
+Number of speakers: 40
+Max positive pairs per speaker: 20
+Negative speakers sampled per speaker: 5
+
+----------------------------------------------------------------------
+POSITIVE SAMPLES (Same Speaker - Intra-speaker)
+----------------------------------------------------------------------
+  Count: 800 pairs
+  Mean: 0.7827 ± 0.1005
+  Median: 0.8046
+  Range: [0.2557, 0.9510]
+
+  Percentiles:
+    5th:  0.5679
+    25th: 0.7311
+    75th: 0.8496
+    95th: 0.9090
+
+----------------------------------------------------------------------
+NEGATIVE SAMPLES (Different Speakers - Inter-speaker)
+----------------------------------------------------------------------
+  Count: 200 pairs
+  Mean: 0.0749 ± 0.0962
+  Median: 0.0667
+  Range: [-0.1808, 0.3940]
+
+  Percentiles:
+    5th:  -0.0699
+    25th: 0.0176
+    75th: 0.1239
+    95th: 0.2550
+
+======================================================================
+SUGGESTED THRESHOLDS FOR CODEC EVALUATION
+======================================================================
+  Conservative (Pos mean - 1*std): 0.6822
+  Moderate (Pos mean - 2*std):     0.5816
+  Percentile-based (Pos 5th):      0.5679
+
+Interpretation:
+  - Codec similarity should ideally be > Conservative threshold
+  - Values below Moderate threshold indicate significant degradation
+  - Compare codec mean similarity against these thresholds
+======================================================================

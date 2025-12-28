@@ -1,0 +1,33 @@
+{
+  "dataset": "librispeech",
+  "language": "en",
+  "model": "ResNet3 (WeSpeaker)",
+  "csv_path": "/home/jieshiang/Desktop/GitHub/Codec_comparison/csv/librispeech_test_clean_filtered.csv",
+  "num_speakers": 40,
+  "max_positive_pairs": 20,
+  "num_negative_speakers": 5,
+  "positive_distribution": {
+    "count": 800,
+    "mean": 0.7826857162837006,
+    "std": 0.10052636581619913,
+    "median": 0.8045915006057623,
+    "min": 0.25573654101072196,
+    "max": 0.9510083991626754,
+    "percentile_5": 0.5678714540917225,
+    "percentile_25": 0.7311131650718424,
+    "percentile_75": 0.8496493637220736,
+    "percentile_95": 0.9089663682581529
+  },
+  "negative_distribution": {
+    "count": 200,
+    "mean": 0.0748616406277837,
+    "std": 0.09624258844372206,
+    "median": 0.06670771328906494,
+    "min": -0.18080269076425637,
+    "max": 0.3940302904672943,
+    "percentile_5": -0.06990047056335687,
+    "percentile_25": 0.017558432776369343,
+    "percentile_75": 0.12393652371326802,
+    "percentile_95": 0.2550450603308331
+  }
+}

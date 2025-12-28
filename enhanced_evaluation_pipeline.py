@@ -18,14 +18,15 @@ from tqdm import tqdm
 from datetime import datetime
 import time
 
-from metrics_evaluator import AudioMetricsEvaluator
+# Conditional import based on metrics version
+# Will be set in __init__ based on use_v2_metrics flag
 
 class EnhancedCodecEvaluationPipeline:
     """Enhanced evaluation pipeline with selective metric calculation"""
     
-    def __init__(self, 
+    def __init__(self,
                  inference_dir: str,
-                 csv_file: str, 
+                 csv_file: str,
                  model_name: str,
                  frequency: str,
                  causality: str,
@@ -33,7 +34,7 @@ class EnhancedCodecEvaluationPipeline:
                  dataset_type: str = "clean",
                  project_dir: str = "/home/jieshiang/Desktop/GitHub/Codec_comparison",
                  quantizers: str = "4",
-                 codebook_size: str = "1024", 
+                 codebook_size: str = "1024",
                  n_params: str = "45M",
                  training_set: str = "Custom Dataset",
                  testing_set: str = "Custom Test Set",
@@ -41,7 +42,9 @@ class EnhancedCodecEvaluationPipeline:
                  use_gpu: bool = True,
                  gpu_id: int = 0,
                  original_dir: str = None,
-                 language: str = None):
+                 language: str = None,
+                 use_v2_metrics: bool = False,
+                 output_base_dir: str = None):
         
         self.inference_dir = Path(inference_dir)
         self.csv_file = Path(project_dir) / "csv" / csv_file
@@ -56,11 +59,25 @@ class EnhancedCodecEvaluationPipeline:
         self.training_set = training_set
         self.testing_set = testing_set
         
-        self.metrics_to_compute = metrics_to_compute or ['dwer', 'dcer', 'utmos', 'pesq', 'stoi', 'speaker_similarity']
+        # V2 metrics support
+        self.use_v2_metrics = use_v2_metrics
+
+        # Import appropriate evaluator based on version
+        if self.use_v2_metrics:
+            from metrics_evaluator_v2 import AudioMetricsEvaluatorV2
+            self.EvaluatorClass = AudioMetricsEvaluatorV2
+            # Update default metrics for V2
+            default_metrics = ['dwer', 'dcer', 'MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi', 'speaker_similarity']
+        else:
+            from metrics_evaluator import AudioMetricsEvaluator
+            self.EvaluatorClass = AudioMetricsEvaluator
+            default_metrics = ['dwer', 'dcer', 'utmos', 'pesq', 'stoi', 'speaker_similarity']
+
+        self.metrics_to_compute = metrics_to_compute or default_metrics
         self.use_gpu = use_gpu
         self.gpu_id = gpu_id
         self.original_dir = Path(original_dir) if original_dir else None
-        
+
         # Auto-detect language if not specified
         if language:
             self.language = language
@@ -71,12 +88,17 @@ class EnhancedCodecEvaluationPipeline:
                 self.language = 'zh'
             else:
                 self.language = 'en'
-        
-        self.project_dir = Path(project_dir)
+
+        # Use custom output directory if provided (for V2 metrics)
+        if output_base_dir:
+            self.project_dir = Path(output_base_dir)
+        else:
+            self.project_dir = Path(project_dir)
+
         self.result_dir = self.project_dir / "result"
-        self.audio_dir = self.project_dir / "audio" 
+        self.audio_dir = self.project_dir / "audio"
         self.config_dir = self.project_dir / "configs"
-        
+
         self.result_dir.mkdir(parents=True, exist_ok=True)
         self.audio_dir.mkdir(parents=True, exist_ok=True)
         self.config_dir.mkdir(parents=True, exist_ok=True)
@@ -90,6 +112,7 @@ class EnhancedCodecEvaluationPipeline:
         self.result_csv_path = None
         
         print(f"Initializing enhanced evaluation pipeline:")
+        print(f"  Metrics Version: {'V2 (Language-Specific Models)' if self.use_v2_metrics else 'V1 (Original Models)'}")
         print(f"  Model: {self.model_name}")
         print(f"  Frequency: {self.frequency}")
         print(f"  Dataset type: {self.dataset_type}")
@@ -101,6 +124,8 @@ class EnhancedCodecEvaluationPipeline:
         if self.original_dir:
             print(f"  Original files directory: {self.original_dir}")
         print(f"  Inference directory: {self.inference_dir}")
+        if output_base_dir:
+            print(f"  Output base directory: {self.project_dir}")
         
     def load_csv_data(self):
         try:
@@ -152,24 +177,29 @@ class EnhancedCodecEvaluationPipeline:
         columns = [
             'file_name', 'original_path', 'inference_path', 'ground_truth',
             'original_transcript_raw', 'inference_transcript_raw',
-            'original_transcript', 'inference_transcript',
-            'utmos', 'pesq', 'stoi', 'speaker_similarity'
+            'original_transcript', 'inference_transcript'
         ]
-        
+
+        # Add V1 or V2 specific metrics
+        if self.use_v2_metrics:
+            columns.extend(['MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi', 'speaker_similarity'])
+        else:
+            columns.extend(['utmos', 'pesq', 'stoi', 'speaker_similarity'])
+
         if 'dwer' in self.metrics_to_compute:
             columns.extend(['original_wer', 'inference_wer', 'dwer'])
-        
+
         if 'dcer' in self.metrics_to_compute:
             columns.extend(['original_cer', 'inference_cer', 'dcer'])
-        
+
         result_df = pd.DataFrame(index=range(len(input_df)))
         for col in columns:
             result_df[col] = np.nan
-        
+
         result_df['file_name'] = input_df['file_name'].values
         result_df['ground_truth'] = input_df['transcription'].values
         result_df['original_path'] = input_df['file_path'].values
-        
+
         return result_df
     
     def resolve_original_path(self, csv_path: str) -> Path:
@@ -243,8 +273,8 @@ class EnhancedCodecEvaluationPipeline:
         
         return existing_df
     
-    def evaluate_metrics_selectively(self, evaluator: AudioMetricsEvaluator, 
-                                original_path: str, inference_path: str, 
+    def evaluate_metrics_selectively(self, evaluator,
+                                original_path: str, inference_path: str,
                                 ground_truth: str) -> dict:
         results = {}
         
@@ -285,18 +315,27 @@ class EnhancedCodecEvaluationPipeline:
                         results['inference_cer'] = asr_result.get('inference_cer', np.nan)
                         results['dcer'] = asr_result.get('dcer', np.nan)
         
+        # V1 metrics (old)
         if 'utmos' in self.metrics_to_compute:
             results['utmos'] = evaluator.calculate_utmos(inference_path)
-        
+
+        # V2 metrics (new)
+        if 'MOS_Quality' in self.metrics_to_compute:
+            results['MOS_Quality'] = evaluator.calculate_mos_quality(inference_path)
+
+        if 'MOS_Naturalness' in self.metrics_to_compute:
+            results['MOS_Naturalness'] = evaluator.calculate_mos_naturalness(inference_path)
+
+        # Common metrics
         if 'pesq' in self.metrics_to_compute:
             results['pesq'] = evaluator.calculate_pesq(original_path, inference_path)
-        
+
         if 'stoi' in self.metrics_to_compute:
             results['stoi'] = evaluator.calculate_stoi(original_path, inference_path)
-        
+
         if 'speaker_similarity' in self.metrics_to_compute:
             results['speaker_similarity'] = evaluator.calculate_speaker_similarity(original_path, inference_path)
-        
+
         return results
     
     def save_results(self, results_df: pd.DataFrame) -> None:
@@ -307,7 +346,7 @@ class EnhancedCodecEvaluationPipeline:
             'original_transcript', 'inference_transcript',
             'original_wer', 'inference_wer', 'dwer',
             'original_cer', 'inference_cer', 'dcer',
-            'utmos', 'pesq', 'stoi', 'speaker_similarity'
+            'MOS_Quality', 'MOS_Naturalness', 'utmos', 'pesq', 'stoi', 'speaker_similarity'
         ]
 
         # 2. éŽæ¿¾å‡º DataFrame ä¸­å¯¦éš›å­˜åœ¨çš„æ¬„ä½ï¼Œä¸¦ç¢ºä¿é †åº
@@ -364,6 +403,10 @@ class EnhancedCodecEvaluationPipeline:
             metric_columns.append('dcer')
         if 'utmos' in self.metrics_to_compute:
             metric_columns.append('utmos')
+        if 'MOS_Quality' in self.metrics_to_compute:
+            metric_columns.append('MOS_Quality')
+        if 'MOS_Naturalness' in self.metrics_to_compute:
+            metric_columns.append('MOS_Naturalness')
         if 'pesq' in self.metrics_to_compute:
             metric_columns.append('pesq')
         if 'stoi' in self.metrics_to_compute:
@@ -504,9 +547,21 @@ class EnhancedCodecEvaluationPipeline:
         else:
             metric_col = available_metrics[0]
             primary_metric = 'dWER' if metric_col == 'dwer' else 'dCER'
-        
-        valid_results = results_df.dropna(subset=['utmos', 'pesq', 'stoi'])
-        
+
+        # Determine which quality metrics to check based on version
+        if self.use_v2_metrics:
+            quality_metrics = ['MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi']
+        else:
+            quality_metrics = ['utmos', 'pesq', 'stoi']
+
+        # Only check metrics that exist in the dataframe
+        existing_quality_metrics = [m for m in quality_metrics if m in results_df.columns]
+
+        if existing_quality_metrics:
+            valid_results = results_df.dropna(subset=existing_quality_metrics)
+        else:
+            valid_results = results_df
+
         if len(valid_results) == 0:
             print("Warning: No valid results found for config generation")
             return existing_config
@@ -546,24 +601,41 @@ class EnhancedCodecEvaluationPipeline:
 
     def generate_dataset_section(self, valid_results: pd.DataFrame, metric_name: str, metric_col: str, available_metrics: list = None) -> dict:
         """Generate dataset section with samples"""
-        total_stats = {
-            'UTMOS': f"{valid_results['utmos'].mean():.1f}",
-            'PESQ': f"{valid_results['pesq'].mean():.1f}",
-            'STOI': f"{valid_results['stoi'].mean():.2f}"
-        }
-        
+        total_stats = {}
+
+        # Add UTMOS or MOS metrics (V1 vs V2)
+        if 'utmos' in valid_results.columns:
+            total_stats['UTMOS'] = f"{valid_results['utmos'].mean():.1f}"
+
+        if 'MOS_Quality' in valid_results.columns:
+            mos_quality_numeric = pd.to_numeric(valid_results['MOS_Quality'], errors='coerce')
+            if mos_quality_numeric.notna().any():
+                total_stats['MOS_Quality'] = f"{mos_quality_numeric.mean():.1f}"
+
+        if 'MOS_Naturalness' in valid_results.columns:
+            mos_naturalness_numeric = pd.to_numeric(valid_results['MOS_Naturalness'], errors='coerce')
+            if mos_naturalness_numeric.notna().any():
+                total_stats['MOS_Naturalness'] = f"{mos_naturalness_numeric.mean():.1f}"
+
+        # Add PESQ and STOI
+        if 'pesq' in valid_results.columns:
+            total_stats['PESQ'] = f"{valid_results['pesq'].mean():.1f}"
+
+        if 'stoi' in valid_results.columns:
+            total_stats['STOI'] = f"{valid_results['stoi'].mean():.2f}"
+
         # Add speaker_similarity to total stats if available
         if 'speaker_similarity' in valid_results.columns:
             speaker_sim_numeric = pd.to_numeric(valid_results['speaker_similarity'], errors='coerce')
             if speaker_sim_numeric.notna().any():
                 total_stats['Speaker_Sim'] = f"{speaker_sim_numeric.mean():.2f}"
-        
+
         # Add computed metrics to total stats
         if 'dwer' in valid_results.columns:
             dwer_numeric = pd.to_numeric(valid_results['dwer'], errors='coerce')
             if dwer_numeric.notna().any():
                 total_stats['dWER'] = f"{dwer_numeric.mean():.2f}"
-        
+
         if 'dcer' in valid_results.columns:
             dcer_numeric = pd.to_numeric(valid_results['dcer'], errors='coerce')
             if dcer_numeric.notna().any():
@@ -578,29 +650,47 @@ class EnhancedCodecEvaluationPipeline:
                     'File_name': Path(row['file_name']).stem,
                     'Transcription': row['ground_truth'],
                     'Origin': row.get('original_transcript', 'N/A'),
-                    'Inference': row.get('inference_transcript', 'N/A'),
-                    'UTMOS': f"{row['utmos']:.1f}",
-                    'PESQ': f"{row['pesq']:.1f}",
-                    'STOI': f"{row['stoi']:.2f}"
+                    'Inference': row.get('inference_transcript', 'N/A')
                 }
-                
+
+                # Add UTMOS or MOS metrics (V1 vs V2)
+                if 'utmos' in row.index:
+                    sample_data['UTMOS'] = f"{row['utmos']:.1f}"
+
+                if 'MOS_Quality' in row.index:
+                    mos_quality_val = pd.to_numeric(row['MOS_Quality'], errors='coerce')
+                    if pd.notna(mos_quality_val):
+                        sample_data['MOS_Quality'] = f"{mos_quality_val:.1f}"
+
+                if 'MOS_Naturalness' in row.index:
+                    mos_naturalness_val = pd.to_numeric(row['MOS_Naturalness'], errors='coerce')
+                    if pd.notna(mos_naturalness_val):
+                        sample_data['MOS_Naturalness'] = f"{mos_naturalness_val:.1f}"
+
+                # Add PESQ and STOI
+                if 'pesq' in row.index:
+                    sample_data['PESQ'] = f"{row['pesq']:.1f}"
+
+                if 'stoi' in row.index:
+                    sample_data['STOI'] = f"{row['stoi']:.2f}"
+
                 # Add speaker_similarity to samples if available
                 if 'speaker_similarity' in row.index:
                     speaker_sim_val = pd.to_numeric(row['speaker_similarity'], errors='coerce')
                     if pd.notna(speaker_sim_val):
                         sample_data['Speaker_Sim'] = f"{speaker_sim_val:.2f}"
-                
+
                 # Add computed metrics to samples
                 if 'dwer' in row.index:
                     dwer_val = pd.to_numeric(row['dwer'], errors='coerce')
                     if pd.notna(dwer_val):
                         sample_data['dWER'] = f"{dwer_val:.2f}"
-                
+
                 if 'dcer' in row.index:
                     dcer_val = pd.to_numeric(row['dcer'], errors='coerce')
                     if pd.notna(dcer_val):
                         sample_data['dCER'] = f"{dcer_val:.2f}"
-                
+
                 samples[sample_name] = sample_data
         
         error_sample_data = {}
@@ -610,24 +700,42 @@ class EnhancedCodecEvaluationPipeline:
                     'File_name': Path(row['file_name']).stem,
                     'Transcription': row['ground_truth'],
                     'Origin': row.get('original_transcript', 'N/A'),
-                    'Inference': row.get('inference_transcript', 'N/A'),
-                    'UTMOS': f"{row['utmos']:.1f}",
-                    'PESQ': f"{row['pesq']:.1f}",
-                    'STOI': f"{row['stoi']:.2f}"
+                    'Inference': row.get('inference_transcript', 'N/A')
                 }
-                
+
+                # Add UTMOS or MOS metrics (V1 vs V2)
+                if 'utmos' in row.index:
+                    error_sample_data['UTMOS'] = f"{row['utmos']:.1f}"
+
+                if 'MOS_Quality' in row.index:
+                    mos_quality_val = pd.to_numeric(row['MOS_Quality'], errors='coerce')
+                    if pd.notna(mos_quality_val):
+                        error_sample_data['MOS_Quality'] = f"{mos_quality_val:.1f}"
+
+                if 'MOS_Naturalness' in row.index:
+                    mos_naturalness_val = pd.to_numeric(row['MOS_Naturalness'], errors='coerce')
+                    if pd.notna(mos_naturalness_val):
+                        error_sample_data['MOS_Naturalness'] = f"{mos_naturalness_val:.1f}"
+
+                # Add PESQ and STOI
+                if 'pesq' in row.index:
+                    error_sample_data['PESQ'] = f"{row['pesq']:.1f}"
+
+                if 'stoi' in row.index:
+                    error_sample_data['STOI'] = f"{row['stoi']:.2f}"
+
                 # Add speaker_similarity to error sample if available
                 if 'speaker_similarity' in row.index:
                     speaker_sim_val = pd.to_numeric(row['speaker_similarity'], errors='coerce')
                     if pd.notna(speaker_sim_val):
                         error_sample_data['Speaker_Sim'] = f"{speaker_sim_val:.2f}"
-                
+
                 # Add computed metrics to error sample
                 if 'dwer' in row.index:
                     dwer_val = pd.to_numeric(row['dwer'], errors='coerce')
                     if pd.notna(dwer_val):
                         error_sample_data['dWER'] = f"{dwer_val:.2f}"
-                
+
                 if 'dcer' in row.index:
                     dcer_val = pd.to_numeric(row['dcer'], errors='coerce')
                     if pd.notna(dcer_val):
@@ -674,10 +782,32 @@ class EnhancedCodecEvaluationPipeline:
         
         # If no ASR metrics available, just use other metrics
         if not metric_cols:
-            valid_results = results_df.dropna(subset=['utmos', 'pesq', 'stoi'])
+            # Determine which quality metrics to check based on version
+            if self.use_v2_metrics:
+                quality_metrics = ['MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi']
+            else:
+                quality_metrics = ['utmos', 'pesq', 'stoi']
+
+            # Only check metrics that exist in the dataframe
+            existing_quality_metrics = [m for m in quality_metrics if m in results_df.columns]
+
+            if existing_quality_metrics:
+                valid_results = results_df.dropna(subset=existing_quality_metrics)
+            else:
+                valid_results = results_df
         else:
             # Use first available ASR metric
-            valid_results = results_df.dropna(subset=[metric_cols[0], 'utmos', 'pesq', 'stoi'])
+            # Determine which quality metrics to check based on version
+            if self.use_v2_metrics:
+                quality_metrics = ['MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi']
+            else:
+                quality_metrics = ['utmos', 'pesq', 'stoi']
+
+            # Only check metrics that exist in the dataframe
+            existing_quality_metrics = [m for m in quality_metrics if m in results_df.columns]
+            subset_cols = [metric_cols[0]] + existing_quality_metrics
+
+            valid_results = results_df.dropna(subset=subset_cols)
         
         if len(valid_results) == 0:
             print("Warning: No valid results found for file copying")
@@ -818,16 +948,18 @@ class EnhancedCodecEvaluationPipeline:
         print(f"Existing results check completed in: {time.time() - step_start:.2f} seconds")
         
         step_start = time.time()
-        evaluator = AudioMetricsEvaluator(
+        evaluator = self.EvaluatorClass(
             language=self.language,
             use_gpu=self.use_gpu,
             gpu_id=self.gpu_id
         )
-        
+
         need_asr = ('dcer' in self.metrics_to_compute) or ('dwer' in self.metrics_to_compute)
         need_utmos = 'utmos' in self.metrics_to_compute
+        need_mos_quality = 'MOS_Quality' in self.metrics_to_compute
+        need_mos_naturalness = 'MOS_Naturalness' in self.metrics_to_compute
         
-        if need_asr or need_utmos:
+        if need_asr or need_utmos or need_mos_quality or need_mos_naturalness:
             evaluator.load_models()
         
         print(f"Model loading completed in: {time.time() - step_start:.2f} seconds")
@@ -958,11 +1090,11 @@ def main():
     parser.add_argument("--testing_set", type=str, default="Custom Test Set",
                        help="Testing dataset description")
     
-    parser.add_argument("--metrics", type=str, nargs='+', 
-                       choices=["dwer", "dcer", "utmos", "pesq", "stoi", "speaker_similarity"],
-                       default=["dwer", "dcer", "utmos", "pesq", "stoi", "speaker_similarity"],
-                       help="Metrics to compute (dwer/dcer for ASR, utmos/pesq/stoi for quality, speaker_similarity for identity preservation)")
-    
+    parser.add_argument("--metrics", type=str, nargs='+',
+                       choices=["dwer", "dcer", "utmos", "MOS_Quality", "MOS_Naturalness", "pesq", "stoi", "speaker_similarity"],
+                       default=None,  # Will be set based on use_v2_metrics
+                       help="Metrics to compute (dwer/dcer for ASR, utmos/MOS_Quality/MOS_Naturalness for quality, pesq/stoi for signal quality, speaker_similarity for identity preservation)")
+
     parser.add_argument("--use_gpu", action="store_true", default=True,
                        help="Enable GPU acceleration")
     parser.add_argument("--gpu_id", type=int, default=0,
@@ -973,11 +1105,17 @@ def main():
                        help="Root directory path for original audio files")
     parser.add_argument("--language", type=str, choices=["en", "zh"],
                        help="Language for ASR evaluation (auto-detected if not specified)")
+
+    # V2 metrics support
+    parser.add_argument("--use_v2_metrics", action="store_true",
+                       help="Use V2 metrics with language-specific models (ResNet3/CAM++ for speaker, Paraformer for Chinese ASR, NISQA v2 for quality, RAMP/UTMOS for naturalness)")
+    parser.add_argument("--output_base_dir", type=str,
+                       help="Custom output base directory (for V2 metrics testing)")
     
     args = parser.parse_args()
-    
+
     use_gpu = args.use_gpu and not args.cpu_only
-    
+
     pipeline = EnhancedCodecEvaluationPipeline(
         inference_dir=args.inference_dir,
         csv_file=args.csv_file,
@@ -996,7 +1134,9 @@ def main():
         use_gpu=use_gpu,
         gpu_id=args.gpu_id,
         original_dir=args.original_dir,
-        language=args.language
+        language=args.language,
+        use_v2_metrics=args.use_v2_metrics,
+        output_base_dir=args.output_base_dir
     )
     
     try:

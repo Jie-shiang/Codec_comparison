@@ -160,13 +160,18 @@ class AudioMetricsEvaluator:
             torch_dtype = torch.float16 if self.device.startswith('cuda') else torch.float32
             
             self.asr_pipeline = pipeline(
-                "automatic-speech-recognition", 
+                "automatic-speech-recognition",
                 model="openai/whisper-large-v3",
                 torch_dtype=torch_dtype,
                 device=self.device,
-                model_kwargs={"use_flash_attention_2": False}
+                model_kwargs={"use_flash_attention_2": False},
+                generate_kwargs={
+                    "repetition_penalty": 1.2,
+                    "no_repeat_ngram_size": 3,
+                    "max_new_tokens": 256
+                }
             )
-            print(f"ASR model loaded on {self.device}")
+            print(f"ASR model loaded on {self.device} with repetition suppression")
         except Exception as e:
             print(f"Error loading Whisper model: {e}")
             print("Falling back to CPU...")
@@ -492,29 +497,42 @@ class AudioMetricsEvaluator:
         reference_path, degraded_path = args
         try:
             import torchaudio
+            import torchaudio.transforms as T
             import numpy as np
             from pesq import pesq
-            
-            ref_audio, _ = torchaudio.load(reference_path)
-            deg_audio, _ = torchaudio.load(degraded_path)
-            
-            # Resample to 16kHz
+
+            # Load audio files with original sample rates
+            ref_audio, ref_sr = torchaudio.load(reference_path)
+            deg_audio, deg_sr = torchaudio.load(degraded_path)
+
+            # Convert to mono first
             if ref_audio.shape[0] > 1:
                 ref_audio = torch.mean(ref_audio, dim=0, keepdim=True)
             if deg_audio.shape[0] > 1:
                 deg_audio = torch.mean(deg_audio, dim=0, keepdim=True)
-            
+
+            # Resample to 16kHz if needed
+            target_sr = 16000
+            if ref_sr != target_sr:
+                resampler = T.Resample(ref_sr, target_sr)
+                ref_audio = resampler(ref_audio)
+            if deg_sr != target_sr:
+                resampler = T.Resample(deg_sr, target_sr)
+                deg_audio = resampler(deg_audio)
+
+            # Convert to numpy
             ref_audio = ref_audio.squeeze().numpy()
             deg_audio = deg_audio.squeeze().numpy()
-            
+
+            # Ensure same length
             min_len = min(len(ref_audio), len(deg_audio))
-            if min_len < 16000 * 0.1:
+            if min_len < target_sr * 0.1:  # At least 0.1 seconds
                 return None
-            
+
             ref_audio = ref_audio[:min_len]
             deg_audio = deg_audio[:min_len]
-            
-            return float(pesq(16000, ref_audio, deg_audio, 'wb'))
+
+            return float(pesq(target_sr, ref_audio, deg_audio, 'wb'))
         except Exception as e:
             return None
     
@@ -524,52 +542,68 @@ class AudioMetricsEvaluator:
         reference_path, degraded_path = args
         try:
             import torchaudio
+            import torchaudio.transforms as T
             import numpy as np
             from pystoi import stoi
-            
-            ref_audio, _ = torchaudio.load(reference_path)
-            deg_audio, _ = torchaudio.load(degraded_path)
-            
-            # Convert to mono
+
+            # Load audio files with original sample rates
+            ref_audio, ref_sr = torchaudio.load(reference_path)
+            deg_audio, deg_sr = torchaudio.load(degraded_path)
+
+            # Convert to mono first
             if ref_audio.shape[0] > 1:
                 ref_audio = torch.mean(ref_audio, dim=0, keepdim=True)
             if deg_audio.shape[0] > 1:
                 deg_audio = torch.mean(deg_audio, dim=0, keepdim=True)
-            
+
+            # Resample to 16kHz if needed
+            target_sr = 16000
+            if ref_sr != target_sr:
+                resampler = T.Resample(ref_sr, target_sr)
+                ref_audio = resampler(ref_audio)
+            if deg_sr != target_sr:
+                resampler = T.Resample(deg_sr, target_sr)
+                deg_audio = resampler(deg_audio)
+
+            # Convert to numpy
             ref_audio = ref_audio.squeeze().numpy()
             deg_audio = deg_audio.squeeze().numpy()
-            
+
+            # Ensure same length
             min_len = min(len(ref_audio), len(deg_audio))
-            if min_len < 16000 * 0.1:
+            if min_len < target_sr * 0.1:  # At least 0.1 seconds
                 return None
-            
+
             ref_audio = ref_audio[:min_len]
             deg_audio = deg_audio[:min_len]
-            
-            return float(stoi(ref_audio, deg_audio, 16000, extended=False))
+
+            return float(stoi(ref_audio, deg_audio, target_sr, extended=False))
         except Exception as e:
             return None
     
     def calculate_pesq_stoi_batch(self, file_pairs: List[Tuple[str, str]], num_workers: Optional[int] = None) -> Tuple[List, List]:
         """
         Batch calculation of PESQ and STOI using multiprocessing for CPU parallelization.
-        
+
         Args:
             file_pairs: List of (reference_path, degraded_path) tuples
             num_workers: Number of worker processes (default: CPU count - 1, max 8)
-            
+
         Returns:
             Tuple of (pesq_scores, stoi_scores) lists
         """
         if num_workers is None:
             num_workers = min(mp.cpu_count() - 1, 8)
-        
+
         print(f"Calculating PESQ and STOI with {num_workers} workers...")
-        
-        with Pool(num_workers) as pool:
+
+        # Use 'spawn' method to avoid CUDA context deadlock when GPU models are loaded
+        # Fork method copies CUDA contexts which causes deadlock
+        ctx = mp.get_context('spawn')
+        with ctx.Pool(num_workers) as pool:
             pesq_results = pool.map(self._calculate_pesq_worker, file_pairs)
             stoi_results = pool.map(self._calculate_stoi_worker, file_pairs)
-        
+
         return pesq_results, stoi_results
 
     def calculate_speaker_similarity(self, reference_path: str, test_path: str) -> Optional[float]:

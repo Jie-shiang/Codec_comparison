@@ -1,0 +1,33 @@
+{
+  "dataset": "commonvoice",
+  "language": "zh",
+  "model": "CAM++ (FunASR)",
+  "csv_path": "/home/jieshiang/Desktop/GitHub/Codec_comparison/csv/common_voice_zh_CN_train_filtered.csv",
+  "num_speakers": 141,
+  "max_positive_pairs": 20,
+  "num_negative_speakers": 5,
+  "positive_distribution": {
+    "count": 2381,
+    "mean": 0.652890930687847,
+    "std": 0.14109091545896654,
+    "median": 0.6864511273864765,
+    "min": 0.05417873039736287,
+    "max": 0.9026341131981424,
+    "percentile_5": 0.3530519011926928,
+    "percentile_25": 0.5813010814209565,
+    "percentile_75": 0.756175155168386,
+    "percentile_95": 0.8217214809735872
+  },
+  "negative_distribution": {
+    "count": 705,
+    "mean": 0.14857856900791402,
+    "std": 0.11390072991876317,
+    "median": 0.14173372019655361,
+    "min": -0.182980574774827,
+    "max": 0.5481579310974173,
+    "percentile_5": -0.026356861799195386,
+    "percentile_25": 0.06787881142398833,
+    "percentile_75": 0.22762993549213706,
+    "percentile_95": 0.33900873115476954
+  }
+}
