@@ -1,0 +1,2 @@
+file_name,file_path,duration,transcription,speaker_id,asr_result,cer,MOS_Quality,MOS_Naturalness,TER
+train-000000008,./hokkien/train/train-000000008.mp3,2.0955,銅錢仔,64018a4c52c167912f6eb10d451155413420b48897525e5f14016c77e91073ee37a93dd5568ef3b27b28a8b725ea2036b53155b122a6b740382a27837bd31d7e,銅錢仔,0.0,4.407713890075684,2.40618109703064,0.0

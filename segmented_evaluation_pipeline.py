@@ -402,7 +402,7 @@ class SegmentedEvaluationPipeline(FastCodecEvaluationPipeline):
                 results_dict[file_name]['inference_transcript_raw'] = inference_transcript
                 
                 # Text normalization
-                if self.language == 'zh':
+                if self.language in ['zh', 'min']:
                     original_transcript_simplified = evaluator.convert_traditional_to_simplified(original_transcript)
                     inference_transcript_simplified = evaluator.convert_traditional_to_simplified(inference_transcript)
                     ground_truth_simplified = evaluator.convert_traditional_to_simplified(ground_truth)
@@ -410,21 +410,21 @@ class SegmentedEvaluationPipeline(FastCodecEvaluationPipeline):
                     original_transcript_simplified = original_transcript
                     inference_transcript_simplified = inference_transcript
                     ground_truth_simplified = ground_truth
-                
+
                 ground_truth_norm = evaluator.normalize_text(ground_truth_simplified)
                 original_norm = evaluator.normalize_text(original_transcript_simplified)
                 inference_norm = evaluator.normalize_text(inference_transcript_simplified)
-                
+
                 results_dict[file_name]['original_transcript'] = original_norm
                 results_dict[file_name]['inference_transcript'] = inference_norm
-                
-                if self.language == 'zh' and 'dcer' in self.metrics_to_compute:
+
+                if self.language in ['zh', 'min'] and 'dcer' in self.metrics_to_compute:
                     original_cer = evaluator.fast_cer(ground_truth_norm, original_norm)
                     inference_cer = evaluator.fast_cer(ground_truth_norm, inference_norm)
                     results_dict[file_name]['original_cer'] = original_cer
                     results_dict[file_name]['inference_cer'] = inference_cer
                     results_dict[file_name]['dcer'] = inference_cer - original_cer
-                    
+
                 elif self.language == 'en' and 'dwer' in self.metrics_to_compute:
                     original_wer = evaluator.fast_wer(ground_truth_norm, original_norm)
                     inference_wer = evaluator.fast_wer(ground_truth_norm, inference_norm)

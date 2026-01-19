@@ -1,0 +1,33 @@
+{
+  "dataset": "aishell",
+  "language": "zh",
+  "model": "CAM++ (FunASR)",
+  "csv_path": "/home/jieshiang/Desktop/GitHub/Codec_comparison/csv/aishell_filtered_clean.csv",
+  "num_speakers": 20,
+  "max_positive_pairs": 20,
+  "num_negative_speakers": 5,
+  "positive_distribution": {
+    "count": 400,
+    "mean": 0.8313940144212307,
+    "std": 0.05163863722271476,
+    "median": 0.8373888962147813,
+    "min": 0.601332949230523,
+    "max": 0.9337465925555082,
+    "percentile_5": 0.731161711685454,
+    "percentile_25": 0.8001012382869334,
+    "percentile_75": 0.8696852657389371,
+    "percentile_95": 0.9054644629389735
+  },
+  "negative_distribution": {
+    "count": 100,
+    "mean": 0.20768367415938613,
+    "std": 0.10840476746401545,
+    "median": 0.21245046294883724,
+    "min": 0.00028343774353900564,
+    "max": 0.47321473480889464,
+    "percentile_5": 0.05217656317435608,
+    "percentile_25": 0.11918816589269185,
+    "percentile_75": 0.26957441455508757,
+    "percentile_95": 0.41107317069526617
+  }
+}

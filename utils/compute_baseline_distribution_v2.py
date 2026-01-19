@@ -299,6 +299,11 @@ class BaselineDistributionCalculatorV2:
             if 'speaker_id' not in self.df.columns:
                 raise ValueError("Common Voice CSV must have 'speaker_id' column")
             print("Using existing speaker_id column for Common Voice")
+        elif self.dataset_name == 'aishell':
+            # AISHELL: 直接使用 speaker_id 欄位
+            if 'speaker_id' not in self.df.columns:
+                raise ValueError("AISHELL CSV must have 'speaker_id' column")
+            print("Using existing speaker_id column for AISHELL")
         else:
             raise ValueError(f"Unknown dataset: {self.dataset_name}")
 
@@ -723,6 +728,15 @@ Examples:
       --output_dir /home/jieshiang/Desktop/GitHub/Codec_comparison/common_voice_spk_sim_result \\
       --gpu_id 0
 
+  # AISHELL (中文)
+  python compute_baseline_distribution_v2.py \\
+      --dataset aishell \\
+      --language zh \\
+      --csv_path /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/aishell_filtered_clean.csv \\
+      --audio_base_path /mnt/Internal/ASR \\
+      --output_dir /home/jieshiang/Desktop/GitHub/Codec_comparison/aishell_spk_sim_result \\
+      --gpu_id 0
+
   # LibriSpeech (英文)
   python compute_baseline_distribution_v2.py \\
       --dataset librispeech \\
@@ -734,8 +748,8 @@ Examples:
         """
     )
 
-    parser.add_argument('--dataset', type=str, required=True, choices=['commonvoice', 'librispeech'],
-                       help='Dataset type (commonvoice or librispeech)')
+    parser.add_argument('--dataset', type=str, required=True, choices=['commonvoice', 'librispeech', 'aishell'],
+                       help='Dataset type (commonvoice, librispeech, or aishell)')
     parser.add_argument('--language', type=str, required=True, choices=['en', 'zh'],
                        help='Language (en for English, zh for Chinese)')
     parser.add_argument('--csv_path', type=str, required=True,

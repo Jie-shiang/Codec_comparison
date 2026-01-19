@@ -1,0 +1,114 @@
+Dataset Filtering Summary - MDCC
+================================================================================
+
+Original dataset: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/analysis/mdcc/mdcc_filtered_full.csv
+Total samples after filtering: 5582
+  - Train: 4582
+  - Test: 1000
+
+
+Train Set Statistics:
+--------------------------------------------------------------------------------
+
+duration:
+  Count: 4582
+  Mean: 3.0018
+  Median: 2.9150
+  Std: 0.8948
+  Min: 1.4300
+  Max: 4.9000
+  Q25: 2.2800
+  Q75: 3.6600
+
+cer:
+  Count: 4582
+  Mean: 0.4306
+  Median: 0.4104
+  Std: 0.1647
+  Min: 0.1667
+  Max: 1.1667
+  Q25: 0.3000
+  Q75: 0.5385
+
+MOS_Quality:
+  Count: 4582
+  Mean: 4.1111
+  Median: 4.2202
+  Std: 0.4866
+  Min: 2.0059
+  Max: 4.9743
+  Q25: 3.8904
+  Q75: 4.4588
+
+MOS_Naturalness:
+  Count: 4582
+  Mean: 3.4649
+  Median: 3.6082
+  Std: 0.4952
+  Min: 1.7021
+  Max: 4.3660
+  Q25: 3.0732
+  Q75: 3.8445
+
+TER:
+  Count: 4582
+  Mean: 0.2719
+  Median: 0.2727
+  Std: 0.1348
+  Min: 0.0000
+  Max: 0.5000
+  Q25: 0.1765
+  Q75: 0.3750
+
+Test Set Statistics:
+--------------------------------------------------------------------------------
+
+duration:
+  Count: 1000
+  Mean: 2.9169
+  Median: 2.7250
+  Std: 0.9215
+  Min: 1.4400
+  Max: 4.9000
+  Q25: 2.1800
+  Q75: 3.5650
+
+cer:
+  Count: 1000
+  Mean: 0.0850
+  Median: 0.1026
+  Std: 0.0635
+  Min: 0.0000
+  Max: 0.1667
+  Q25: 0.0000
+  Q75: 0.1429
+
+MOS_Quality:
+  Count: 1000
+  Mean: 4.1120
+  Median: 4.2169
+  Std: 0.4633
+  Min: 2.1407
+  Max: 4.9269
+  Q25: 3.9259
+  Q75: 4.4339
+
+MOS_Naturalness:
+  Count: 1000
+  Mean: 3.5231
+  Median: 3.6572
+  Std: 0.4591
+  Min: 1.8725
+  Max: 4.2945
+  Q25: 3.1993
+  Q75: 3.8568
+
+TER:
+  Count: 1000
+  Mean: 0.0522
+  Median: 0.0000
+  Std: 0.0637
+  Min: 0.0000
+  Max: 0.3333
+  Q25: 0.0000
+  Q75: 0.1111

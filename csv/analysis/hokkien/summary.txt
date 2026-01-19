@@ -1,0 +1,7 @@
+Summary of hokkien_filtered_full.csv
+==========================================
+總筆數: 15817
+CER (平均): 0.720981
+MOS_Quality (平均): 3.426813
+MOS_Naturalness (平均): 2.711894
+TER (平均): 0.503573

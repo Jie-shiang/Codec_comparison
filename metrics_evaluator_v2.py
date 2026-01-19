@@ -509,11 +509,21 @@ class AudioMetricsEvaluatorV2:
                     continue
 
                 try:
+                    # Enable return_timestamps for long audio (>30s)
                     result = self.asr_pipeline(
                         audio,
-                        generate_kwargs={"language": "en"}
+                        generate_kwargs={"language": "en"},
+                        return_timestamps=True
                     )
-                    results.append(result['text'])
+                    # Extract text from result
+                    if isinstance(result, dict) and 'text' in result:
+                        results.append(result['text'])
+                    elif isinstance(result, dict) and 'chunks' in result:
+                        # Combine chunks for long-form transcription
+                        text = ' '.join([chunk['text'] for chunk in result['chunks']])
+                        results.append(text)
+                    else:
+                        results.append("")
                 except Exception as e:
                     print(f"Error transcribing {path}: {e}")
                     results.append("")

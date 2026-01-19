@@ -1,0 +1,2 @@
+base_path,spk_num,avg_utts,cer_mean,MOS_Quality_mean,MOS_Naturalness_mean
+/mnt/Internal/ASR,1251,4.0663469224620306,0.09584435904725627,3.0683902847478635,2.284525105778398

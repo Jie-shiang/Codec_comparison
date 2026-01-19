@@ -1,0 +1,46 @@
+Dataset: AISHELL
+Filtered from: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/analysis/aishell/aishell.csv
+
+=== Statistics ===
+Total samples: 2000
+Total speakers: 20
+Average per speaker: 100.00
+Min per speaker: 100
+Max per speaker: 100
+
+CER Statistics:
+  Mean: 0.0000
+  Std: 0.0000
+  Min: 0.0000
+  Max: 0.0000
+  Median: 0.0000
+
+MOS Quality Statistics:
+  Mean: 2.6935
+  Std: 0.5539
+
+MOS Naturalness Statistics:
+  Mean: 1.8546
+  Std: 0.3886
+
+=== Speaker Distribution ===
+Speaker S0764: 100 samples
+Speaker S0765: 100 samples
+Speaker S0915: 100 samples
+Speaker S0914: 100 samples
+Speaker S0913: 100 samples
+Speaker S0912: 100 samples
+Speaker S0908: 100 samples
+Speaker S0907: 100 samples
+Speaker S0906: 100 samples
+Speaker S0905: 100 samples
+Speaker S0904: 100 samples
+Speaker S0903: 100 samples
+Speaker S0902: 100 samples
+Speaker S0901: 100 samples
+Speaker S0770: 100 samples
+Speaker S0769: 100 samples
+Speaker S0768: 100 samples
+Speaker S0767: 100 samples
+Speaker S0766: 100 samples
+Speaker S0916: 100 samples

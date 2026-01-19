@@ -1,0 +1,114 @@
+Dataset Filtering Summary - VIVOS
+================================================================================
+
+Original dataset: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/analysis/vivois/vivos_filtered_full.csv
+Total samples after filtering: 5355
+  - Train: 4355
+  - Test: 1000
+
+
+Train Set Statistics:
+--------------------------------------------------------------------------------
+
+duration:
+  Count: 4355
+  Mean: 4.3893
+  Median: 3.8119
+  Std: 2.1431
+  Min: 1.0625
+  Max: 14.7500
+  Q25: 2.9062
+  Q75: 5.2809
+
+wer:
+  Count: 4355
+  Mean: 1.0015
+  Median: 1.0000
+  Std: 0.0113
+  Min: 1.0000
+  Max: 1.2000
+  Q25: 1.0000
+  Q75: 1.0000
+
+MOS_Quality:
+  Count: 4355
+  Mean: 3.9858
+  Median: 4.0499
+  Std: 0.4431
+  Min: 2.0503
+  Max: 4.9919
+  Q25: 3.7765
+  Q75: 4.2708
+
+MOS_Naturalness:
+  Count: 4355
+  Mean: 3.1896
+  Median: 3.2429
+  Std: 0.4565
+  Min: 1.7748
+  Max: 4.3316
+  Q25: 2.8589
+  Q75: 3.5358
+
+TER:
+  Count: 4355
+  Mean: 0.0315
+  Median: 0.0000
+  Std: 0.0648
+  Min: 0.0000
+  Max: 0.5000
+  Q25: 0.0000
+  Q75: 0.0455
+
+Test Set Statistics:
+--------------------------------------------------------------------------------
+
+duration:
+  Count: 1000
+  Mean: 6.0747
+  Median: 4.5625
+  Std: 3.4776
+  Min: 1.3750
+  Max: 15.0000
+  Q25: 3.5931
+  Q75: 7.6875
+
+wer:
+  Count: 1000
+  Mean: 0.9925
+  Median: 1.0000
+  Std: 0.0525
+  Min: 0.0000
+  Max: 1.0000
+  Q25: 1.0000
+  Q75: 1.0000
+
+MOS_Quality:
+  Count: 1000
+  Mean: 3.9848
+  Median: 4.0092
+  Std: 0.4551
+  Min: 2.0824
+  Max: 4.9197
+  Q25: 3.6953
+  Q75: 4.3408
+
+MOS_Naturalness:
+  Count: 1000
+  Mean: 3.2279
+  Median: 3.2360
+  Std: 0.3658
+  Min: 2.0661
+  Max: 4.2153
+  Q25: 2.9687
+  Q75: 3.5032
+
+TER:
+  Count: 1000
+  Mean: 0.0278
+  Median: 0.0000
+  Std: 0.0602
+  Min: 0.0000
+  Max: 0.5000
+  Q25: 0.0000
+  Q75: 0.0370

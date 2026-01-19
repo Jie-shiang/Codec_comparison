@@ -1,0 +1,66 @@
+Dataset: LIBRISPEECH
+Filtered from: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/analysis/librispeech/librispeech.csv
+
+=== Statistics ===
+Total samples: 2000
+Total speakers: 40
+Average per speaker: 50.00
+Min per speaker: 16
+Max per speaker: 92
+
+WER Statistics:
+  Mean: 0.0031
+  Std: 0.0096
+  Min: 0.0000
+  Max: 0.0444
+  Median: 0.0000
+
+MOS Quality Statistics:
+  Mean: 4.0270
+  Std: 0.5412
+
+MOS Naturalness Statistics:
+  Mean: 3.7002
+  Std: 0.5647
+
+=== Speaker Distribution ===
+Speaker 4446: 92 samples
+Speaker 1580: 87 samples
+Speaker 2830: 81 samples
+Speaker 61: 75 samples
+Speaker 5142: 74 samples
+Speaker 237: 70 samples
+Speaker 6829: 64 samples
+Speaker 6930: 61 samples
+Speaker 672: 61 samples
+Speaker 260: 59 samples
+Speaker 5683: 59 samples
+Speaker 7127: 56 samples
+Speaker 1320: 56 samples
+Speaker 1995: 55 samples
+Speaker 7176: 55 samples
+Speaker 121: 54 samples
+Speaker 1284: 54 samples
+Speaker 4507: 52 samples
+Speaker 8463: 52 samples
+Speaker 7021: 52 samples
+Speaker 8455: 51 samples
+Speaker 4970: 51 samples
+Speaker 3570: 44 samples
+Speaker 3575: 42 samples
+Speaker 908: 41 samples
+Speaker 8230: 41 samples
+Speaker 1188: 40 samples
+Speaker 5105: 40 samples
+Speaker 4992: 38 samples
+Speaker 2961: 37 samples
+Speaker 8555: 36 samples
+Speaker 3729: 34 samples
+Speaker 1221: 34 samples
+Speaker 5639: 33 samples
+Speaker 7729: 33 samples
+Speaker 2094: 33 samples
+Speaker 2300: 32 samples
+Speaker 4077: 28 samples
+Speaker 8224: 27 samples
+Speaker 1089: 16 samples

@@ -1,0 +1,51 @@
+======================================================================
+Speaker Similarity Baseline Report V2 - AISHELL
+======================================================================
+
+Dataset: /home/jieshiang/Desktop/GitHub/Codec_comparison/csv/aishell_filtered_clean.csv
+Language: zh
+Model: CAM++ (FunASR)
+Number of speakers: 20
+Max positive pairs per speaker: 20
+Negative speakers sampled per speaker: 5
+
+----------------------------------------------------------------------
+POSITIVE SAMPLES (Same Speaker - Intra-speaker)
+----------------------------------------------------------------------
+  Count: 400 pairs
+  Mean: 0.8314 ± 0.0516
+  Median: 0.8374
+  Range: [0.6013, 0.9337]
+
+  Percentiles:
+    5th:  0.7312
+    25th: 0.8001
+    75th: 0.8697
+    95th: 0.9055
+
+----------------------------------------------------------------------
+NEGATIVE SAMPLES (Different Speakers - Inter-speaker)
+----------------------------------------------------------------------
+  Count: 100 pairs
+  Mean: 0.2077 ± 0.1084
+  Median: 0.2125
+  Range: [0.0003, 0.4732]
+
+  Percentiles:
+    5th:  0.0522
+    25th: 0.1192
+    75th: 0.2696
+    95th: 0.4111
+
+======================================================================
+SUGGESTED THRESHOLDS FOR CODEC EVALUATION
+======================================================================
+  Conservative (Pos mean - 1*std): 0.7798
+  Moderate (Pos mean - 2*std):     0.7281
+  Percentile-based (Pos 5th):      0.7312
+
+Interpretation:
+  - Codec similarity should ideally be > Conservative threshold
+  - Values below Moderate threshold indicate significant degradation
+  - Compare codec mean similarity against these thresholds
+======================================================================

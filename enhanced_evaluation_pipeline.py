@@ -44,8 +44,10 @@ class EnhancedCodecEvaluationPipeline:
                  original_dir: str = None,
                  language: str = None,
                  use_v2_metrics: bool = False,
-                 output_base_dir: str = None):
-        
+                 use_v3_metrics: bool = False,
+                 output_base_dir: str = None,
+                 dataset_name: str = None):
+
         self.inference_dir = Path(inference_dir)
         self.csv_file = Path(project_dir) / "csv" / csv_file
         self.model_name = model_name
@@ -58,12 +60,18 @@ class EnhancedCodecEvaluationPipeline:
         self.n_params = n_params
         self.training_set = training_set
         self.testing_set = testing_set
-        
-        # V2 metrics support
+
+        # Metrics version support
         self.use_v2_metrics = use_v2_metrics
+        self.use_v3_metrics = use_v3_metrics
 
         # Import appropriate evaluator based on version
-        if self.use_v2_metrics:
+        if self.use_v3_metrics:
+            from metrics_evaluator_v3 import AudioMetricsEvaluatorV3
+            self.EvaluatorClass = AudioMetricsEvaluatorV3
+            # Update default metrics for V3 (includes new metrics)
+            default_metrics = ['dwer', 'dcer', 'MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi', 'speaker_similarity', 'vde', 'f0_rmse', 'gpe', 'ter', 'semantic_similarity']
+        elif self.use_v2_metrics:
             from metrics_evaluator_v2 import AudioMetricsEvaluatorV2
             self.EvaluatorClass = AudioMetricsEvaluatorV2
             # Update default metrics for V2
@@ -77,6 +85,7 @@ class EnhancedCodecEvaluationPipeline:
         self.use_gpu = use_gpu
         self.gpu_id = gpu_id
         self.original_dir = Path(original_dir) if original_dir else None
+        self._custom_dataset_name = dataset_name  # 儲存自訂資料集名稱
 
         # Auto-detect language if not specified
         if language:
@@ -112,7 +121,13 @@ class EnhancedCodecEvaluationPipeline:
         self.result_csv_path = None
         
         print(f"Initializing enhanced evaluation pipeline:")
-        print(f"  Metrics Version: {'V2 (Language-Specific Models)' if self.use_v2_metrics else 'V1 (Original Models)'}")
+        if self.use_v3_metrics:
+            version_str = 'V3 (Taiwanese Minnan Support + Advanced Metrics)'
+        elif self.use_v2_metrics:
+            version_str = 'V2 (Language-Specific Models)'
+        else:
+            version_str = 'V1 (Original Models)'
+        print(f"  Metrics Version: {version_str}")
         print(f"  Model: {self.model_name}")
         print(f"  Frequency: {self.frequency}")
         print(f"  Dataset type: {self.dataset_type}")
@@ -132,12 +147,21 @@ class EnhancedCodecEvaluationPipeline:
             df = pd.read_csv(self.csv_file, encoding='utf-8')
             print(f"Successfully loaded CSV: {self.csv_file}")
             print(f"Number of samples: {len(df)}")
-            
-            if 'common_voice' in str(self.csv_file).lower():
+
+            # 使用自訂資料集名稱，或自動判斷
+            if self._custom_dataset_name:
+                self.base_dataset_name = self._custom_dataset_name
+            elif 'common_voice' in str(self.csv_file).lower() or 'commonvoice' in str(self.csv_file).lower():
                 self.base_dataset_name = 'CommonVoice'
+            elif 'aishell' in str(self.csv_file).lower():
+                self.base_dataset_name = 'aishell'
+            elif 'hokkien' in str(self.csv_file).lower():
+                self.base_dataset_name = 'hokkien'
+            elif 'minspeech' in str(self.csv_file).lower():
+                self.base_dataset_name = 'minspeech'
             else:
                 self.base_dataset_name = 'LibriSpeech'
-            
+
             if self.dataset_type == "clean":
                 self.dataset_name = self.base_dataset_name
             elif self.dataset_type == "noise":
@@ -146,14 +170,14 @@ class EnhancedCodecEvaluationPipeline:
                 self.dataset_name = f"{self.base_dataset_name}_Blank"
             else:
                 raise ValueError(f"Unsupported dataset type: {self.dataset_type}")
-            
+
             dataset_suffix = self.base_dataset_name.lower()
             self.result_csv_path = self.result_dir / f"detailed_results_{self.model_name}_{self.frequency}_{self.dataset_type}_{dataset_suffix}.csv"
-            
+
             print(f"Dataset name: {self.dataset_name}")
             print(f"Result CSV will be saved as: {self.result_csv_path}")
             print(f"Metrics to compute: {', '.join(self.metrics_to_compute)}")
-                
+
             return df
             
         except Exception as e:
@@ -180,8 +204,10 @@ class EnhancedCodecEvaluationPipeline:
             'original_transcript', 'inference_transcript'
         ]
 
-        # Add V1 or V2 specific metrics
-        if self.use_v2_metrics:
+        # Add V1, V2, or V3 specific metrics
+        if self.use_v3_metrics:
+            columns.extend(['MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi', 'speaker_similarity'])
+        elif self.use_v2_metrics:
             columns.extend(['MOS_Quality', 'MOS_Naturalness', 'pesq', 'stoi', 'speaker_similarity'])
         else:
             columns.extend(['utmos', 'pesq', 'stoi', 'speaker_similarity'])
@@ -191,6 +217,19 @@ class EnhancedCodecEvaluationPipeline:
 
         if 'dcer' in self.metrics_to_compute:
             columns.extend(['original_cer', 'inference_cer', 'dcer'])
+
+        # Add V3-specific metrics
+        if self.use_v3_metrics:
+            if 'vde' in self.metrics_to_compute:
+                columns.append('vde')
+            if 'f0_rmse' in self.metrics_to_compute:
+                columns.append('f0_rmse')
+            if 'gpe' in self.metrics_to_compute:
+                columns.append('gpe')
+            if 'ter' in self.metrics_to_compute and self.language in ['zh', 'min', 'yue', 'vi']:
+                columns.append('ter')
+            if 'semantic_similarity' in self.metrics_to_compute:
+                columns.append('semantic_similarity')
 
         result_df = pd.DataFrame(index=range(len(input_df)))
         for col in columns:
@@ -210,20 +249,27 @@ class EnhancedCodecEvaluationPipeline:
             return Path(csv_path)
     
     def find_inference_audio(self, original_filename: str) -> Path:
-        base_name = Path(original_filename).stem
-        
+        # If original_filename already has .wav or .flac extension, remove it
+        # Otherwise, use it as-is (file_name from CSV may contain dots but no extension)
+        original_filename_lower = original_filename.lower()
+        if original_filename_lower.endswith('.wav') or original_filename_lower.endswith('.flac'):
+            base_name = Path(original_filename).stem
+        else:
+            # Use as-is - don't treat dots as file extension separators
+            base_name = original_filename
+
         possible_names = [
             f"{base_name}_inference.wav",
             f"{base_name}_inference.flac",
             f"{base_name}.wav",
             f"{base_name}.flac"
         ]
-        
+
         for name in possible_names:
             inference_path = self.inference_dir / name
             if inference_path.exists():
                 return inference_path
-                
+
         return None
     
     def should_process_file(self, existing_row: pd.Series, file_name: str) -> tuple:
@@ -346,7 +392,8 @@ class EnhancedCodecEvaluationPipeline:
             'original_transcript', 'inference_transcript',
             'original_wer', 'inference_wer', 'dwer',
             'original_cer', 'inference_cer', 'dcer',
-            'MOS_Quality', 'MOS_Naturalness', 'utmos', 'pesq', 'stoi', 'speaker_similarity'
+            'MOS_Quality', 'MOS_Naturalness', 'utmos', 'pesq', 'stoi', 'speaker_similarity',
+            'vde', 'f0_rmse', 'gpe', 'ter', 'semantic_similarity'  # V3 metrics
         ]
 
         # 2. éŽæ¿¾å‡º DataFrame ä¸­å¯¦éš›å­˜åœ¨çš„æ¬„ä½ï¼Œä¸¦ç¢ºä¿é †åº
@@ -413,7 +460,20 @@ class EnhancedCodecEvaluationPipeline:
             metric_columns.append('stoi')
         if 'speaker_similarity' in self.metrics_to_compute:
             metric_columns.append('speaker_similarity')
-        
+
+        # V3 metrics
+        if self.use_v3_metrics:
+            if 'vde' in self.metrics_to_compute:
+                metric_columns.append('vde')
+            if 'f0_rmse' in self.metrics_to_compute:
+                metric_columns.append('f0_rmse')
+            if 'gpe' in self.metrics_to_compute:
+                metric_columns.append('gpe')
+            if 'ter' in self.metrics_to_compute:
+                metric_columns.append('ter')
+            if 'semantic_similarity' in self.metrics_to_compute:
+                metric_columns.append('semantic_similarity')
+
         for metric in metric_columns:
             if metric in results_df.columns:
                 valid_values = results_df[metric].dropna()
@@ -846,29 +906,29 @@ class EnhancedCodecEvaluationPipeline:
     
     def select_diverse_samples(self, valid_results: pd.DataFrame) -> list:
         selected_samples = []
-        
+
         if self.base_dataset_name == 'LibriSpeech':
             results_with_keys = valid_results.copy()
             results_with_keys['sort_key'] = results_with_keys['file_name'].apply(
                 lambda x: self.parse_librispeech_id(x)
             )
             results_sorted = results_with_keys.sort_values('sort_key')
-            
+
             speakers_seen = set()
             sample_count = 0
-            
+
             for idx, row in results_sorted.iterrows():
                 speaker_id = row['file_name'].split('-')[0]
                 if speaker_id not in speakers_seen and sample_count < 5:
                     speakers_seen.add(speaker_id)
                     sample_count += 1
                     selected_samples.append((f'Sample_{sample_count}', row))
-                    
+
         elif self.base_dataset_name == 'CommonVoice':
             if 'speaker_id' in valid_results.columns:
                 speakers_seen = set()
                 sample_count = 0
-                
+
                 for idx, row in valid_results.iterrows():
                     speaker_id = row.get('speaker_id', 'unknown')
                     if speaker_id not in speakers_seen and sample_count < 5:
@@ -879,7 +939,44 @@ class EnhancedCodecEvaluationPipeline:
                 for i in range(min(5, len(valid_results))):
                     row = valid_results.iloc[i]
                     selected_samples.append((f'Sample_{i+1}', row))
+
+        elif self.base_dataset_name.lower() == 'aishell':
+            # AISHELL 資料集的檔案命名格式通常是: BAXXX_SYYYY_WZZZZ
+            # 其中 AXXX 是 speaker ID
+            if 'speaker_id' in valid_results.columns:
+                # 如果有 speaker_id 欄位，使用該欄位
+                speakers_seen = set()
+                sample_count = 0
+
+                for idx, row in valid_results.iterrows():
+                    speaker_id = row.get('speaker_id', 'unknown')
+                    if speaker_id not in speakers_seen and sample_count < 5:
+                        speakers_seen.add(speaker_id)
+                        sample_count += 1
+                        selected_samples.append((f'Sample_{sample_count}', row))
+            else:
+                # 嘗試從檔案名稱解析 speaker ID (格式: BAXXX_...)
+                speakers_seen = set()
+                sample_count = 0
+
+                for idx, row in valid_results.iterrows():
+                    file_name = row['file_name']
+                    # 嘗試解析 speaker ID
+                    try:
+                        # AISHELL 格式: BAXXX_SYYYY_WZZZZ
+                        if '_' in file_name:
+                            speaker_id = file_name.split('_')[0]
+                        else:
+                            speaker_id = file_name[:5]  # 假設前5個字元是 speaker ID
+                    except:
+                        speaker_id = 'unknown'
+
+                    if speaker_id not in speakers_seen and sample_count < 5:
+                        speakers_seen.add(speaker_id)
+                        sample_count += 1
+                        selected_samples.append((f'Sample_{sample_count}', row))
         else:
+            # 其他資料集：簡單取前 5 個樣本
             for i in range(min(5, len(valid_results))):
                 row = valid_results.iloc[i]
                 selected_samples.append((f'Sample_{i+1}', row))
@@ -1091,9 +1188,9 @@ def main():
                        help="Testing dataset description")
     
     parser.add_argument("--metrics", type=str, nargs='+',
-                       choices=["dwer", "dcer", "utmos", "MOS_Quality", "MOS_Naturalness", "pesq", "stoi", "speaker_similarity"],
-                       default=None,  # Will be set based on use_v2_metrics
-                       help="Metrics to compute (dwer/dcer for ASR, utmos/MOS_Quality/MOS_Naturalness for quality, pesq/stoi for signal quality, speaker_similarity for identity preservation)")
+                       choices=["dwer", "dcer", "utmos", "MOS_Quality", "MOS_Naturalness", "pesq", "stoi", "speaker_similarity", "vde", "f0_rmse", "gpe", "ter", "semantic_similarity"],
+                       default=None,  # Will be set based on use_v2_metrics/use_v3_metrics
+                       help="Metrics to compute (dwer/dcer for ASR, utmos/MOS_Quality/MOS_Naturalness for quality, pesq/stoi for signal quality, speaker_similarity for identity preservation, vde/f0_rmse/gpe/ter/semantic_similarity for V3 advanced metrics)")
 
     parser.add_argument("--use_gpu", action="store_true", default=True,
                        help="Enable GPU acceleration")
@@ -1103,15 +1200,21 @@ def main():
                        help="Force CPU-only computation")
     parser.add_argument("--original_dir", type=str,
                        help="Root directory path for original audio files")
-    parser.add_argument("--language", type=str, choices=["en", "zh"],
-                       help="Language for ASR evaluation (auto-detected if not specified)")
+    parser.add_argument("--language", type=str, choices=["en", "zh", "min", "yue", "vi"],
+                       help="Language for ASR evaluation: 'en' (English), 'zh' (Chinese), 'min' (Taiwanese Minnan), 'yue' (Cantonese), 'vi' (Vietnamese)")
 
-    # V2 metrics support
+    # Metrics version support
     parser.add_argument("--use_v2_metrics", action="store_true",
                        help="Use V2 metrics with language-specific models (ResNet3/CAM++ for speaker, Paraformer for Chinese ASR, NISQA v2 for quality, RAMP/UTMOS for naturalness)")
+    parser.add_argument("--use_v3_metrics", action="store_true",
+                       help="Use V3 metrics with Taiwanese Minnan support (Taiwan-Tongues-ASR-CE, VDE, F0-RMSE, GPE, TER, Semantic Similarity)")
     parser.add_argument("--output_base_dir", type=str,
-                       help="Custom output base directory (for V2 metrics testing)")
-    
+                       help="Custom output base directory (for V2/V3 metrics testing)")
+
+    # --- Dataset naming control ---
+    parser.add_argument("--dataset_name", type=str,
+                       help="Custom dataset name for output files (e.g., 'aishell', 'librispeech', 'commonvoice'). If not specified, auto-detected from CSV filename.")
+
     args = parser.parse_args()
 
     use_gpu = args.use_gpu and not args.cpu_only
@@ -1136,7 +1239,9 @@ def main():
         original_dir=args.original_dir,
         language=args.language,
         use_v2_metrics=args.use_v2_metrics,
-        output_base_dir=args.output_base_dir
+        use_v3_metrics=args.use_v3_metrics,
+        output_base_dir=args.output_base_dir,
+        dataset_name=args.dataset_name
     )
     
     try:

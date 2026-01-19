@@ -57,13 +57,18 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                  original_dir: str = None,
                  language: str = None,
                  use_v2_metrics: bool = False,
+                 use_v3_metrics: bool = False,
                  output_base_dir: str = None,
+                 dataset_name: str = None,  # --- 新增：自訂資料集名稱 ---
                  # --- Batch processing parameters ---
                  num_workers: int = 8,
                  asr_batch_size: int = 16,
                  # --- Logging parameters ---
                  enable_logging: bool = False,
                  log_dir: str = None):
+
+        # 儲存 dataset_name 參數，稍後會覆寫父類別的自動判斷
+        self._custom_dataset_name = dataset_name
 
         # 呼叫父類別的 __init__
         super().__init__(
@@ -86,7 +91,9 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             original_dir=original_dir,
             language=language,
             use_v2_metrics=use_v2_metrics,
-            output_base_dir=output_base_dir
+            use_v3_metrics=use_v3_metrics,
+            output_base_dir=output_base_dir,
+            dataset_name=dataset_name  # Pass dataset_name to parent class
         )
         
         # 儲存新參數
@@ -96,6 +103,23 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
 
         # Initialize logger (will be set up after parent init completes)
         self.logger = None
+
+        # 如果使用者指定了 dataset_name，覆寫父類別的自動判斷
+        if self._custom_dataset_name:
+            self.base_dataset_name = self._custom_dataset_name
+
+            if self.dataset_type == "clean":
+                self.dataset_name = self.base_dataset_name
+            elif self.dataset_type == "noise":
+                self.dataset_name = f"{self.base_dataset_name}_Noise"
+            elif self.dataset_type == "blank":
+                self.dataset_name = f"{self.base_dataset_name}_Blank"
+
+            dataset_suffix = self.base_dataset_name.lower()
+            self.result_csv_path = self.result_dir / f"detailed_results_{self.model_name}_{self.frequency}_{self.dataset_type}_{dataset_suffix}.csv"
+
+            print(f"Using custom dataset name: {self.dataset_name}")
+            print(f"Result CSV will be saved as: {self.result_csv_path}")
 
         # Setup logging after parent class has set all attributes
         if self.enable_logging:
@@ -221,24 +245,57 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                         except Exception as e:
                             self._log_and_print(f"Error transcribing {path}: {e}", level="error")
                             transcripts_map[path] = ""
-                else:
-                    # Whisper: True batch processing
-                    batch_results = evaluator.asr_pipeline(
-                        batch_audio,
-                        generate_kwargs={"language": "en"},
-                        batch_size=8,  # Whisper 內部批量大小，8-16 是最佳值
-                        return_timestamps=False  # 不需要時間戳，加快速度
-                    )
+                elif self.language in ['en', 'min', 'yue', 'vi']:
+                    # Whisper: Try batch processing first, fall back to sequential if batch fails
+                    # Determine language code for Whisper
+                    if self.language == 'en':
+                        whisper_lang = "en"
+                    elif self.language == 'vi':
+                        whisper_lang = "vi"
+                    else:  # 'min' and 'yue' use 'zh'
+                        whisper_lang = "zh"
 
-                    # 將結果映射回原始路徑
-                    for path, result in zip(valid_paths_in_batch, batch_results):
-                        transcripts_map[path] = result['text']
+                    try:
+                        batch_results = evaluator.asr_pipeline(
+                            batch_audio,
+                            generate_kwargs={"language": whisper_lang},
+                            batch_size=8,  # Whisper 內部批量大小，8-16 是最佳值
+                            return_timestamps=False  # 不需要時間戳，加快速度
+                        )
+
+                        # 將結果映射回原始路徑
+                        for path, result in zip(valid_paths_in_batch, batch_results):
+                            transcripts_map[path] = result['text']
+
+                    except Exception as batch_error:
+                        # Batch processing failed (e.g., inconsistent keys), fall back to sequential
+                        self._log_and_print(
+                            f"Batch processing failed for batch {i//self.asr_batch_size + 1} "
+                            f"(error: {str(batch_error)[:100]}), falling back to sequential processing...",
+                            level="warning"
+                        )
+
+                        # Process each file individually
+                        for path, audio in zip(valid_paths_in_batch, batch_audio):
+                            try:
+                                result = evaluator.asr_pipeline(
+                                    audio,
+                                    generate_kwargs={"language": whisper_lang},
+                                    return_timestamps=False
+                                )
+                                transcripts_map[path] = result['text']
+                            except Exception as e:
+                                self._log_and_print(f"Error transcribing {path}: {e}", level="error")
+                                transcripts_map[path] = ""
 
             except Exception as e:
-                error_msg = f"Error during ASR batch {i//self.asr_batch_size + 1}: {e}"
+                error_msg = f"Unexpected error during ASR batch {i//self.asr_batch_size + 1}: {e}"
                 self._log_and_print(error_msg, level="error")
+                import traceback
+                self._log_and_print(traceback.format_exc(), level="debug")
                 for path in valid_paths_in_batch:
-                    transcripts_map[path] = "" # 記錄轉錄失敗
+                    if path not in transcripts_map:
+                        transcripts_map[path] = "" # 記錄轉錄失敗
 
             # Log batch processing time
             batch_time = time.time() - batch_start_time
@@ -282,6 +339,7 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         step_start = time.time()
         evaluator = self.EvaluatorClass(
             language=self.language,
+            dataset=self.base_dataset_name.lower(),  # Pass dataset name to evaluator
             use_gpu=self.use_gpu,
             gpu_id=self.gpu_id
         )
@@ -291,8 +349,9 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
         need_mos_quality = 'MOS_Quality' in self.metrics_to_compute
         need_mos_naturalness = 'MOS_Naturalness' in self.metrics_to_compute
         need_speaker_similarity = 'speaker_similarity' in self.metrics_to_compute
+        need_semantic_similarity = 'semantic_similarity' in self.metrics_to_compute
 
-        if need_asr or need_utmos or need_mos_quality or need_mos_naturalness or need_speaker_similarity:
+        if need_asr or need_utmos or need_mos_quality or need_mos_naturalness or need_speaker_similarity or need_semantic_similarity:
             evaluator.load_models()
         self._log_and_print(f"Model loading completed in: {time.time() - step_start:.2f} seconds")
 
@@ -306,12 +365,12 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
             ground_truth = row['transcription']
             original_path = str(self.resolve_original_path(row['file_path']))
             inference_path_obj = self.find_inference_audio(file_name)
-            
+
             if not os.path.exists(original_path):
                 continue
             if not inference_path_obj or not inference_path_obj.exists():
                 continue
-            
+
             tasks.append({
                 'file_name': file_name,
                 'ground_truth': ground_truth,
@@ -386,7 +445,7 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                 results_dict[file_name]['inference_transcript_raw'] = inference_transcript
                 
                 # --- 複製自 metrics_evaluator.py 的標準化邏輯 ---
-                if self.language == 'zh':
+                if self.language in ['zh', 'min', 'yue']:
                     original_transcript_simplified = evaluator.convert_traditional_to_simplified(original_transcript)
                     inference_transcript_simplified = evaluator.convert_traditional_to_simplified(inference_transcript)
                     ground_truth_simplified = evaluator.convert_traditional_to_simplified(ground_truth)
@@ -394,22 +453,23 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                     original_transcript_simplified = original_transcript
                     inference_transcript_simplified = inference_transcript
                     ground_truth_simplified = ground_truth
-                
+
                 ground_truth_norm = evaluator.normalize_text(ground_truth_simplified)
                 original_norm = evaluator.normalize_text(original_transcript_simplified)
                 inference_norm = evaluator.normalize_text(inference_transcript_simplified)
-                
+
                 results_dict[file_name]['original_transcript'] = original_norm
                 results_dict[file_name]['inference_transcript'] = inference_norm
-                
-                if self.language == 'zh' and 'dcer' in self.metrics_to_compute:
+
+                # Use CER for Chinese-based languages (zh, min, yue), WER for others (en, vi)
+                if self.language in ['zh', 'min', 'yue'] and 'dcer' in self.metrics_to_compute:
                     original_cer = evaluator.fast_cer(ground_truth_norm, original_norm)
                     inference_cer = evaluator.fast_cer(ground_truth_norm, inference_norm)
                     results_dict[file_name]['original_cer'] = original_cer
                     results_dict[file_name]['inference_cer'] = inference_cer
                     results_dict[file_name]['dcer'] = inference_cer - original_cer
-                    
-                elif self.language == 'en' and 'dwer' in self.metrics_to_compute:
+
+                elif self.language in ['en', 'vi'] and 'dwer' in self.metrics_to_compute:
                     original_wer = evaluator.fast_wer(ground_truth_norm, original_norm)
                     inference_wer = evaluator.fast_wer(ground_truth_norm, inference_norm)
                     results_dict[file_name]['original_wer'] = original_wer
@@ -480,6 +540,83 @@ class FastCodecEvaluationPipeline(EnhancedCodecEvaluationPipeline):
                 results_dict[task['file_name']]['speaker_similarity'] = score
 
             self._log_and_print(f"Speaker Similarity calculation finished in {time.time() - step_start:.2f} seconds")
+
+        # === V3 NEW METRICS ===
+
+        # V3-1. VDE (Voicing Decision Error)
+        if 'vde' in self.metrics_to_compute:
+            self._log_and_print("\nStarting VDE calculation (batch mode)...")
+            step_start = time.time()
+
+            file_pairs = [(task['original_path'], task['inference_path']) for task in tasks]
+            vde_scores = evaluator.calculate_vde_batch(file_pairs)
+
+            for task in tasks:
+                file_pair = (task['original_path'], task['inference_path'])
+                score = vde_scores.get(file_pair)
+                results_dict[task['file_name']]['vde'] = score
+
+            self._log_and_print(f"VDE calculation finished in {time.time() - step_start:.2f} seconds")
+
+        # V3-2. F0-RMSE & GPE
+        if 'f0_rmse' in self.metrics_to_compute or 'gpe' in self.metrics_to_compute:
+            self._log_and_print("\nStarting F0 metrics calculation (batch mode)...")
+            step_start = time.time()
+
+            file_pairs = [(task['original_path'], task['inference_path']) for task in tasks]
+            f0_metrics = evaluator.calculate_f0_metrics_batch(file_pairs)
+
+            for task in tasks:
+                file_pair = (task['original_path'], task['inference_path'])
+                metrics = f0_metrics.get(file_pair)
+                if metrics:
+                    if 'f0_rmse' in self.metrics_to_compute:
+                        results_dict[task['file_name']]['f0_rmse'] = metrics.get('f0_rmse')
+                    if 'gpe' in self.metrics_to_compute:
+                        results_dict[task['file_name']]['gpe'] = metrics.get('gpe')
+                else:
+                    if 'f0_rmse' in self.metrics_to_compute:
+                        results_dict[task['file_name']]['f0_rmse'] = None
+                    if 'gpe' in self.metrics_to_compute:
+                        results_dict[task['file_name']]['gpe'] = None
+
+            self._log_and_print(f"F0 metrics calculation finished in {time.time() - step_start:.2f} seconds")
+
+        # V3-3. TER (Tone Error Rate) - For tonal languages (Chinese, Taiwanese, Cantonese, Vietnamese)
+        if 'ter' in self.metrics_to_compute and self.language in ['zh', 'min', 'yue', 'vi']:
+            self._log_and_print("\nStarting TER calculation (batch mode)...")
+            step_start = time.time()
+
+            text_pairs = []
+            for task in tasks:
+                file_name = task['file_name']
+                ref_text = task.get('ground_truth', '')
+                # Get transcription from results_dict, not task
+                hyp_text = results_dict[file_name].get('inference_transcript_raw', '')
+                text_pairs.append((ref_text, hyp_text))
+
+            ter_scores = evaluator.calculate_ter_batch(text_pairs)
+
+            for i, task in enumerate(tasks):
+                score = ter_scores[i] if i < len(ter_scores) else None
+                results_dict[task['file_name']]['ter'] = score
+
+            self._log_and_print(f"TER calculation finished in {time.time() - step_start:.2f} seconds")
+
+        # V3-4. Semantic Similarity (WavLM)
+        if 'semantic_similarity' in self.metrics_to_compute:
+            self._log_and_print("\nStarting Semantic Similarity calculation (batch mode)...")
+            step_start = time.time()
+
+            file_pairs = [(task['original_path'], task['inference_path']) for task in tasks]
+            sem_scores = evaluator.calculate_semantic_similarity_batch(file_pairs)
+
+            for task in tasks:
+                file_pair = (task['original_path'], task['inference_path'])
+                score = sem_scores.get(file_pair)
+                results_dict[task['file_name']]['semantic_similarity'] = score
+
+            self._log_and_print(f"Semantic Similarity calculation finished in {time.time() - step_start:.2f} seconds")
 
         # --- 4. 整合結果 (新邏輯) ---
         step_start = time.time()
@@ -555,9 +692,9 @@ def main():
                        help="Testing dataset description")
     
     parser.add_argument("--metrics", type=str, nargs='+',
-                       choices=["dwer", "dcer", "utmos", "MOS_Quality", "MOS_Naturalness", "pesq", "stoi", "speaker_similarity"],
-                       default=None,  # Will be set based on use_v2_metrics
-                       help="Metrics to compute (dwer/dcer for ASR, utmos/MOS_Quality/MOS_Naturalness for quality, pesq/stoi for signal quality, speaker_similarity for identity preservation)")
+                       choices=["dwer", "dcer", "utmos", "MOS_Quality", "MOS_Naturalness", "pesq", "stoi", "speaker_similarity", "vde", "f0_rmse", "gpe", "ter", "semantic_similarity"],
+                       default=None,  # Will be set based on use_v2_metrics/use_v3_metrics
+                       help="Metrics to compute (dwer/dcer for ASR, utmos/MOS_Quality/MOS_Naturalness for quality, pesq/stoi for signal quality, speaker_similarity for identity preservation, vde/f0_rmse/gpe/ter/semantic_similarity for V3 advanced metrics)")
 
     parser.add_argument("--use_gpu", action="store_true", default=True,
                        help="Enable GPU acceleration")
@@ -567,14 +704,20 @@ def main():
                        help="Force CPU-only computation")
     parser.add_argument("--original_dir", type=str,
                        help="Root directory path for original audio files")
-    parser.add_argument("--language", type=str, choices=["en", "zh"],
-                       help="Language for ASR evaluation (auto-detected if not specified)")
+    parser.add_argument("--language", type=str, choices=["en", "zh", "min", "yue", "vi"],
+                       help="Language for ASR evaluation: 'en' (English), 'zh' (Chinese), 'min' (Taiwanese Minnan), 'yue' (Cantonese), 'vi' (Vietnamese)")
 
-    # V2 metrics support
+    # Metrics version support
     parser.add_argument("--use_v2_metrics", action="store_true",
                        help="Use V2 metrics with language-specific models (ResNet3/CAM++ for speaker, Paraformer for Chinese ASR, NISQA v2 for quality, RAMP/UTMOS for naturalness)")
+    parser.add_argument("--use_v3_metrics", action="store_true",
+                       help="Use V3 metrics with Taiwanese Minnan support (Taiwan-Tongues-ASR-CE, VDE, F0-RMSE, GPE, TER, Semantic Similarity)")
     parser.add_argument("--output_base_dir", type=str,
-                       help="Custom output base directory (for V2 metrics testing)")
+                       help="Custom output base directory (for V2/V3 metrics testing)")
+
+    # --- Dataset naming control ---
+    parser.add_argument("--dataset_name", type=str,
+                       help="Custom dataset name for output files (e.g., 'aishell', 'librispeech', 'commonvoice'). If not specified, auto-detected from CSV filename.")
 
     # --- Batch processing parameters ---
     parser.add_argument("--num_workers", type=int, default=8,
@@ -613,7 +756,9 @@ def main():
         original_dir=args.original_dir,
         language=args.language,
         use_v2_metrics=args.use_v2_metrics,
+        use_v3_metrics=args.use_v3_metrics,
         output_base_dir=args.output_base_dir,
+        dataset_name=args.dataset_name,  # 新增自訂資料集名稱
         # Batch processing parameters
         num_workers=args.num_workers,
         asr_batch_size=args.asr_batch_size,
