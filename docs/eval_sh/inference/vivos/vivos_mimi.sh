@@ -17,7 +17,7 @@ MIMI_DIR="/home/jieshiang/Desktop/GitHub/Mimi"
 CSV_DIR="/home/jieshiang/Desktop/GitHub/Codec_comparison/csv"
 
 # CSV 檔案
-VIVOS_CSV="${CSV_DIR}/vivos_filtered_clean_test.csv"
+VIVOS_CSV="${CSV_DIR}/vivos_filtered_clean.csv"
 
 cd "$MIMI_DIR"
 

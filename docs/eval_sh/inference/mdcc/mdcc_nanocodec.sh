@@ -52,7 +52,7 @@ for MODEL in "${MODELS[@]}"; do
         --model "$MODEL" \
         --csv_path "$CSV_PATH" \
         --dataset_name "$DATASET" \
-        --device cuda:1 \
+        --device cuda:0 \
         --use_local
 
     echo "Completed: Model=$MODEL, Dataset=$DATASET"

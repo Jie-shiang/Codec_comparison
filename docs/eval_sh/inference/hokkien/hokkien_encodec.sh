@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # EnCodec Inference Script - Hokkien Only
-# 生成 EnCodec 24khz 3.0kbps, 6.0kbps, 12.0kbps, 24.0kbps 的推論檔案 (Hokkien 資料集)
+# 生成 EnCodec 24khz 1.5kbps, 3.0kbps, 6.0kbps, 12.0kbps, 24.0kbps 的推論檔案 (Hokkien 資料集)
 
 set -e
 
@@ -22,16 +22,16 @@ HOKKIEN_CSV="${CSV_DIR}/hokkien_filtered_clean.csv"
 
 cd "$ENCODEC_DIR"
 
-echo "Running EnCodec 24khz (3.0, 6.0, 12.0, 24.0 kbps) inference on Hokkien..."
+echo "Running EnCodec 24khz (1.5, 3.0, 6.0, 12.0, 24.0 kbps) inference on Hokkien..."
 echo "Environment: $CONDA_ENV"
-echo "Output: $OUTPUT_DIR/EnCodec/24khz_{3.0,6.0,12.0,24.0}kbps/hokkien"
+echo "Output: $OUTPUT_DIR/EnCodec/24khz_{1.5,3.0,6.0,12.0,24.0}kbps/hokkien"
 
 CUDA_VISIBLE_DEVICES=$GPU_ID conda run -n "$CONDA_ENV" python encodec_batch_inference.py \
     --base_audio_dir "$BASE_AUDIO_DIR" \
     --output_dir "$OUTPUT_DIR" \
     --hokkien_csv "$HOKKIEN_CSV" \
     --model_type 24khz \
-    --bandwidths 3.0 6.0 12.0 24.0 \
+    --bandwidths 1.5 3.0 6.0 12.0 24.0 \
     --device cuda
 
 echo "========================================="

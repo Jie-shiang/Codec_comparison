@@ -15,10 +15,10 @@ BASE_AUDIO_DIR="/mnt/Internal/ASR"
 OUTPUT_DIR="/mnt/Internal/jieshiang/Inference_Result"
 SPEECHTOKENIZER_DIR="/home/jieshiang/Desktop/GitHub/SpeechTokenizer"
 CSV_DIR="/home/jieshiang/Desktop/GitHub/Codec_comparison/csv"
-GPU_ID=1
+GPU_ID=0
 
 # CSV 檔案
-MDCC_CSV="${CSV_DIR}/mdcc_filtered_clean_test.csv"
+MDCC_CSV="${CSV_DIR}/mdcc_filtered_clean.csv"
 
 cd "$SPEECHTOKENIZER_DIR"
 

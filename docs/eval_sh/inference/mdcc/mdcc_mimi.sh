@@ -17,7 +17,7 @@ MIMI_DIR="/home/jieshiang/Desktop/GitHub/Mimi"
 CSV_DIR="/home/jieshiang/Desktop/GitHub/Codec_comparison/csv"
 
 # CSV 檔案
-MDCC_CSV="${CSV_DIR}/mdcc_filtered_clean_test.csv"
+MDCC_CSV="${CSV_DIR}/mdcc_filtered_clean.csv"
 
 cd "$MIMI_DIR"
 

@@ -12,6 +12,34 @@ EVAL_ENV="codec_eval_pip_py39"
 
 echo "Starting EnCodec Evaluation - Aishell Dataset"
 
+
+# EnCodec 75Hz_1.5k - AISHELL (zh)
+echo "Running: EnCodec 75Hz_1.5k - AISHELL (zh)"
+conda run -n "$EVAL_ENV" python "${SCRIPT_DIR}/fast_evaluation_pipeline.py" \
+    --inference_dir /mnt/Internal/jieshiang/Inference_Result/EnCodec/75Hz_1.5k/aishell \
+    --csv_file "${CSV_DIR}/aishell_filtered_clean.csv" \
+    --original_dir /mnt/Internal/ASR \
+    --model_name "EnCodec" \
+    --frequency "75Hz_1.5k" \
+    --causality "Causal" \
+    --bit_rate "1.5" \
+    --quantizers "2" \
+    --codebook_size "1024" \
+    --n_params "16M" \
+    --training_set "Multi-domain" \
+    --testing_set "LibriSpeech test-clean" \
+    --metrics dcer MOS_Quality MOS_Naturalness pesq stoi speaker_similarity vde f0_rmse gpe ter semantic_similarity \
+    --dataset_type "clean" \
+    --dataset_name "aishell" \
+    --language zh \
+    --use_gpu \
+    --gpu_id 0 \
+    --num_workers 32 \
+    --asr_batch_size 64 \
+    --use_v3_metrics \
+    --output_base_dir "$OUTPUT_DIR" \
+    --enable_logging
+
 # EnCodec 75Hz_4k - Aishell (zh)
 echo "Running: EnCodec 75Hz_4k - Aishell (zh)"
 conda run -n "$EVAL_ENV" python "${SCRIPT_DIR}/fast_evaluation_pipeline.py" \
