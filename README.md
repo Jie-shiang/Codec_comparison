@@ -1,12 +1,12 @@
 # Neural Audio Codec Evaluation Pipeline
 
-**🌐 [View Live Demo](https://jie-shiang.github.io/Codec_comparison/)**
+** [View Live Demo](https://jie-shiang.github.io/Codec_comparison/)**
 
 A comprehensive evaluation pipeline for neural audio codecs with GPU acceleration, batch processing, and support for complete, segmented, and noise-corrupted audio evaluation.
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 
 ### **Purpose**
 
@@ -30,7 +30,7 @@ This project provides a systematic framework for evaluating the performance of m
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 /home/jieshiang/Desktop/GitHub/Codec_comparison/
@@ -105,7 +105,7 @@ This project provides a systematic framework for evaluating the performance of m
 
 ---
 
-## 📁 Directory Explanations
+## Directory Explanations
 
 ### **`audio/` and `audio_*/` Directories**
 **Purpose:** Store audio files for web playback and verification
@@ -191,7 +191,7 @@ File_name,Original_Path,Inference_Path,UTMOS,PESQ,STOI,dWER,Speaker_Sim
 
 ---
 
-## 🌐 Web Interface Implementation
+## Web Interface Implementation
 
 ### **Architecture Overview**
 
@@ -242,7 +242,7 @@ The web interface will automatically include NewCodec in the dropdown menu.
 
 ---
 
-## 🚀 Running Evaluations
+## Running Evaluations
 
 ### **Path Configuration**
 
@@ -385,7 +385,7 @@ Similar to original audio evaluation, but use noise-corrupted inputs and specify
 
 ---
 
-## 📊 Evaluation Metrics
+## Evaluation Metrics
 
 ### **ASR Metrics**
 - **dWER** (English): Degradation in Word Error Rate
@@ -402,7 +402,7 @@ Formula: `dWER = WER(reconstructed) - WER(original)`
 
 ---
 
-## 📈 Output Files
+## Output Files
 
 ### **CSV Results**
 - **Detailed CSV**: Per-file metrics for all evaluated samples
@@ -418,7 +418,7 @@ Formula: `dWER = WER(reconstructed) - WER(original)`
 
 ---
 
-## 🎯 Supported Datasets
+## Supported Datasets
 
 | Dataset | Language | CSV File | Metric | Samples |
 |---------|----------|----------|--------|---------|
@@ -428,17 +428,14 @@ Formula: `dWER = WER(reconstructed) - WER(original)`
 
 ---
 
-## 🔧 File Naming Requirements
+## File Naming Requirements
 
 ### **Complete Audio**
-- ✅ `{original_filename}_inference.wav`
-- ✅ `{original_filename}_inference.flac`
-- ⚠️ `{original_filename}.wav` (alternative, less preferred)
+- `{original_filename}_inference.wav`
+- `{original_filename}_inference.flac`
 
 ### **Segmented Audio**
-- ✅ `{original_filename}_{segment_num}_inference.wav`
-- ❌ `{original_filename}_{segment_num}.wav` (missing `_inference`)
-- ❌ `{original_filename}_inference.wav` (missing segment number)
+- `{original_filename}_{segment_num}_inference.wav`
 
 Example for file `8463-287645-0001.flac` split into 1.0s segments:
 ```
