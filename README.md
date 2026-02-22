@@ -1,6 +1,6 @@
 # Neural Audio Codec Evaluation Pipeline
 
-** [View Live Demo](https://jie-shiang.github.io/Codec_comparison/)**
+> **Audio Demo:** [https://jie-shiang.github.io/Codec_comparison/](https://jie-shiang.github.io/Codec_comparison/)
 
 A comprehensive evaluation pipeline for neural audio codecs with GPU acceleration, batch processing, and support for complete, segmented, and noise-corrupted audio evaluation.
 
